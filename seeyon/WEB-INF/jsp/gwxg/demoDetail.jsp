@@ -776,6 +776,8 @@
             url=_ctxPath + '/demo.do?method=toDeleteZw';
         }
         deleteXx(url,fileurl);
+        var obj=$("#attachmentDiv_"+fileurl);
+        obj.remove();
         /*$.ajax({
             url: _ctxPath + '/demo.do?method=toDeleteFj',
             type:'POST',
