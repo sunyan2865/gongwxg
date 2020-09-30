@@ -18,7 +18,7 @@ public class GwJkManagerImpl implements  GwJkManager {
     @SuppressWarnings("unchecked")
     public FlipInfo toGwjk(FlipInfo flipInfo, Map<String,String> query) throws SQLException, BusinessException {
 
-        StringBuffer sql=new StringBuffer(" select t.*,group_concat(CONCAT(s.name,';',s.member,';',s.state,';',s.affairid)) definestate from ( " +
+        StringBuffer sql=new StringBuffer(" select t.*,group_concat(CONCAT(s.name,';',s.memberid,';',s.state,';',s.affairid)) definestate from ( " +
                 " select t.id summaryid,f.id formid, f.field0006 wjbt,f.field0016 blqx ,f.field0014 swrq,GROUP_CONCAT(CONCAT(u.name,';',u.id,';',r.state,';',r.id)) name ,f.start_date from formmain_0081 f " +
                 " left join  (SELECT * FROM edoc_summary t WHERE t.EDOC_TYPE = '1') t on  t.FORM_RECORDId=f.id " +
                 " left join ctp_affair r on r.OBJECT_ID=t.id and r.state in ('3','4') " +

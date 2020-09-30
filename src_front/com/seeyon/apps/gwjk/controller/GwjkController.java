@@ -2,10 +2,10 @@ package com.seeyon.apps.gwjk.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.seeyon.apps.treeandgrid.controller.DemoController;
+import com.seeyon.apps.gwxg.controller.DemoController;
 import com.seeyon.apps.gwjk.manager.GwJkManager;
-import com.seeyon.apps.treeandgrid.manager.DemoManager;
-import com.seeyon.apps.treeandgrid.po.OpinionEntity;
+import com.seeyon.apps.gwxg.manager.DemoManager;
+import com.seeyon.apps.gwxg.po.OpinionEntity;
 import com.seeyon.ctp.common.AppContext;
 import com.seeyon.ctp.common.controller.BaseController;
 import com.seeyon.ctp.common.log.CtpLogFactory;
@@ -59,6 +59,7 @@ public class GwjkController  extends BaseController {
 
         return view;
     }
+
 
 
     /**
