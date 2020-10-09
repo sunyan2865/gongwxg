@@ -150,7 +150,9 @@ function doGwmod() {
     if (count == 1) {
         var obj = rows[0];
         var url= _ctxPath + '/demo.do?method=toEditDemoView&formid='+obj.form_recordid+'&summaryid='+obj.summaryid;
-        window.open(url,'_blank');
+        var options = "status=no,resizable=no,menubar=no,top=10,left=200,width=1073,height=742,scrollbars=no,center:Yes;";
+        window.open(url, null, options);
+       /* window.open(url,'_blank');*/
     }
 }
 

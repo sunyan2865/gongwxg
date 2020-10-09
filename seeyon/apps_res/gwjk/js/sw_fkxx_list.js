@@ -30,7 +30,7 @@ $(document).ready(function () {
     //文件标题
     condition.push({id: 'wjbt',name: 'wjbt',type: 'input',text: '文件标题',value: 'wjbt',maxLength:100});
     //反馈人
-    condition.push({id: 'name',name: 'name',type: 'input',text: '反馈人',value: 'wjbt',maxLength:100});
+    condition.push({id: 'name',name: 'name',type: 'input',text: '反馈人',value: 'name',maxLength:100});
 
 
     searchobj = $.searchCondition({
@@ -122,7 +122,7 @@ function getSearchValueObj(){
 
     if(choose === 'name'){
         if($('#name').val()!=''){
-            o.wjbt = $('#name').val();
+            o.name = $('#name').val();
         }
     }
 

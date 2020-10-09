@@ -4,6 +4,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
+    <title>发文修改</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <script type="text/javascript" charset="UTF-8" src="${path}/common/content/form.js${ctp:resSuffix()}"></script>
     <script type="text/javascript" charset="UTF-8" src="${path}/apps_res/govdoc/js/govdocBody.js${ctp:resSuffix()}"></script>
@@ -29,7 +30,7 @@
 --%>
 
 <div style="clear: both;"></div>
-<div id="mainbodyDiv" style="text-align: center;margin-top: 20px;margin-left: 450px;">
+<div id="mainbodyDiv" style="text-align: center;margin-top:-10px;margin-left: 200px;">
             <table style="BORDER-TOP-STYLE: none; WORD-WRAP: break-word; WIDTH: 638px; BORDER-COLLAPSE: collapse; TABLE-LAYOUT: fixed; BORDER-BOTTOM-STYLE: none; BORDER-RIGHT-STYLE: none; BORDER-LEFT-STYLE: none;" class="xdFormLayout">
                 <colgroup><col style="WIDTH: 638px"></colgroup>
                 <tbody>
@@ -456,15 +457,17 @@
                                         <font face="宋体" size="3">
                                              <%--<textarea id="field0004" style="width:100%;height:100%;border:none" ></textarea>--%>
                                                <c:forEach items="${bmfzrList}" var="op">
-                                                   <input type="hidden" value="${op.id}"/>
-                                                   <div style="float: left;width: 100%;" class="font-s">
-                                                       <input id="${op.id}" style="width:98%;height:28px;;border:1px solid #D4D4D4" value="${op.content}"/>
-                                                   </div>
-                                                   <div style="width: 490px;">
-                                                       <div style="float:right;padding-right:30px;padding-top:5px;padding-bottom:5px;" class="font-s">
-                                                           <input readonly="readonly" style=" height:100%;border:none" value="${op.username} ${op.createTime}"></input>
-                                                           <button type="button" style="background-color: lightskyblue;font-weight:bold" class="common_button" id="${op.id}_field0004_mod" onclick="buttonClick(this)" >修改保存</button>
-                                                           <button type="button" style="background-color:#ea9191;font-weight:bold"  class="common_button" id="${op.id}_field0004_del" onclick="buttonClick(this)">删除</button>
+                                                   <div id="div_${op.id}">
+                                                       <input type="hidden" value="${op.id}"/>
+                                                       <div style="float: left;width: 100%;" class="font-s">
+                                                           <input id="${op.id}" style="width:98%;height:28px;;border:1px solid #D4D4D4" value="${op.content}"/>
+                                                       </div>
+                                                       <div style="width: 490px;">
+                                                           <div style="float:right;padding-right:30px;padding-top:5px;padding-bottom:5px;" class="font-s">
+                                                               <input readonly="readonly" style=" height:100%;border:none" value="${op.username} ${op.createTime}"></input>
+                                                               <button type="button" style="background-color: lightskyblue;font-weight:bold" class="common_button" id="${op.id}_field0004_mod" onclick="buttonClick(this)" >修改保存</button>
+                                                               <button type="button" style="background-color:#ea9191;font-weight:bold"  class="common_button" id="${op.id}_field0004_del" onclick="buttonClick(this)">删除</button>
+                                                           </div>
                                                        </div>
                                                    </div>
                                                </c:forEach>
@@ -480,6 +483,7 @@
                                         <font face="宋体">
                                                <%-- <textarea id="field0020" style="width:100%;height:100%;border:none" ></textarea>--%>
                                                    <c:forEach items="${bmhqList}" var="op">
+                                                   <div id="div_${op.id}">
                                                        <input type="hidden" value="${op.id}"/>
                                                        <div style="float: left;width: 100%;" class="font-s">
                                                            <input id="${op.id}" style="width:98%;height:28px;;border:1px solid #D4D4D4" value="${op.content}"/>
@@ -491,6 +495,7 @@
                                                                <button type="button" style="background-color:#ea9191;font-weight:bold" class="common_button" id="${op.id}_field0020_del" onclick="buttonClick(this)">删除</button>
                                                            </div>
                                                        </div>
+                                                   </div>
                                                    </c:forEach>
                                         </font>
                                     </td>
@@ -504,6 +509,7 @@
                                         <font face="宋体" size="3" color="#ff0000">
                                               <%--  <textarea id="field0021" style="width:100%;height:100%;border:none"></textarea>--%>
                                                   <c:forEach items="${dzbList}" var="op">
+                                                  <div id="div_${op.id}">
                                                       <input type="hidden" value="${op.id}"/>
                                                       <div style="float: left;width: 100%;" class="font-s">
                                                           <input id="${op.id}" style="width:98%;height:28px;;border:1px solid #D4D4D4" value="${op.content}"/>
@@ -515,7 +521,9 @@
                                                               <button type="button" style="background-color:#ea9191;font-weight:bold" class="common_button" id="${op.id}_field0021_del" onclick="buttonClick(this)">删除</button>
                                                           </div>
                                                       </div>
+                                                  </div>
                                                   </c:forEach>
+
                                         </font>
                                     </td>
                                 </tr>
@@ -528,6 +536,7 @@
                                         <font face="宋体" size="3" color="#ff0000">
                                               <%--  <textarea id="field0019" style="width:100%;height:100%;border:none" ></textarea>--%>
                                                   <c:forEach items="${xldspList}" var="op">
+                                                  <div id="div_${op.id}">
                                                       <input type="hidden" value="${op.id}"/>
                                                       <div style="float: left;width: 100%;" class="font-s">
                                                           <input id="${op.id}" style="width:98%;height:28px;;border:1px solid #D4D4D4" value="${op.content}"/>
@@ -539,6 +548,7 @@
                                                               <button type="button" style="background-color:#ea9191;font-weight:bold"  class="common_button" id="${op.id}_field0019_del" onclick="buttonClick(this)">删除</button>
                                                           </div>
                                                       </div>
+                                                  </div>
                                                   </c:forEach>
                                         </font>
                                     </td>
@@ -552,6 +562,7 @@
                                         <font face="宋体" size="3" color="#ff0000">
                                               <%--  <textarea id="field0022" style="width:100%;height:100%;border:none" ></textarea>--%>
                                                   <c:forEach items="${xdyjList}" var="op">
+                                                  <div id="div_${op.id}">
                                                       <input type="hidden" value="${op.id}"/>
                                                       <div style="float: left;width: 100%;" class="font-s">
                                                           <input id="${op.id}" style="width:98%;height:28px;;border:1px solid #D4D4D4" value="${op.content}"/>
@@ -563,6 +574,7 @@
                                                               <button type="button" style="background-color:#ea9191;font-weight:bold"  class="common_button" id="${op.id}_field0022_del" onclick="buttonClick(this)">删除</button>
                                                           </div>
                                                       </div>
+                                                  </div>
                                                   </c:forEach>
                                         </font>
                                     </td>
@@ -651,20 +663,14 @@
                 url: _ctxPath + '/demo.do?method=toUpdateOpinion',
                 type:'POST',
                 data:{id: arr[0],zd:arr[1],operType:arr[2],content:$("#"+arr[0]).val()},
-                error:function(res){
-                    if(arr[2]=="mod"){
-                        $.alert("修改成功!");
-                    }else{
-                        $.alert("删除成功！");
-                    }
-                },
                 success:function (res) {
-                    alert(JSON.stringify("1==="+res));
                     if('0'==res.code){
                         if(arr[2]=="mod"){
                             $.alert("修改成功!");
                         }else{
                             $.alert("删除成功！");
+                            var obj=$("#div_"+arr[0]);
+                            obj.remove();
                         }
                     }else{
                         if(arr[2]=="mod"){
@@ -735,6 +741,8 @@
             },
             success:function (res) {
                 $.alert("修改成功!");
+                window.close();
+                window.opener.location.href=window.opener.location.href;
             }
         });
     }

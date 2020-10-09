@@ -96,6 +96,7 @@
                  if(code=="0"){
                      $.alert("保存成功！");
                      window.close();
+                     window.opener.location.href=window.opener.location.href;
                  }else{
                      $.alert("保存失败！");
                  }

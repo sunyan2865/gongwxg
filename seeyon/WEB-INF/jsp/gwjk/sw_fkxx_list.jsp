@@ -5,7 +5,7 @@
 <html class="h100b">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>发文反馈</title>
+    <title>收文反馈</title>
     <script type="text/javascript" charset="UTF-8" src="${path}/apps_res/gwjk/js/sw_fkxx_list.js${ctp:resSuffix()}"></script>
 </head>
 <body class="h100b" onunload="">

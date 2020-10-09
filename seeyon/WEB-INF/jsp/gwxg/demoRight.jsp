@@ -5,7 +5,7 @@
 <html class="h100b">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>收文列表</title>
+    <title>发文列表</title>
     <script type="text/javascript" charset="UTF-8" src="${path}/apps_res/demo/js/demoRight.js${ctp:resSuffix()}"></script>
 </head>
 <body class="h100b" onunload="">

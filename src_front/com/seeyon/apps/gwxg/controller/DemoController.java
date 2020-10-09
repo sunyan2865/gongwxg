@@ -180,7 +180,7 @@ public class DemoController extends BaseController {
 	 * @return
 	 */
 	@ResponseBody
-	public Map<String,Object> toUpdateFormmain(HttpServletRequest request, HttpServletResponse response) throws  Exception{
+	public ModelAndView toUpdateFormmain(HttpServletRequest request, HttpServletResponse response) throws  Exception{
 		Map<String, Object> jsonMap = new HashMap();
 		JDBCAgent jdbcAgent = new JDBCAgent(true, false);
 		try {
@@ -279,7 +279,9 @@ public class DemoController extends BaseController {
 			jsonMap.put("code", "1");
 			jsonMap.put("msg", "失败");
 		}
-		return jsonMap;
+		com.alibaba.fastjson.JSONObject json = new JSONObject(jsonMap);
+		render(response, json.toJSONString());
+		return null;
 	}
 
 
@@ -287,7 +289,7 @@ public class DemoController extends BaseController {
 	 * 删除附件
 	 */
 	@ResponseBody
-	public Map<String,Object> toDeleteFj(HttpServletRequest request, HttpServletResponse response){
+	public ModelAndView toDeleteFj(HttpServletRequest request, HttpServletResponse response){
 		Map<String, Object> jsonMap = new HashMap();
 		JDBCAgent jdbcAgent = new JDBCAgent(true, false);
 		try {
@@ -300,8 +302,11 @@ public class DemoController extends BaseController {
 		}catch(Exception e){
 			jsonMap.put("code", "1");
 			jsonMap.put("msg", "失败");
+
 		}
-		return jsonMap;
+		com.alibaba.fastjson.JSONObject json = new JSONObject(jsonMap);
+		render(response, json.toJSONString());
+		return null;
 	}
 
 	/**
@@ -332,7 +337,7 @@ public class DemoController extends BaseController {
 	 * @return
 	 */
 	@ResponseBody
-	public Map<String,Object> toUpdateOpinion(HttpServletRequest request, HttpServletResponse response){
+	public ModelAndView toUpdateOpinion(HttpServletRequest request, HttpServletResponse response){
 		Map<String, Object> jsonMap = new HashMap();
 		JDBCAgent jdbcAgent = new JDBCAgent(true, false);
 		try {
@@ -353,7 +358,9 @@ public class DemoController extends BaseController {
 			jsonMap.put("code", "1");
 			jsonMap.put("msg", "失败");
 		}
-		return jsonMap;
+		com.alibaba.fastjson.JSONObject json = new JSONObject(jsonMap);
+		render(response, json.toJSONString());
+		return null;
 	}
 
 
@@ -527,7 +534,7 @@ public class DemoController extends BaseController {
 				List batchedSql=new ArrayList();
 
 				batchedSql.add(" update edoc_summary r set r.current_nodes_info=replace(r.current_nodes_info,'"+oldmemberid+"','"+newmemberid+"') where  r.id='"+summaryid+"'");
-				batchedSql.add(" update  ctp_affair set state='3', member_id='"+newmemberid+"'  where object_id='"+summaryid+"' and member_id='"+oldmemberid+"'");
+				batchedSql.add(" update  ctp_affair set  member_id='"+newmemberid+"'  where object_id='"+summaryid+"' and member_id='"+oldmemberid+"' and state='3'");
 //				batchedSql.add(" delete from edoc_opinion   t where t.edoc_id = '"+summaryid+"' and affair_id='"+affairid+"'");
 
 				jdbcAgent.executeBatch(batchedSql);
