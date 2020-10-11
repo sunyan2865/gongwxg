@@ -67,7 +67,7 @@ public class FileController  extends BaseController {
 
 
     /***
-     * 删除文件，重名名文件
+     * 删除文件，重命名文件
      * @param request
      * @param response
      * @return
