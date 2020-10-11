@@ -98,12 +98,12 @@ public class DemoController extends BaseController {
 			modelAndView.addObject("fjlist", fjList);
 
 			//正文
-		/*	String zwsql="select t.*,DATE_FORMAT(modify_date,'%Y-%m-%d') as date from ctp_content_all  t   where  content_type in ('41','42','43','44','45') and t.MODULE_ID='"+summaryid+"'" ;
+			String zwsql="select t.*,DATE_FORMAT(modify_date,'%Y-%m-%d') as date from ctp_content_all  t   where  content_type in ('41','42','43','44','45') and t.MODULE_ID='"+summaryid+"'" ;
 			Map<String, Object> zwxx=null;
 			jdbcAgent.execute(zwsql);
 			zwxx=jdbcAgent.resultSetToMap();
 			modelAndView.addObject("zwdata", zwxx);
-			zwcontent=(String)zwxx.get("content");*/
+			//zwcontent=(String)zwxx.get("content");
 
 			/*获得字典项*/
 			//文件类型

@@ -1,5 +1,6 @@
 package com.seeyon.apps.gwxg.controller;
 
+import com.seeyon.apps.gwxg.util.CommonUtil;
 import com.seeyon.ctp.common.controller.BaseController;
 import com.seeyon.ctp.common.filemanager.event.FileDownloadEvent;
 import com.seeyon.ctp.common.po.filemanager.V3XFile;
@@ -63,6 +64,52 @@ public class FileController  extends BaseController {
         }
         return null;
     }
+
+
+    /***
+     * 删除文件，重名名文件
+     * @param request
+     * @param response
+     * @return
+     */
+    public ModelAndView toDelAndReNameFile(HttpServletRequest request, HttpServletResponse response){
+        try {
+            String oldfilename = request.getParameter("oldfilename");//原文件删除
+            String newfilename=request.getParameter("newfilename");//新文件被重命名为原文件名
+            String oldzwdate=request.getParameter("oldzwdate");//源文件所在位置
+            String newzwdate=request.getParameter("newzwdate");//新文件所在位置
+            if(!("".equals(oldzwdate)) && !("".equals(newzwdate)) ){
+                String[] olddatearr=oldzwdate.split("-");
+                String oldpathstr=olddatearr[0]+"/"+olddatearr[1]+"/"+olddatearr[2]+"/";
+                File oldfile = new File("D:/upload/" + oldpathstr + oldfilename);
+                File oldfilebak=new File("D:/upload/" + oldpathstr + (oldfilename+"_"+ CommonUtil.generateID()));
+
+
+                String subnewzwdate=newzwdate.substring(0,10);
+                String[] newdatearr=subnewzwdate.split("-");
+                String newpathstr=newdatearr[0]+"/"+newdatearr[1]+"/"+newdatearr[2]+"/";
+                File newfile = new File("D:/upload/" + newpathstr + newfilename);
+                File newfilerename=new File("D:/upload/" + newpathstr + oldfilename);//不在同一个目录下，先重命名再移动
+                // 判断目录或文件是否存在
+                if (!oldfile.exists()) {
+                    return null;
+                } else {
+                    oldfile.renameTo(oldfilebak);//原文件重命名
+                }
+
+                if(subnewzwdate.equals(oldzwdate)){//原文件与新文件路径相同  直接修改文件名
+                    newfile.renameTo(oldfile);
+                }else{//路径不同，先重命名再移动到原路径
+                    newfile.renameTo(newfilerename);
+                    newfilerename.renameTo(oldfile);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 
 
 }
