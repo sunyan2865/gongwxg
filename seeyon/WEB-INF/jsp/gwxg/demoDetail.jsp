@@ -595,7 +595,6 @@
     <input id="fields0010" type="hidden" value="${entity.field0010}" />
     <input id="summaryid" type="hidden" value="${entity.summaryid}" /><%--公文主表edoc_summary的id--%>
 
-    <input id="zwfjdatas" type="text" />
     <input type="text"  id="zwid" value="${zwdata.id}">
     <input type="text"  id="zwcontent" value="${zwdata.content}">
     <input type="text"  id="zwdate" value="${zwdata.date}">
@@ -704,11 +703,6 @@
         if($("#fjdatas").val()!=""){
             fjdata=JSON.parse($("#fjdatas").val());
         }
-      /*  var zwfjdata='';
-        if($("#zwfjdatas").val()!=""){
-            zwfjdata=JSON.parse($("#zwfjdatas").val());
-        }*/
-
         var params={
             ID:$('#formid').val(),
             field0005:$('#field0005').val(), //文件标题
@@ -738,10 +732,6 @@
                 params:JSON.stringify(params),
                 fjparams:JSON.stringify(fjdata["instance"]),
                 att_reference:$('#summaryid').val()
-               /* ,
-                zwparams:JSON.stringify(zwfjdata["instance"]),
-               /!* zwcontent:$('#zwcontent').val(),*!/
-                zwid:$('#zwid').val()*/
             },
             error:function(res){
                 $.alert("修改成功!");
