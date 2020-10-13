@@ -13,4 +13,6 @@ public interface GwJkManager {
 
     FlipInfo toSwfkxx(FlipInfo fi, Map<String, String> query) throws BusinessException, SQLException;
 
+
+
 }

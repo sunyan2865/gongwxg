@@ -1,17 +1,6 @@
 package com.seeyon.apps.gwxg.controller;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
-import java.net.URLDecoder;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,8 +9,10 @@ import javax.servlet.http.HttpServletResponse;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.seeyon.apps.gwxg.po.FormMain0081Entity;
 import com.seeyon.apps.gwxg.po.*;
 import com.seeyon.apps.gwxg.util.CommonUtil;
+import com.seeyon.ctp.common.AppContext;
 import com.seeyon.ctp.util.JDBCAgent;
 import org.apache.commons.logging.Log;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -174,7 +165,7 @@ public class DemoController extends BaseController {
 
 
 	/**
-	 * 更新表单值form
+	 * 更新表单值formmain_0086-发文单-学校发文
 	 * @param request
 	 * @param response
 	 * @return
@@ -408,7 +399,8 @@ public class DemoController extends BaseController {
 		//机构代字
 		try {
 			String parent_id = request.getParameter("parent_id");
-			String jgdzsql = "select id,showvalue from ctp_enum_item  t where ref_enumid='-7394917914078590178' and parent_id='" + parent_id + "' and state='1' order by t.sortnumber ";
+			String ref_enumid = request.getParameter("ref_enumid");
+			String jgdzsql = "select id,showvalue from ctp_enum_item  t where ref_enumid='"+ref_enumid+"' and parent_id='" + parent_id + "' and state='1' order by t.sortnumber ";
 			JDBCAgent jdbcAgent = new JDBCAgent(true, false);
 			List<Map<String, Object>> jgdzOption = getOptionData(jgdzsql, jdbcAgent);
 			List<Map<String, Object>> revoler = new ArrayList<>();
@@ -460,6 +452,7 @@ public class DemoController extends BaseController {
 		Map<String, Object> map = new HashMap<>();
 
 		String params = request.getParameter("params");
+		String tablename = request.getParameter("tablename");
 		String delid="";
 
 		JDBCAgent jdbcAgent = new JDBCAgent(true, false);
@@ -473,7 +466,7 @@ public class DemoController extends BaseController {
 				String delidstr=delid.substring(0,delid.length()-1);
 				List batchedSql=new ArrayList();
 
-				batchedSql.add(" delete from formmain_0086 t  where t.id in (select FORM_RECORDID from edoc_summary r where r.id in ("+delidstr+"))");
+				batchedSql.add(" delete from "+tablename+" t  where t.id in (select FORM_RECORDID from edoc_summary r where r.id in ("+delidstr+"))");
 				batchedSql.add(" delete from edoc_summary r where r.id in ("+delidstr+")");
 				batchedSql.add(" delete from ctp_affair   t where t.object_id in ("+delidstr+")");
 				batchedSql.add(" delete from edoc_opinion   t where t.edoc_id in ("+delidstr+")");
@@ -548,4 +541,226 @@ public class DemoController extends BaseController {
 		render(response, json.toJSONString());
 		return null;
 	}
+
+
+
+
+	/*************************收文修改-文件处理笺 start***************************************/
+	/**
+	 * 跳转到收文信息列表页面
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ModelAndView toSwxxList(HttpServletRequest request, HttpServletResponse response)throws Exception{
+		response.setContentType("text/html;charset=UTF-8");
+		ModelAndView view = new ModelAndView("gwxg/swxg/xxwjj/swxx_list");
+		Map<String,String> query = new HashMap<String,String>();
+		FlipInfo fi = new FlipInfo();
+		if(demoManager == null) {
+			demoManager = (DemoManager) AppContext.getBean("demoManager");
+		}
+		FlipInfo swlist = demoManager.toSwxxList(fi,query);
+		request.setAttribute("fflistStudent",swlist);
+
+		return view;
+	}
+
+
+	/**
+	 * 跳转到公文修改界面
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ModelAndView toSwDjMod(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		ModelAndView modelAndView = new ModelAndView("gwxg/swxg/xxwjj/swxx_modify");
+		String formid = request.getParameter("id");
+		String summaryid = request.getParameter("summaryid");
+		String sql=" select e.showvalue lwdw,concat(e1.showvalue,e2.showvalue) jgdz,e3.showvalue clxz,e4.showvalue hj,u.name,u.org_department_id,t.*  from formmain_0081 t " +
+				" left join (select id,showvalue from ctp_enum_item where ref_enumid='-82570973940398271' and state='1') e on e.id=t.field0001 " +
+				" left join (select id,showvalue from ctp_enum_item where ref_enumid='5765437337868452209' and parent_id='0' and state='1') e1 on e1.id=t.field0021 " +
+				" left join (select id,showvalue from ctp_enum_item where ref_enumid='5765437337868452209' and parent_id!='0' and state='1') e2 on e2.id=t.field0022 " +
+				" left join (select id,showvalue from ctp_enum_item where ref_enumid='6534952330511468065' and state='1') e3 on e3.id=t.field0011 " +
+				" left join (select id,showvalue from ctp_enum_item where ref_enumid='404' and state='1') e4 on e4.id=t.field0012 " +
+				" left join org_member u on u.id=t.field0015  where  t.id='"+formid+"'";
+		Map<String, Object> swxxdata = null;
+		JDBCAgent jdbcAgent = new JDBCAgent(true, false);
+		try {
+			jdbcAgent.execute(sql);
+			swxxdata=jdbcAgent.resultSetToMap();
+			swxxdata.put("zrdwmc",getDepartmentName(swxxdata.get("field0018"),jdbcAgent));
+			swxxdata.put("summaryid",summaryid);
+			modelAndView.addObject("entity", swxxdata);
+
+			//来文单位字典
+			String lwdwsql="select id,showvalue from ctp_enum_item  t where REF_ENUMID='-82570973940398271'   and state='1' order by t.sortnumber ";
+			modelAndView.addObject("lwdwoption",getOptionData(lwdwsql,jdbcAgent));
+			//收文机构代字
+			String swjgdzsql="select id,showvalue from ctp_enum_item  t where REF_ENUMID='5765437337868452209' and parent_id='0' and state='1' order by t.sortnumber ";
+			modelAndView.addObject("swjgdzoption",getOptionData(swjgdzsql,jdbcAgent));
+			//处理性质
+			String clxzsql="select id,showvalue from ctp_enum_item  t where REF_ENUMID='6534952330511468065' and state='1' order by t.sortnumber ";
+			modelAndView.addObject("clxzoption",getOptionData(clxzsql,jdbcAgent));
+
+
+
+			//拟办、批示、办理意见
+			List<Map<String, Object>> yjlist = null;
+			String ideaSql = " select id,content,create_time,(select name from ORG_MEMBER where id=CREATE_USER_ID) username,policy , " +
+					" ( select group_concat(FILENAME) from CTP_ATTACHMENT where sub_REFERENCE=o.id) filename from  EDOC_OPINION o where   edoc_id ='" + summaryid + "'  order by create_time asc ";
+			jdbcAgent.execute(ideaSql);
+			yjlist=jdbcAgent.resultSetToList();
+             /* field0007：党政办拟办意见
+            field0008：校领导批示意见
+            field0010：部门承办意见*/
+			List<OpinionEntity> dzbList = new ArrayList<>();
+			List<OpinionEntity> xldpsList = new ArrayList<>();
+			List<OpinionEntity> bmList = new ArrayList<>();
+			for(int p=0;p<yjlist.size();p++){
+				Map<String, Object> m = yjlist.get(p);
+				OpinionEntity opinion = new OpinionEntity();
+				opinion.setId(String.valueOf(m.get("id")));
+				opinion.setContent((String)m.get("content"));
+				opinion.setCreateTime(m.get("create_time").toString().substring(0,10));
+				opinion.setUsername((String)m.get("username"));
+				opinion.setPolicy((String)m.get("policy"));
+				opinion.setFilename((String)m.get("filename"));
+				String policy = (String)m.get("policy");
+				if ("field0007".equals(policy)) {
+					dzbList.add(opinion);
+				}
+				if ("field0008".equals(policy)) {
+					xldpsList.add(opinion);
+				}
+				if ("field0010".equals(policy)) {
+					bmList.add(opinion);
+				}
+			}
+			modelAndView.addObject("dzbList", dzbList);
+			modelAndView.addObject("xldpsList", xldpsList);
+			modelAndView.addObject("bmList", bmList);
+
+
+			//附件 field0019
+			String fjmainId=(String)swxxdata.get("field0019");
+			String fjsql="select a.*,DATE_FORMAT(createdate,'%Y-%m-%d') as date,RIGHT(filename, INSTR(REVERSE(filename),'.')) filextension,round(a.ATTACHMENT_SIZE/1024,0) filesize from ctp_attachment  a where a.SUB_REFERENCE  ='"+fjmainId+"'";
+			List<Map<String, Object>> fjList=null;
+			jdbcAgent.execute(fjsql);
+			fjList=jdbcAgent.resultSetToList();
+			com.alibaba.fastjson.JSONArray fjsonArray = com.alibaba.fastjson.JSONArray.parseArray(JSON.toJSONString(fjList));
+			modelAndView.addObject("fjsonArray", fjsonArray);
+			modelAndView.addObject("fjlist", fjList);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return modelAndView;
+	}
+
+
+
+	/**
+	 * 更新表单值formmain_0081-收文单-文件处理笺
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@ResponseBody
+	public ModelAndView toUpdateFormmain0081(HttpServletRequest request, HttpServletResponse response) throws  Exception{
+		Map<String, Object> jsonMap = new HashMap();
+		JDBCAgent jdbcAgent = new JDBCAgent(true, false);
+		try {
+			String data =request.getParameter("params");
+			FormMain0081Entity formmain = (FormMain0081Entity) JSONArray.parseObject(data, FormMain0081Entity.class);
+			String sql="update formmain_0081 set " ;
+			if(null!=formmain.getField0006() && !"".equals(formmain.getField0006())){
+				sql+=" field0006='" + formmain.getField0006()+"',";
+			}
+			if(null!=formmain.getField0001() && !"".equals(formmain.getField0001())){
+				sql+=" field0001='" + formmain.getField0001()+"',";
+			}
+			if(null!=formmain.getField0002() && !"".equals(formmain.getField0002())){
+				sql+=" field0002='" + formmain.getField0002()+"',";
+			}
+			if(null!=formmain.getField0013() && !"".equals(formmain.getField0013())){
+				sql+=" field0013='" + formmain.getField0013()+"',";
+			}
+			if(null!=formmain.getField0014() && !"".equals(formmain.getField0014())){
+				sql+=" field0014='" + formmain.getField0014()+"',";
+			}
+			if(null!=formmain.getField0021() && !"".equals(formmain.getField0021())){
+				sql+=" field0021='" + formmain.getField0021()+"',";
+			}
+			if(null!=formmain.getField0022() && !"".equals(formmain.getField0022())){
+				sql+=" field0022='" + formmain.getField0022()+"',";
+			}
+			if(null!=formmain.getField0024() && !"".equals(formmain.getField0024())){
+				sql+=" field0024='" + formmain.getField0024()+"',";
+			}
+			if(null!=formmain.getField0011() && !"".equals(formmain.getField0011())){
+				sql+=" field0011='" + formmain.getField0011()+"',";
+			}
+			if(null!=formmain.getField0003() && !"".equals(formmain.getField0003())){
+				sql+=" field0003='" + formmain.getField0003()+"',";
+			}
+			if(null!=formmain.getField0015() && !"".equals(formmain.getField0015())){
+				sql+=" field0015='" + formmain.getField0015()+"',";
+			}
+			if(null!=formmain.getField0016() && !"".equals(formmain.getField0016())){
+				sql+=" field0016='" + formmain.getField0016()+"',";
+			}
+			if(null!=formmain.getField0005() && !"".equals(formmain.getField0005())){
+				sql+=" field0005='" + formmain.getField0005()+"',";
+			}
+			if(null!=formmain.getField0017() && !"".equals(formmain.getField0017())){
+				sql+=" field0017='" + formmain.getField0017()+"',";
+			}
+			if(null!=formmain.getField0012() && !"".equals(formmain.getField0012())){
+				sql+=" field0012='" + formmain.getField0012()+"',";
+			}
+			if(null!=formmain.getField0018() && !"".equals(formmain.getField0018())){
+				sql+=" field0018='" + formmain.getField0018()+"',";
+			}
+			if(null!=formmain.getField0020() && !"".equals(formmain.getField0020())){
+				sql+=" field0020='" + formmain.getField0020()+"',";
+			}
+
+			String executesql=sql.substring(0,sql.length()-1)+"  where id='"+formmain.getID()+"'";
+			jdbcAgent.execute(executesql);
+
+			//附件保存
+			String fjdata =request.getParameter("fjparams");
+			String att_reference=request.getParameter("att_reference");
+			if(null!=fjdata && !(fjdata.equals(""))){
+				List<FjEntity> fjlist= (List<FjEntity>)JSON.parseArray(fjdata,FjEntity.class);
+				if(null==formmain.getField0019() || "".equals(formmain.getField0019())){//本来没有附件，添加附件要更新formmain中的附件field0010字段，否则查不到
+					formmain.setField0019(CommonUtil.generateID());
+					jdbcAgent.execute("update formmain_0081 set field0019='"+formmain.getField0019()+"' where id='"+formmain.getID()+"'");
+				}
+
+				for(int k=0;k<fjlist.size();k++){
+					FjEntity fj=fjlist.get(k);
+					String fjsql="insert into ctp_attachment(                   id,             att_reference,                sub_reference,              category,              type,              filename,             file_url,             mime_type,              createdate,   attachment_size,        description)" +
+							" values ('"+CommonUtil.generateID()+"','"+att_reference+"','"+formmain.getField0019()+"','"+fj.getCategory()+"','"+fj.getType()+"','"+fj.getFilename()+"','"+fj.getFileUrl()+"','"+fj.getMimeType()+"','"+fj.getCreateDate()+"','"+fj.getSize()+"','"+fj.getDescription()+"')";
+					jdbcAgent.execute(fjsql);
+				}
+			}
+
+
+			jsonMap.put("code", "0");
+			jsonMap.put("msg", "成功");
+		}catch(Exception e){
+			jsonMap.put("code", "1");
+			jsonMap.put("msg", "失败");
+			e.printStackTrace();
+		}
+		com.alibaba.fastjson.JSONObject json = new JSONObject(jsonMap);
+		render(response, json.toJSONString());
+		return null;
+	}
+
+     /*************************收文修改-文件处理笺 end***************************************/
 }

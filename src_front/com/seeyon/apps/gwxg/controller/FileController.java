@@ -81,15 +81,19 @@ public class FileController  extends BaseController {
             if(!("".equals(oldzwdate)) && !("".equals(newzwdate)) ){
                 String[] olddatearr=oldzwdate.split("-");
                 String oldpathstr=olddatearr[0]+"/"+olddatearr[1]+"/"+olddatearr[2]+"/";
-                File oldfile = new File("D:/upload/" + oldpathstr + oldfilename);
+               /* File oldfile = new File("D:/upload/" + oldpathstr + oldfilename);
                 File oldfilebak=new File("D:/upload/" + oldpathstr + (oldfilename+"_"+ CommonUtil.generateID()));
-
+*/
+                File oldfile = new File("/upload/" + oldpathstr + oldfilename);
+                File oldfilebak=new File("/upload/" + oldpathstr + (oldfilename+"_"+ CommonUtil.generateID()));
 
                 String subnewzwdate=newzwdate.substring(0,10);
                 String[] newdatearr=subnewzwdate.split("-");
                 String newpathstr=newdatearr[0]+"/"+newdatearr[1]+"/"+newdatearr[2]+"/";
-                File newfile = new File("D:/upload/" + newpathstr + newfilename);
-                File newfilerename=new File("D:/upload/" + newpathstr + oldfilename);//不在同一个目录下，先重命名再移动
+              /*  File newfile = new File("D:/upload/" + newpathstr + newfilename);
+                File newfilerename=new File("D:/upload/" + newpathstr + oldfilename);//不在同一个目录下，先重命名再移动*/
+                File newfile = new File("/upload/" + newpathstr + newfilename);
+                File newfilerename=new File("/upload/" + newpathstr + oldfilename);
                 // 判断目录或文件是否存在
                 if (!oldfile.exists()) {
                     return null;

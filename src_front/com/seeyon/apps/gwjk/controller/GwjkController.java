@@ -2,9 +2,7 @@ package com.seeyon.apps.gwjk.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.seeyon.apps.gwxg.controller.DemoController;
 import com.seeyon.apps.gwjk.manager.GwJkManager;
-import com.seeyon.apps.gwxg.manager.DemoManager;
 import com.seeyon.apps.gwxg.po.OpinionEntity;
 import com.seeyon.ctp.common.AppContext;
 import com.seeyon.ctp.common.controller.BaseController;
@@ -12,7 +10,6 @@ import com.seeyon.ctp.common.log.CtpLogFactory;
 import com.seeyon.ctp.util.FlipInfo;
 import com.seeyon.ctp.util.JDBCAgent;
 import org.apache.commons.logging.Log;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -281,4 +278,7 @@ public class GwjkController  extends BaseController {
         render(response, json.toJSONString());
         return null;
     }
+
+
+
 }

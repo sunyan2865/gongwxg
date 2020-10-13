@@ -595,9 +595,9 @@
     <input id="fields0010" type="hidden" value="${entity.field0010}" />
     <input id="summaryid" type="hidden" value="${entity.summaryid}" /><%--公文主表edoc_summary的id--%>
 
-    <input type="text"  id="zwid" value="${zwdata.id}">
-    <input type="text"  id="zwcontent" value="${zwdata.content}">
-    <input type="text"  id="zwdate" value="${zwdata.date}">
+    <input type="text" type="hidden"  id="zwid" value="${zwdata.id}">
+    <input type="text" type="hidden" id="zwcontent" value="${zwdata.content}">
+    <input type="text" type="hidden" id="zwdate" value="${zwdata.date}">
 
 </div>
 
@@ -644,7 +644,7 @@
         $.ajax({
             url: _ctxPath + '/demo.do?method=getJgdzData',
             type:'POST',
-            data:{parent_id: $("#field0023").val()},
+            data:{parent_id: $("#field0023").val(),ref_enumid:'-7394917914078590178'},
             dataType: "json",
             success:function (res) {
                 var list=res["data"];
@@ -691,8 +691,11 @@
     }
 
     function formatdata(str){
-        var ci=str.indexOf("hiddenValueDepartment");
-        return str.substring(ci,str.length).replace("hiddenValueDepartment","Department").replace("\n","").trim();
+        if(null!=str || str!=''){
+            var ci=str.indexOf("hiddenValueDepartment");
+            return str.substring(ci,str.length).replace("hiddenValueDepartment","Department").replace("\n","").trim();
+        }
+
     }
 
 

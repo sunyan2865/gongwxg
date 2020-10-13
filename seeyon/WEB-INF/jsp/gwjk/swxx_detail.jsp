@@ -249,7 +249,7 @@
                                             <span id="field0010_span" mappingfield="attachments" class="edit_class" fieldval="{name:&quot;field0010&quot;,isMasterFiled:&quot;true&quot;,displayName:&quot;attachments&quot;,fieldType:&quot;VARCHAR&quot;,inputType:&quot;attachment&quot;,formatType:&quot;&quot;,value:&quot;&quot;}" style="display: inline-block;">
                                                     <div class="comp" comp="type:'fileupload',callMethod:'fileValueChangeCallBack',delCallMethod:'fileDelCallBack',takeOver:false,isBR:true,canDeleteOriginalAtts:true,canFavourite:'true',notNull:'false',displayMode:'visible',autoHeight:true,applicationCategory:'2',embedInput:'field0010',attachmentTrId:'1209558887199034033'"
                                                          attsdata="${fjsonArray}" comptype="fileupload" style="display: none;">
-                                                        <input type="text" <%--style="display: none; width: 474px;"--%> id="field0019" name="field0010" value="${entity.field0010}">
+                                                        <input type="text" <%--style="display: none; width: 474px;"--%> id="field0019" name="field0019" value="${entity.field0010}">
                                                     </div>
                                                     <div id="attachmentArea-1694224470510517263" style="overflow-x: hidden; min-height: 24px; width: 450px;" requrl="/seeyon/fileUpload.do?type=0&amp;inputId=undefined&amp;applicationCategory=2&amp;extensions=&amp;maxSize=&amp;isEncrypt=&amp;popupTitleKey=&amp;attachmentTrId=-1694224470510517263&amp;embedInput=field0010" class="left">
                                                         <c:forEach items="${fjlist}" var="fj">

@@ -112,4 +112,61 @@ public class DemoManagerImpl implements DemoManager {
 		return flipInfo;
 	}
 
+
+	/*******************收文-学校文件笺 start*******************************/
+	@Override
+	@AjaxAccess
+	@SuppressWarnings("toSwxxList")
+	public FlipInfo toSwxxList(FlipInfo flipInfo, Map<String,String> query) throws SQLException, BusinessException {
+
+		StringBuffer sql=new StringBuffer("  select t.*,e.showvalue clxzmc from (" +
+				"     select t.id summaryid,f.id formid, f.field0006 wjbt,f.field0016 blqx ,f.field0011 as clxz,f.field0014 swrq,f.start_date,GROUP_CONCAT(u.name) current_node_name from formmain_0081 f " +
+				"                 left join  (SELECT * FROM edoc_summary t WHERE t.EDOC_TYPE = '1') t on  t.FORM_RECORDId=f.id " +
+				"                 left join ctp_affair r on r.OBJECT_ID=t.id and r.state ='3'" +
+				"                 left join ORG_MEMBER u on u.id=r.MEMBER_ID " +
+				"                 group by t.id,f.id,f.field0006,f.field0016,f.field0014,f.field0011,f.start_date " +
+				" )t  " +
+				" left join (select id,showvalue from ctp_enum_item i where i.REF_ENUMID='6534952330511468065') e on e.id=t.clxz "+
+				" where 1=1  "
+		);
+
+		if(null != query.get("wjbt")) {
+			sql.append(" and wjbt like  '%"+query.get("wjbt") +"%'");
+		}
+
+		if(null != query.get("startime")) {
+			sql.append(" and blqx >= '"+query.get("startime")+"'");
+		}
+
+		if(null != query.get("endtime")) {
+			sql.append(" and blqx <= '"+query.get("endtime")+"'");
+		}
+
+		sql.append(" order by start_date desc  ");
+		List<Map<String, Object>> swxxlist = null;
+		List<Map<String, Object>> revoler = new ArrayList<>();
+		JDBCAgent jdbcAgent = new JDBCAgent(true, false);
+		try {
+			jdbcAgent.execute(sql.toString());
+			swxxlist = jdbcAgent.resultSetToList();
+
+			for (int i = 0; i < swxxlist.size(); i++) {
+				Map<String, Object> m = new HashMap<>();
+				for (Map.Entry<String, Object> entry : swxxlist.get(i).entrySet()) {
+					m.put(entry.getKey(), String.valueOf(entry.getValue()) + "");
+				}
+				revoler.add(m);
+			}
+
+		} catch (BusinessException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		flipInfo.setTotal(swxxlist.size());
+		flipInfo.setData(revoler);
+		return flipInfo;
+	}
+	/*******************收文-学校文件笺 end*******************************/
 }

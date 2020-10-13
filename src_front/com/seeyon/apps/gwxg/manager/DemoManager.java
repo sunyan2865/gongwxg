@@ -11,6 +11,7 @@ import com.seeyon.ctp.common.template.vo.TemplateTreeVo;
 public interface DemoManager {
 
 	FlipInfo demoRight(FlipInfo fi, Map<String, String> query) throws BusinessException, SQLException;
+	FlipInfo toSwxxList(FlipInfo fi, Map<String, String> query) throws BusinessException, SQLException;
 
 
 }
