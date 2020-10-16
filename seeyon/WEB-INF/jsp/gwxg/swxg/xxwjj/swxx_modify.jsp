@@ -8,7 +8,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <script type="text/javascript" charset="UTF-8" src="${path}/common/content/form.js${ctp:resSuffix()}"></script>
     <script type="text/javascript" charset="UTF-8" src="${path}/apps_res/govdoc/js/govdocBody.js${ctp:resSuffix()}"></script>
-
+    <script type="text/javascript" charset="UTF-8" src="${path}/apps_res/demo/util.js${ctp:resSuffix()}"></script>
 </head>
 <body style="height:1000px">
 <div id="toolbar_4462223" style="float:right" class="toolbar_l clearfix">
@@ -269,7 +269,7 @@
                                 </td>
                                 <td style="BORDER-TOP: #ff0000 1pt solid; BORDER-RIGHT: #ff0000 1pt; VERTICAL-ALIGN: middle; BORDER-BOTTOM: #ff0000 1pt solid; PADDING-BOTTOM: 1px; PADDING-TOP: 1px; PADDING-LEFT: 1px; BORDER-LEFT: #ff0000 1pt solid; PADDING-RIGHT: 1px"
                                     colspan="2">
-                                    <div align="center">
+                                    <div >
                                         <font face="宋体">
                                             <select level="0" id="field0012" name="field0012" style="width:100%" >
                                                 <option val4cal="0" value="" selected=""></option>
@@ -327,7 +327,7 @@
                                                 <span id="field0019_span" mappingfield="attachments" class="edit_class" fieldval="{name:&quot;field0019&quot;,isMasterFiled:&quot;true&quot;,displayName:&quot;attachments&quot;,fieldType:&quot;VARCHAR&quot;,inputType:&quot;attachment&quot;,formatType:&quot;&quot;,value:&quot;&quot;}" style="display: inline-block;">
                                                     <div class="comp" comp="type:'fileupload',callMethod:'fileValueChangeCallBack',delCallMethod:'fileDelCallBack',takeOver:false,isBR:true,canDeleteOriginalAtts:true,canFavourite:'true',notNull:'false',displayMode:'visible',autoHeight:true,applicationCategory:'2',embedInput:'field0019',attachmentTrId:'1209558887199034033'"
                                                          attsdata="${fjsonArray}" comptype="fileupload" style="display: none;">
-                                                        <input type="text" <%--style="display: none; width: 474px;"--%> id="field0019" name="field0010" value="${entity.field0019}">
+                                                        <input type="text" <%--style="display: none; width: 474px;"--%> id="field0019" name="field0019" value="${entity.field0019}">
                                                     </div>
                                                     <div id="attachmentArea-1694224470510517265" style="overflow-x: hidden; min-height: 24px; width: 450px;" requrl="/seeyon/fileUpload.do?type=0&amp;inputId=undefined&amp;applicationCategory=2&amp;extensions=&amp;maxSize=&amp;isEncrypt=&amp;popupTitleKey=&amp;attachmentTrId=-1694224470510517265&amp;embedInput=field0019" class="left">
                                                         <c:forEach items="${fjlist}" var="fj">
@@ -540,91 +540,7 @@
     }
 
     function getJgdzmcOption(){
-        $.ajax({
-            url: _ctxPath + '/demo.do?method=getJgdzData',
-            type:'POST',
-            data:{parent_id: $("#field0021").val(),ref_enumid:'5765437337868452209'},
-            dataType: "json",
-            success:function (res) {
-                var list=res["data"];
-                var obj=$("#field0022");
-                obj.children().remove();
-                obj.append("<option val4cal='0' value='' selected=''></option>");
-                for(var i=0;i<list.length;i++){
-                    obj.append("<option value="+list[i].id+" title="+list[i].showvalue+"  >"+list[i].showvalue+"</option>");
-                }
-            }
-        });
-
-    }
-
-
-    //意见按钮事件
-    function buttonClick(element){
-        var  id_modstr=element.id;
-        var arr=id_modstr.split('_');
-        //arr[0]:id   arr[1]:字段名，更新的列  arr[2]：mod修改  del删除
-        //alert(arr[0]+"===="+arr[1]+"===="+arr[2]+"==="+$("#"+arr[0]).val());
-        $.ajax({
-            url: _ctxPath + '/demo.do?method=toUpdateOpinion',
-            type:'POST',
-            data:{id: arr[0],zd:arr[1],operType:arr[2],content:$("#"+arr[0]).val()},
-            success:function (res) {
-                if('0'==res.code){
-                    if(arr[2]=="mod"){
-                        $.alert("修改成功!");
-                    }else{
-                        $.alert("删除成功！");
-                        var obj=$("#div_"+arr[0]);
-                        obj.remove();
-                    }
-                }else{
-                    if(arr[2]=="mod"){
-                        $.alert("修改失败!");
-                    }else{
-                        $.alert("删除失败！");
-                    }
-                }
-            }
-        });
-
-    }
-
-    /**
-     * 删除附件
-     */
-    function deletefj(fileurl){
-        $.ajax({
-            url: _ctxPath + '/demo.do?method=toDeleteFj',
-            type:'POST',
-            data:{file_url:param},
-            error:function(res){
-                $.alert("删除成功!");
-            },
-            success:function (res) {
-                $.alert("删除成功!");
-            }
-        });
-    }
-
-
-
-    function initOption(component,id){
-        var all_options = document.getElementById(component).options;
-        for (i=0; i<all_options.length; i++){
-            if (all_options[i].value == id)  // 根据option标签的ID来进行判断
-            {
-                all_options[i].selected = true;
-            }
-        }
-    }
-
-
-    function formatdata(str){
-        if(null!=str || str!=''){
-            var ci=str.indexOf("hiddenValueDepartment");
-            return str.substring(ci,str.length).replace("hiddenValueDepartment","Department").replace("\n","").trim();
-        }
+        getJgdzOption_data($("#field0021").val(),$("#field0022"),'-7394917914078590178');
     }
 
 </script>

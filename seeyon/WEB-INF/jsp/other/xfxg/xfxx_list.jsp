@@ -5,8 +5,8 @@
 <html class="h100b">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>校内请示信息</title>
-    <script type="text/javascript" charset="UTF-8" src="${path}/apps_res/demo/swxg/xnqs/xnqs_list.js${ctp:resSuffix()}"></script>
+    <title>信访信息</title>
+    <script type="text/javascript" charset="UTF-8" src="${path}/apps_res/other/xfxg/xfxx_list.js${ctp:resSuffix()}"></script>
 </head>
 <body class="h100b" onunload="">
 <div id='layout'>

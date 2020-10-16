@@ -21,7 +21,7 @@ $(document).ready(function () {
 
     var toolbarArray = new Array();
     //编辑
-    toolbarArray.push({id: "ceshi",name:"收文修改",className: "ico16 editor_16",click:doGwmod});
+    toolbarArray.push({id: "ceshi",name:"协同办公修改",className: "ico16 editor_16",click:doGwmod});
     toolbarArray.push({id: "delete",name:"删除流程",className: "ico16 del_16",click:doDelete});
     toolbarArray.push({id: "replace",name:"替换节点",className: "ico16 sign_16",click:doReplace});
     //工具栏
@@ -37,18 +37,10 @@ $(document).ready(function () {
 
     //查询条件
     var condition = new Array();
-    //文件标题
-    condition.push({id: 'wjbt',name: 'wjbt',type: 'input',text: '文件标题',value: 'wjbt',maxLength:100});
+    //标题
+    condition.push({id: 'bt',name: 'bt',type: 'input',text: '标题',value: 'bt',maxLength:100});
     //办理期限
-    condition.push({
-        id: 'blqx',
-        name: 'blqx',
-        type: 'datemulti',
-        text: '办理期限',
-        value: 'blqx',
-        ifFormat:'%Y-%m-%d',
-        dateTime: false
-    });
+    condition.push({id: 'blqx',name: 'blqx',type: 'input',text: '办理期限',value: 'blqx',maxLength:100});
 
 
     searchobj = $.searchCondition({
@@ -70,30 +62,23 @@ $(document).ready(function () {
         type: 'checkbox'
     });
     formModel.push({
-        display: '文件标题',
-        name: 'wjbt',
+        display: '标题',
+        name: 'bt',
         sortable : true,
         width: 'big'
+    });
+    formModel.push({
+        display:'报请单位',
+        name: 'bqdw',
+        sortable : true,
+        width: 'medium'
     });
     formModel.push({
         display:'办理期限',
         name: 'blqx',
         sortable : true,
-        width: 'small'
-    });
-    formModel.push({
-        display:'处理性质',
-        name: 'clxzmc',
-        sortable : true,
-        width: 'small'
-    });
-    formModel.push({
-        display:'当前办理人',
-        name: 'current_node_name',
-        sortable : true,
         width: 'medium'
     });
-
 
 
     //表格加载
@@ -114,7 +99,7 @@ $(document).ready(function () {
         isHaveIframe:true,
         slideToggleBtn:false,
         managerName : "demoManager",
-        managerMethod : "toSwxxList"
+        managerMethod : "toXtbgList"
         //usepager : false
     });
 
@@ -153,12 +138,11 @@ function getSearchValueObj(){
     o = new Object();
     var choose = $('#'+searchobj.p.id).find("option:selected").val();
 
-    if(choose === 'wjbt'){
-        if($('#wjbt').val()!=''){
-            o.wjbt = $('#wjbt').val();
+    if(choose === 'bt'){
+        if($('#bt').val()!=''){
+            o.bt = $('#bt').val();
         }
     }
-
     if(choose === 'blqx'){
         var fromDate = $('#from_blqx').val();
         var toDate = $('#to_blqx').val();
@@ -173,7 +157,6 @@ function getSearchValueObj(){
             o.endtime=toDate;
         }
     }
-
 
     return o;
 }
@@ -195,13 +178,13 @@ function getSearchValueObj(){
 
 
 /**
- * 收文修改
+ * 修改
  */
 function doGwmod() {
     var rows = grid.grid.getSelectRows();
     var count = rows.length;
     if (count == 0) {
-        // 请选择要编辑的事项
+            // 请选择要编辑的事项
         $.alert($.i18n('govdoc.grid.alert.selectEdit'));
         return;
     }
@@ -212,7 +195,7 @@ function doGwmod() {
     }
     if (count == 1) {
         var obj = rows[0];
-        var url= _ctxPath + '/demo.do?method=toSwDjMod&id='+obj.formid+'&summaryid='+obj.summaryid;
+        var url= _ctxPath + '/demo.do?method=toXtbgMod&formid='+obj.formid+'&summaryid='+obj.summaryid;
         var options = "status=no,resizable=no,menubar=no,top=10,left=200,width=1073,height=742,scrollbars=no,center:Yes;";
         window.open(url, null, options);
         /* window.open(url,'_blank');*/
@@ -220,13 +203,14 @@ function doGwmod() {
 }
 
 /**
- * 点击标题进入修改界面
+ * 点击标题可以跳转到修改界面
  */
-function doGwmodView(formid,summaryid) {
-    var url= _ctxPath + '/demo.do?method=toSwDjMod&id='+formid+'&summaryid='+summaryid;
+function doGwmodView(formid,summaryid){
+    var url= _ctxPath + '/demo.do?method=toXtbgMod&formid='+formid+'&summaryid='+summaryid;
     var options = "status=no,resizable=no,menubar=no,top=10,left=200,width=1073,height=742,scrollbars=no,center:Yes;";
     window.open(url, null, options);
 }
+
 
 /**
  * 删除公文-收文
@@ -255,7 +239,7 @@ function doDelete(){
             $.ajax({
                 url: _ctxPath + '/demo.do?method=toDelGwfw',
                 type:'POST',
-                data:{params:simIds,tablename:'formmain_0081',summarytable:'edoc_summary'},
+                data:{params:simId,tablename:'formmain_0195',summarytable:'edoc_summary'},
                 success:function (res) {
                     $.messageBox({
                         'title':$.i18n('collaboration.system.prompt.js'),
@@ -278,25 +262,25 @@ function doDelete(){
 /**
  * 替换公文节点-替换
  */
-function doReplace(){
-    var rows = grid.grid.getSelectRows();
-    var count = rows.length;
-    if (count == 0) {
-        // 请选择要编辑的事项
-        $.alert("请选择要替换节点的公文");
-        return;
-    }
-    if (count > 1) {
-        // 只能选择一项事项进行编辑
-        $.alert($.i18n('collaboration.grid.alert.selectOneEdit'));
-        return;
-    }
-    if (count == 1) {
-        var obj = rows[0];
-        var url= _ctxPath + '/demo.do?method=toNodeReplaceView&formid='+obj.form_recordid+'&summaryid='+obj.summaryid;
-        var options = "status=no,resizable=no,menubar=no,top=50,left=200,width=1024,height=700,scrollbars=no,center:Yes;";
-        window.open(url, null, options);
-    }
-}
+ function doReplace(){
+     var rows = grid.grid.getSelectRows();
+     var count = rows.length;
+     if (count == 0) {
+         // 请选择要编辑的事项
+         $.alert("请选择要替换节点的公文");
+         return;
+     }
+     if (count > 1) {
+         // 只能选择一项事项进行编辑
+         $.alert($.i18n('collaboration.grid.alert.selectOneEdit'));
+         return;
+     }
+     if (count == 1) {
+         var obj = rows[0];
+         var url= _ctxPath + '/demo.do?method=toNodeReplaceView&formid='+obj.form_recordid+'&summaryid='+obj.summaryid;
+         var options = "status=no,resizable=no,menubar=no,top=50,left=200,width=1024,height=700,scrollbars=no,center:Yes;";
+         window.open(url, null, options);
+     }
+ }
 
 

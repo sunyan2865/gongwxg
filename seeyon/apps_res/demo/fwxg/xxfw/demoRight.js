@@ -2,6 +2,12 @@ var pageX = {};
 pageX.openWin = null;
 var grid;
 
+
+$(window).resize(function () {
+//    if(grid!=null&&grid.grid!=null){
+//        $(grid.grid.bDiv).height($(document.body).height() -78)
+//    }
+})
 $(document).ready(function () {
     new MxtLayout({
         'id': 'layout',
@@ -18,10 +24,10 @@ $(document).ready(function () {
             'minHeight': 20
         }
     });
-
+    
     var toolbarArray = new Array();
     //编辑
-    toolbarArray.push({id: "ceshi",name:"收文修改",className: "ico16 editor_16",click:doGwmod});
+    toolbarArray.push({id: "ceshi",name:"发文修改",className: "ico16 editor_16",click:doGwmod});
     toolbarArray.push({id: "delete",name:"删除流程",className: "ico16 del_16",click:doDelete});
     toolbarArray.push({id: "replace",name:"替换节点",className: "ico16 sign_16",click:doReplace});
     //工具栏
@@ -37,18 +43,23 @@ $(document).ready(function () {
 
     //查询条件
     var condition = new Array();
+    //文件编号
+    condition.push({id: 'subject',name: 'subject',type: 'input',text:'文件编号',value: 'subject',maxLength:100});
     //文件标题
-    condition.push({id: 'wjbt',name: 'wjbt',type: 'input',text: '文件标题',value: 'wjbt',maxLength:100});
-    //办理期限
+    condition.push({id: 'sex',name: 'sex',type: 'input',text: '文件标题',value: 'sex',maxLength:100});
+    //拟稿日期
     condition.push({
-        id: 'blqx',
-        name: 'blqx',
+        id: 'age',
+        name: 'age',
         type: 'datemulti',
-        text: '办理期限',
-        value: 'blqx',
+        text: '拟稿日期',
+        value: 'age',
         ifFormat:'%Y-%m-%d',
         dateTime: false
     });
+    //当前办理人
+  /*  condition.push({id: 'name',name: 'name',type: 'input',text:'当前办理人',value: 'name',maxLength:100});
+*/
 
 
     searchobj = $.searchCondition({
@@ -64,42 +75,40 @@ $(document).ready(function () {
     });
     var formModel = new Array();
     formModel.push({
-        display: 'formid',
-        name: 'formid',
+        display: 'id',
+        name: 'id',
         width: 'smallest',
         type: 'checkbox'
     });
     formModel.push({
+        display:'文件编号',
+        name: 'subject',
+        sortable : true,
+        width: 'medium'
+    });
+    formModel.push({
         display: '文件标题',
-        name: 'wjbt',
+        name: 'sex',
         sortable : true,
         width: 'big'
     });
     formModel.push({
-        display:'办理期限',
-        name: 'blqx',
+        display:'拟稿日期',
+        name: 'age',
         sortable : true,
-        width: 'small'
-    });
-    formModel.push({
-        display:'处理性质',
-        name: 'clxzmc',
-        sortable : true,
-        width: 'small'
+        width: 'medium'
     });
     formModel.push({
         display:'当前办理人',
-        name: 'current_node_name',
+        name: 'name',
         sortable : true,
         width: 'medium'
     });
 
-
-
     //表格加载
     grid = $('#listStudent').ajaxgrid({
         colModel: formModel,
-        /*  click: clickRow,*/
+        //click: clickRow,
         render : rend,
         height: 200,
         showTableToggleBtn: false,
@@ -114,29 +123,17 @@ $(document).ready(function () {
         isHaveIframe:true,
         slideToggleBtn:false,
         managerName : "demoManager",
-        managerMethod : "toSwxxList"
+        managerMethod : "demoRight"
         //usepager : false
     });
 
-    var divs = document.getElementsByClassName("text_overflow");
-    for(var i = 0; i < divs.length; i++) {
-        divs[i].title = '';
-    }
 
 });
 
-/**
- * 改变table列样式或值
- * @param txt
- * @param data
- * @param r
- * @param c
- * @returns {string}
- */
 function rend(txt, data, r, c) {
-    if(c==1){ //文件标题
+    if(c==2){ //文件标题
         if(null!=txt){
-            txt = "<a style='word-wrap: break-word;word-break: break-all;overflow: hidden;' class='scoreA color_blue' onClick='scanSwxx(&quot;"+data.formid+"&quot;,&quot;"+data.summaryid+"&quot;)'>" + txt + "</a>";
+            txt = "<a style='word-wrap: break-word;word-break: break-all;overflow: hidden;' class='scoreA color_blue' onClick='doGwmodView(&quot;"+data.form_recordid+"&quot;,&quot;"+data.summaryid+"&quot;)'>" + txt + "</a>";
         }
     }else{
         if(null==txt || txt=='null'){
@@ -147,55 +144,7 @@ function rend(txt, data, r, c) {
 }
 
 /**
- * 获得查询条件
- */
-function getSearchValueObj(){
-    o = new Object();
-    var choose = $('#'+searchobj.p.id).find("option:selected").val();
-
-    if(choose === 'wjbt'){
-        if($('#wjbt').val()!=''){
-            o.wjbt = $('#wjbt').val();
-        }
-    }
-
-    if(choose === 'blqx'){
-        var fromDate = $('#from_blqx').val();
-        var toDate = $('#to_blqx').val();
-        if(fromDate != "" && toDate != "" && fromDate > toDate){
-            $.alert($.i18n('collaboration.rule.date'));//开始时间不能早于结束时间
-            return;
-        }
-        if(fromDate!=''){
-            o.startime = fromDate;
-        }
-        if(toDate!=''){
-            o.endtime=toDate;
-        }
-    }
-
-
-    return o;
-}
-
-
-/**
- * 查看详情
- * @param formid
- * @param opinionid
- * @param summaryid
- * @param state
- */
-function scanSwxx(formid,summaryid){
-    var url= _ctxPath + '/gwjk.do?method=toSwDetailView&id='+formid+"&summaryid="+summaryid;
-    var window_name = "收文详情";
-    var options = "status=no,resizable=no,menubar=no,top=10,left=300,width=1073,height=1000,scrollbars=no,center:Yes;";
-    window.open(url, window_name, options);
-}
-
-
-/**
- * 收文修改
+ * 编辑
  */
 function doGwmod() {
     var rows = grid.grid.getSelectRows();
@@ -212,15 +161,21 @@ function doGwmod() {
     }
     if (count == 1) {
         var obj = rows[0];
-        var url= _ctxPath + '/demo.do?method=toSwDjMod&id='+obj.formid+'&summaryid='+obj.summaryid;
+        var url= _ctxPath + '/demo.do?method=toEditDemoView&formid='+obj.form_recordid+'&summaryid='+obj.summaryid;
         var options = "status=no,resizable=no,menubar=no,top=10,left=200,width=1073,height=742,scrollbars=no,center:Yes;";
         window.open(url, null, options);
-        /* window.open(url,'_blank');*/
+       /* window.open(url,'_blank');*/
     }
 }
 
+
+function doGwmodView(form_recordid,summaryid){
+    var url= _ctxPath + '/demo.do?method=toEditDemoView&formid='+form_recordid+'&summaryid='+summaryid;
+    var options = "status=no,resizable=no,menubar=no,top=10,left=200,width=1073,height=742,scrollbars=no,center:Yes;";
+    window.open(url, null, options);
+}
 /**
- * 删除公文-收文
+ * 删除公文-发文
  * @returns {boolean}
  */
 function doDelete(){
@@ -246,7 +201,7 @@ function doDelete(){
             $.ajax({
                 url: _ctxPath + '/demo.do?method=toDelGwfw',
                 type:'POST',
-                data:{params:simId,tablename:'formmain_0081'},
+                data:{params:simIds,tablename:'formmain_0086',summarytable:'edoc_summary'},
                 success:function (res) {
                     $.messageBox({
                         'title':$.i18n('collaboration.system.prompt.js'),
@@ -290,4 +245,41 @@ function doReplace(){
     }
 }
 
+function getSearchValueObj(){
+	o = new Object();
+	var choose = $('#'+searchobj.p.id).find("option:selected").val();
+	
+	if(choose === 'subject'){
+        if($('#subject').val()!=''){
+            o.subject = $('#subject').val();
+        }
+	}
 
+	if(choose === "sex"){
+	    if($('#sex').val()!=''){
+            o.sex = $('#sex').val();
+        }
+	}
+	
+	/*if(choose === "name"){
+	    if($('#name').val()!=''){
+            o.name = $('#name').val();
+        }
+	}*/
+	
+	if(choose === 'age'){
+		var fromDate = $('#from_age').val();
+		var toDate = $('#to_age').val();
+		if(fromDate != "" && toDate != "" && fromDate > toDate){
+			$.alert($.i18n('collaboration.rule.date'));//开始时间不能早于结束时间
+			return;
+		}
+        if(fromDate!=''){
+            o.startime = fromDate;
+        }
+        if(toDate!=''){
+            o.endtime=toDate;
+        }
+	}
+    return o;
+}

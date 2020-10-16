@@ -5,7 +5,9 @@ import org.joda.time.DateTime;
 
 import java.math.BigDecimal;
 import java.util.Date;
-
+/**
+ * 发文单-学校发文 formmain_0086
+ */
 public class FormMainEntity {
     private static final long serialVersionUID = 1593346713271077837L;
     private String ID                ;

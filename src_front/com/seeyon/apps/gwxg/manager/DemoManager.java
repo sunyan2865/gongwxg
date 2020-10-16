@@ -12,6 +12,10 @@ public interface DemoManager {
 
 	FlipInfo demoRight(FlipInfo fi, Map<String, String> query) throws BusinessException, SQLException;
 	FlipInfo toSwxxList(FlipInfo fi, Map<String, String> query) throws BusinessException, SQLException;
-
+	FlipInfo toXnqsList(FlipInfo fi, Map<String, String> query) throws BusinessException, SQLException;
+	FlipInfo toXtbgList(FlipInfo fi, Map<String, String> query) throws BusinessException, SQLException;
+	FlipInfo toFlswList(FlipInfo fi, Map<String, String> query) throws BusinessException, SQLException;
+	FlipInfo toXfList(FlipInfo fi, Map<String, String> query) throws BusinessException, SQLException;
+	FlipInfo toZsbgList(FlipInfo fi, Map<String, String> query) throws BusinessException, SQLException;
 
 }

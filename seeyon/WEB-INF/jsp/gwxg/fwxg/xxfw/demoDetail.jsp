@@ -16,9 +16,9 @@
     <script type="text/javascript" src="<%=request.getContextPath()%>/common/office/license.js?v="+new Date().getTime()></script>
     <script type="text/javascript" charset="UTF-8" src="${path}/common/office/js/baseOffice.js${ctp:resSuffix()}"></script>
 
-
+    <script type="text/javascript" charset="UTF-8" src="${path}/apps_res/demo/util.js${ctp:resSuffix()}"></script>
 </head>
-<body>
+<body style="height:1500px">
 <div id="toolbar_4462223" style="float:right" class="toolbar_l clearfix">
  <%--   <a  href="/seeyon/filedown.do?method=fileDownload_zdy&amp;fileurl=${zwdata.content}&amp;createDate=${zwdata.date}&amp;filename=${entity.field0005}正文.doc" style="margin-right: 50px;margin-top: 20px;cursor: pointer;" class="common_button"  id="contentGovdoc_a" onclick="downloadZw()">&lt;%&ndash;&ndash;%&gt;
         <em id="contentGovdoc_em" class="ico16 text_type_16"></em>
@@ -425,7 +425,7 @@
                                                                     <a  href="/seeyon/filedown.do?method=fileDownload_zdy&amp;fileurl=${zwdata.content}&amp;createDate=${zwdata.date}&amp;filename=正文.doc" title="正文" target="downloadFileFrame" style="font-size:12px;color:#757575;">
                                                                         <span id="field0010_txts" style="line-height:normal">正文</span>
                                                                     </a>
-                                                                    <span class="ico16 affix_del_16" title="删除" onclick="deletefj('${zwdata.content}','2')"></span>&nbsp;
+                                                                    <span class="ico16 affix_del_16" title="删除" onclick="deletefj('${zwdata.content}')"></span>&nbsp;
                                                                      <%-- <iframe id="officeEditorIframe" name="officeEditorIframe" frameborder="0" height="0" width="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
                                                                         <span id="editOnline_${fj.id}">
                                                                             <a class="hand" title="编辑" onclick="editOfficeOnline4Form('-6716956894056724289','-2199317821978820492','test.docx','application/vnd.openxmlformats-officedocument.wordprocessingml.document','2','2020-10-10 10:31:33')" target="_blank">
@@ -595,9 +595,9 @@
     <input id="fields0010" type="hidden" value="${entity.field0010}" />
     <input id="summaryid" type="hidden" value="${entity.summaryid}" /><%--公文主表edoc_summary的id--%>
 
-    <input type="text" type="hidden"  id="zwid" value="${zwdata.id}">
-    <input type="text" type="hidden" id="zwcontent" value="${zwdata.content}">
-    <input type="text" type="hidden" id="zwdate" value="${zwdata.date}">
+    <input type="hidden"  id="zwid" value="${zwdata.id}">
+    <input type="hidden" id="zwcontent" value="${zwdata.content}">
+    <input type="hidden" id="zwdate" value="${zwdata.date}">
 
 </div>
 
@@ -609,6 +609,7 @@
         initOption("field0008",${entity.field0008});//紧急程度默认值
         initOption("field0014",${entity.field0014});//公开方式默认值
         initOption("field0023",${entity.field0023});//文件类型
+
         $.ajax({
             url: _ctxPath + '/demo.do?method=getJgdzData',
             type:'POST',
@@ -641,64 +642,8 @@
     }
 
     function getJgdzOption(){
-        $.ajax({
-            url: _ctxPath + '/demo.do?method=getJgdzData',
-            type:'POST',
-            data:{parent_id: $("#field0023").val(),ref_enumid:'-7394917914078590178'},
-            dataType: "json",
-            success:function (res) {
-                var list=res["data"];
-                var obj=$("#field0024");
-                obj.children().remove();
-                obj.append("<option val4cal='0' value='' selected=''></option>");
-                for(var i=0;i<list.length;i++){
-                    obj.append("<option value="+list[i].id+" title="+list[i].showvalue+"  >"+list[i].showvalue+"</option>");
-                }
-            }
-        });
-
+        getJgdzOption_data($("#field0023").val(),$("#field0024"),'-7394917914078590178');
     }
-
-    //意见按钮事件
-    function buttonClick(element){
-        var  id_modstr=element.id;
-        var arr=id_modstr.split('_');
-        //arr[0]:id   arr[1]:字段名，更新的列  arr[2]：mod修改  del删除
-        //alert(arr[0]+"===="+arr[1]+"===="+arr[2]+"==="+$("#"+arr[0]).val());
-        $.ajax({
-            url: _ctxPath + '/demo.do?method=toUpdateOpinion',
-            type:'POST',
-            data:{id: arr[0],zd:arr[1],operType:arr[2],content:$("#"+arr[0]).val()},
-            success:function (res) {
-                if('0'==res.code){
-                    if(arr[2]=="mod"){
-                        $.alert("修改成功!");
-                    }else{
-                        $.alert("删除成功！");
-                        var obj=$("#div_"+arr[0]);
-                        obj.remove();
-                    }
-                }else{
-                    if(arr[2]=="mod"){
-                        $.alert("修改失败!");
-                    }else{
-                        $.alert("删除失败！");
-                    }
-                }
-            }
-        });
-
-    }
-
-    function formatdata(str){
-        if(null!=str || str!=''){
-            var ci=str.indexOf("hiddenValueDepartment");
-            return str.substring(ci,str.length).replace("hiddenValueDepartment","Department").replace("\n","").trim();
-        }
-
-    }
-
-
 
     //保存form表单数据
     function save(){
@@ -745,57 +690,6 @@
                 window.opener.location.href=window.opener.location.href;
             }
         });
-    }
-
-
-    function initOption(component,id){
-        var all_options = document.getElementById(component).options;
-        for (i=0; i<all_options.length; i++){
-            if (all_options[i].value == id)  // 根据option标签的ID来进行判断
-            {
-                all_options[i].selected = true;
-            }
-        }
-    }
-
-    function  deleteXx(url,param){
-        $.ajax({
-            url: url,
-            type:'POST',
-            data:{file_url:param},
-            error:function(res){
-                $.alert("删除成功!");
-            },
-            success:function (res) {
-                $.alert("删除成功!");
-            }
-        });
-    }
-
-    /**
-     * 删除附件
-     */
-    function deletefj(fileurl,type){
-        var url="";
-        if(type=="1"){
-            url=_ctxPath + '/demo.do?method=toDeleteFj';
-            deleteXx(url,fileurl);
-        }else if(type=="2"){
-            url=_ctxPath + '/demo.do?method=toDeleteZw';
-        }
-        var obj=$("#attachmentDiv_"+fileurl);
-        obj.remove();
-        /*$.ajax({
-            url: _ctxPath + '/demo.do?method=toDeleteFj',
-            type:'POST',
-            data:{file_url:fileurl},
-            error:function(res){
-                $.alert("删除成功!");
-            },
-            success:function (res) {
-                $.alert("删除成功!");
-            }
-        });*/
     }
 
 

@@ -2,15 +2,10 @@ package com.seeyon.apps.gwxg.po;
 
 import org.joda.time.DateTime;
 
-import java.math.BigDecimal;
 import java.util.Date;
 
-/**
- * 公文收文单-文件处理笺
- */
-public class FormMain0081Entity  {
+public class FormMainOtherEntity {
     private static final long serialVersionUID = 1593346713271077837L;
-
     private String ID                ;
     private int state             ;
     private String start_member_id   ;
@@ -28,7 +23,7 @@ public class FormMain0081Entity  {
     private String field0002;
     private String field0003;
     private String field0004;
-    private BigDecimal field0005;
+    private String field0005;
     private String field0006;
     private String field0007;
     private String field0008;
@@ -40,14 +35,11 @@ public class FormMain0081Entity  {
     private String field0014;
     private String field0015;
     private String field0016;
-    private BigDecimal field0017;
+    private String field0017;
     private String field0018;
     private String field0019;
     private String field0020;
-    private String field0021;
-    private String field0022;
-    private String field0023;
-    private String field0024;
+
     public String getID() {
         return ID;
     }
@@ -184,11 +176,11 @@ public class FormMain0081Entity  {
         this.field0004 = field0004;
     }
 
-    public BigDecimal getField0005() {
+    public String getField0005() {
         return field0005;
     }
 
-    public void setField0005(BigDecimal field0005) {
+    public void setField0005(String field0005) {
         this.field0005 = field0005;
     }
 
@@ -280,11 +272,11 @@ public class FormMain0081Entity  {
         this.field0016 = field0016;
     }
 
-    public BigDecimal getField0017() {
+    public String getField0017() {
         return field0017;
     }
 
-    public void setField0017(BigDecimal field0017) {
+    public void setField0017(String field0017) {
         this.field0017 = field0017;
     }
 
@@ -312,14 +304,6 @@ public class FormMain0081Entity  {
         this.field0020 = field0020;
     }
 
-    public String getField0021() {
-        return field0021;
-    }
-
-    public void setField0021(String field0021) {
-        this.field0021 = field0021;
-    }
-
     public String getField0022() {
         return field0022;
     }
@@ -336,13 +320,17 @@ public class FormMain0081Entity  {
         this.field0023 = field0023;
     }
 
-    public String getField0024() {
-        return field0024;
+    public String getField0025() {
+        return field0025;
     }
 
-    public void setField0024(String field0024) {
-        this.field0024 = field0024;
+    public void setField0025(String field0025) {
+        this.field0025 = field0025;
     }
+
+    private String field0022;
+    private String field0023;
+    private String field0025;
 
 
 }
