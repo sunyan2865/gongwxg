@@ -33,11 +33,11 @@ $(document).ready(function () {
     condition.push({id: 'wjbt',name: 'wjbt',type: 'input',text: '文件标题',value: 'wjbt',maxLength:100});
     //拟稿日期
     condition.push({
-        id: 'swrq',
-        name: 'swrq',
+        id: 'cjrq',
+        name: 'cjrq',
         type: 'datemulti',
-        text: '收文日期',
-        value: 'swrq',
+        text: '创建日期',
+        value: 'cjrq',
         ifFormat:'%Y-%m-%d',
         dateTime: false
     });
@@ -68,14 +68,8 @@ $(document).ready(function () {
         width: 'big'
     });
     formModel.push({
-        display:'截止日期',
-        name: 'blqx',
-        sortable : true,
-        width: 'small'
-    });
-    formModel.push({
-        display:'收文日期',
-        name: 'swrq',
+        display:'创建日期',
+        name: 'cjrq',
         sortable : true,
         width: 'small'
     });
@@ -91,7 +85,7 @@ $(document).ready(function () {
     //表格加载
     grid = $('#listStudent').ajaxgrid({
         colModel: formModel,
-      /*  click: clickRow,*/
+        /*  click: clickRow,*/
         render : rend,
         height: 200,
         showTableToggleBtn: false,
@@ -106,7 +100,7 @@ $(document).ready(function () {
         isHaveIframe:true,
         slideToggleBtn:false,
         managerName : "gwJkManager",
-        managerMethod : "toGwjk"
+        managerMethod : "toXnqsJkList"
         //usepager : false
     });
 
@@ -133,9 +127,9 @@ function getSearchValueObj(){
         }
     }
 
-    if(choose === 'swrq'){
-        var fromDate = $('#from_swrq').val();
-        var toDate = $('#to_swrq').val();
+    if(choose === 'cjrq'){
+        var fromDate = $('#from_cjrq').val();
+        var toDate = $('#to_cjrq').val();
         if(fromDate != "" && toDate != "" && fromDate > toDate){
             $.alert($.i18n('collaboration.rule.date'));//开始时间不能早于结束时间
             return;
@@ -161,24 +155,20 @@ function getSearchValueObj(){
 function rend(txt, data, r, c) {
     if(c==1){ //文件标题
         if(null!=txt){
-           txt = "<a style='word-wrap: break-word;word-break: break-all;overflow: hidden;' class='scoreA color_blue' onClick='scanSwxx(&quot;"+data.formid+"&quot;,&quot;"+data.summaryid+"&quot;)'>" + txt + "</a>";
+            txt = "<a style='word-wrap: break-word;word-break: break-all;overflow: hidden;' class='scoreA color_blue' onClick='scanSwxx(&quot;"+data.formid+"&quot;,&quot;"+data.summaryid+"&quot;)'>" + txt + "</a>";
         }
     }
-    if(c==2 || c==3){//办理期限 或收文日期
-        if(null!=txt){
-            txt = txt.substring(0,10);
-        }
-    }
-    if(c==4){
+    if(c==3){
         var rendertxt="";
         var definestrArr='';
         var definestate=data.definestate;//每个里面包括姓名，姓名id,个人事项中的state,个人事项id
         if(null!=txt && txt!='' && txt!='null'){
+            debugger;
             //先读取ctp_affair_define_state状态
             if(null!=definestate && definestate!='' && definestate!='null'){
                 definestrArr=definestate.split(",");
                 for(var k=0;k<definestrArr.length;k++){
-                    if(k!=0 && k%7==0){
+                    if(k!=0 && k%8==0){
                         rendertxt+="</br>"
                     }
                     var splitdefinestrArr=definestrArr[k].split(';');//0姓名，1姓名id,2状态，3 affairId
@@ -194,12 +184,14 @@ function rend(txt, data, r, c) {
             var p=definestrArr.length;
             var strArr=txt.split(',');//每个里面包括姓名，姓名id，个人事项中的state，个人事项id
             for(var i=0;i<strArr.length;i++){
-                if((p+i)!=0 && (p+i)%7==0){  rendertxt+="</br>" }
+                if((p+i)!=0 && (p+i)%8==0){
+                    rendertxt+="</br>";
+                }
                 var splitstrArr=strArr[i].split(';');//0姓名，1姓名id,2状态，3 affairId
                 if(null!=splitstrArr[0]){
-                   if(splitstrArr[2]=='3'){//待办
-                       rendertxt+= "<button type='button' style='background-color:#d3d3d3;border:1px solid #D4D4D4;text-align:center;width:60px;height:30px;margin-top:10px' >" + splitstrArr[0] + "</button>&nbsp;&nbsp;&nbsp;";
-                   }
+                    if(splitstrArr[2]=='3'){//待办
+                        rendertxt+= "<button type='button' style='background-color:#d3d3d3;border:1px solid #D4D4D4;text-align:center;width:60px;height:30px;margin-top:10px' >" + splitstrArr[0] + "</button>&nbsp;&nbsp;&nbsp;";
+                    }
                 }
             }
             txt = rendertxt;
@@ -219,14 +211,14 @@ function rend(txt, data, r, c) {
  */
 function openOpinion(type,xm,affair_id,edoc_id){
     if(type==1){//已办未读  执行方法
-       $.ajax({
+        $.ajax({
             url: _ctxPath + '/gwjk.do?method=toUpdateAffairState',
             type:'POST',
             data:{summaryid: edoc_id,affairid:affair_id},
-           success:function (res) {
-               var code=res["code"];
-               $("#listStudent").ajaxgridLoad(getSearchValueObj());
-           }
+            success:function (res) {
+                var code=res["code"];
+                $("#listStudent").ajaxgridLoad(getSearchValueObj());
+            }
         });
     }
     var url= _ctxPath + '/gwjk.do?method=toOpinionView&affair_id='+affair_id+'&edoc_id='+edoc_id;
@@ -236,8 +228,8 @@ function openOpinion(type,xm,affair_id,edoc_id){
 }
 
 function scanSwxx(formid,summaryid){
-    var url= _ctxPath + '/gwjk.do?method=toSwDetailView&id='+formid+"&summaryid="+summaryid;
-    var window_name = "收文详情";
+    var url= _ctxPath + '/demo.do?method=toXnqsDetail&formid='+formid+"&summaryid="+summaryid;
+    var window_name = "校内请示详情";
     var options = "status=no,resizable=no,menubar=no,top=10,left=300,width=1073,height=742,scrollbars=no,center:Yes;";
     window.open(url, window_name, options);
 }

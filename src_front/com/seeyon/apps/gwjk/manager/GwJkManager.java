@@ -14,5 +14,7 @@ public interface GwJkManager {
     FlipInfo toSwfkxx(FlipInfo fi, Map<String, String> query) throws BusinessException, SQLException;
 
 
+    FlipInfo toXtbgJkList(FlipInfo fi, Map<String, String> query) throws BusinessException, SQLException;
 
+    FlipInfo toXnqsJkList(FlipInfo fi, Map<String, String> query) throws BusinessException, SQLException;
 }

@@ -58,7 +58,6 @@ public class GwjkController  extends BaseController {
     }
 
 
-
     /**
      * 查看收文意见详情界面
      * @param request
@@ -256,6 +255,8 @@ public class GwjkController  extends BaseController {
     }
 
 
+
+
     /**
      * 收文反馈信息：点击则新变成已读
      * @param request
@@ -280,5 +281,48 @@ public class GwjkController  extends BaseController {
     }
 
 
+
+    /**
+     * 跳转到收文-协同办公监控查询界面
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception
+     */
+    public ModelAndView toXtbgJkList(HttpServletRequest request, HttpServletResponse response)throws Exception{
+        response.setContentType("text/html;charset=UTF-8");
+        ModelAndView view = new ModelAndView("gwjk/xtbg/xtbg_jk_list");
+        Map<String,String> query = new HashMap<String,String>();
+        FlipInfo fi = new FlipInfo();
+        if(gwJkManager == null) {
+            gwJkManager = (GwJkManager) AppContext.getBean("gwJkManager");
+        }
+        FlipInfo swlist = gwJkManager.toXtbgJkList(fi,query);
+        request.setAttribute("fflistStudent",swlist);
+
+        return view;
+    }
+
+
+    /**
+     * 跳转到收文-校内请示监控查询界面
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception
+     */
+    public ModelAndView toXnqsJkList(HttpServletRequest request, HttpServletResponse response)throws Exception{
+        response.setContentType("text/html;charset=UTF-8");
+        ModelAndView view = new ModelAndView("gwjk/xnqs/xnqs_jk_list");
+        Map<String,String> query = new HashMap<String,String>();
+        FlipInfo fi = new FlipInfo();
+        if(gwJkManager == null) {
+            gwJkManager = (GwJkManager) AppContext.getBean("gwJkManager");
+        }
+        FlipInfo swlist = gwJkManager.toXnqsJkList(fi,query);
+        request.setAttribute("fflistStudent",swlist);
+
+        return view;
+    }
 
 }

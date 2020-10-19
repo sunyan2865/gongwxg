@@ -394,8 +394,91 @@ public class DemoController extends BaseController {
 		return modelAndView;
 	}
 
+	/**
+	 * 跳转到发文-校内请示详情界面
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ModelAndView toXnqsDetail(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		ModelAndView modelAndView = new ModelAndView("gwxg/fwxg/xnqs/xnqs_detail");
+		String formid = request.getParameter("formid");
+		String summaryid=request.getParameter("summaryid");
+		String sql="  select f.*, (select name from org_member r where r.id=f.field0002) as qcr," +
+				" (select org_department_id from org_member r where r.id=f.field0002)  as qcrdepartment " +
+				"  from formmain_0195 f where f.id='" + formid + "' ";
+
+		Map<String, Object> swdata = null;
+		JDBCAgent jdbcAgent = new JDBCAgent(true, false);
+		try {
+			jdbcAgent.execute(sql);
+			swdata=jdbcAgent.resultSetToMap();
+			swdata.put("qsbmname",getDepartmentName(swdata.get("field0001"),jdbcAgent));	//请示部门
+
+			swdata.put("summaryid",summaryid);
+			modelAndView.addObject("entity", swdata);
 
 
+			//附件 field0010
+			String fjmainId=(String)swdata.get("field0005");
+			String fjsql="select a.*,DATE_FORMAT(createdate,'%Y-%m-%d') as date,RIGHT(filename, INSTR(REVERSE(filename),'.')) filextension,round(a.ATTACHMENT_SIZE/1024,0) filesize from ctp_attachment  a where a.SUB_REFERENCE  ='"+fjmainId+"'";
+			List<Map<String, Object>> fjList=null;
+			jdbcAgent.execute(fjsql);
+			fjList=jdbcAgent.resultSetToList();
+			com.alibaba.fastjson.JSONArray fjsonArray = com.alibaba.fastjson.JSONArray.parseArray(JSON.toJSONString(fjList));
+			modelAndView.addObject("fjsonArray", fjsonArray);
+			modelAndView.addObject("fjlist", fjList);
+
+
+			//拟办、批示、办理意见
+			List<Map<String, Object>> yjlist = null;
+			String ideaSql = " select id,content,create_time,(select name from ORG_MEMBER where id=CREATE_USER_ID) username,policy , " +
+					" ( select group_concat(FILENAME) from CTP_ATTACHMENT where sub_REFERENCE=o.id) filename from  EDOC_OPINION o where   edoc_id ='" + summaryid + "'  order by create_time asc";
+			jdbcAgent.execute(ideaSql);
+			yjlist=jdbcAgent.resultSetToList();
+
+			/*field0006：请示部门意见
+			field0007：党政办意见
+			field0008：校领导意见
+			field0009：主办单位意见*/
+			List<OpinionEntity> qsbmList = new ArrayList<>();
+			List<OpinionEntity> dzbList = new ArrayList<>();
+			List<OpinionEntity> xldList = new ArrayList<>();
+			List<OpinionEntity> zbbmList = new ArrayList<>();
+			for(int p=0;p<yjlist.size();p++){
+				Map<String, Object> m = yjlist.get(p);
+				OpinionEntity opinion = new OpinionEntity();
+				opinion.setId(String.valueOf(m.get("id")));
+				opinion.setContent((String)m.get("content"));
+				opinion.setCreateTime(m.get("create_time").toString().substring(0,10));
+				opinion.setUsername((String)m.get("username"));
+				opinion.setPolicy((String)m.get("policy"));
+				opinion.setFilename((String)m.get("filename"));
+				String policy = (String)m.get("policy");
+				if ("field0006".equals(policy)) {
+					qsbmList.add(opinion);
+				}
+				if ("field0007".equals(policy)) {
+					dzbList.add(opinion);
+				}
+				if ("field0008".equals(policy)) {
+					xldList.add(opinion);
+				}
+				if ("field0009".equals(policy)) {
+					zbbmList.add(opinion);
+				}
+			}
+			modelAndView.addObject("qsbmList", qsbmList);
+			modelAndView.addObject("dzbList", dzbList);
+			modelAndView.addObject("xldList", xldList);
+			modelAndView.addObject("zbbmList", zbbmList);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return modelAndView;
+	}
 
 	@ResponseBody
 	public ModelAndView toUpdateFormmain0195(HttpServletRequest request, HttpServletResponse response) throws  Exception{
@@ -974,6 +1057,87 @@ public class DemoController extends BaseController {
 	 */
 	public ModelAndView toXtbgMod(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		ModelAndView modelAndView = new ModelAndView("gwxg/swxg/xtbg/xtbg_modify");
+		String formid = request.getParameter("formid");
+		String summaryid=request.getParameter("summaryid");
+		String sql="   select f.*, (select name from org_member r where r.id=f.field0012) as djr," +
+				" (select org_department_id from org_member r where r.id=f.field0012)  as djrdepartment " +
+				"  from formmain_0188 f where f.id='"+formid+"' ";
+		Map<String, Object> swxxdata = null;
+		JDBCAgent jdbcAgent = new JDBCAgent(true, false);
+		try {
+			jdbcAgent.execute(sql);
+			swxxdata=jdbcAgent.resultSetToMap();
+			swxxdata.put("bqdwmc",getDepartmentName(swxxdata.get("field0002"),jdbcAgent));
+			swxxdata.put("summaryid",summaryid);
+			modelAndView.addObject("entity", swxxdata);
+
+			//处理性质
+			String clxzsql="select id,showvalue from ctp_enum_item  t where REF_ENUMID='6534952330511468065' and state='1' order by t.sortnumber ";
+			modelAndView.addObject("clxzoption",getOptionData(clxzsql,jdbcAgent));
+
+
+			//拟办、批示、办理意见
+			List<Map<String, Object>> yjlist = null;
+			String ideaSql = " select id,content,create_time,(select name from ORG_MEMBER where id=CREATE_USER_ID) username,policy , " +
+					" ( select group_concat(FILENAME) from CTP_ATTACHMENT where sub_REFERENCE=o.id) filename from  EDOC_OPINION o where   edoc_id ='" + summaryid + "'  order by create_time asc ";
+			jdbcAgent.execute(ideaSql);
+			yjlist=jdbcAgent.resultSetToList();
+		/*	field0006：党政办拟办意见  dzbList
+			field0007：校领导批示意见   xldList
+			field0008：部门意见  bmList*/
+			List<OpinionEntity> dzbList = new ArrayList<>();
+			List<OpinionEntity> xldpsList = new ArrayList<>();
+			List<OpinionEntity> bmList = new ArrayList<>();
+			for(int p=0;p<yjlist.size();p++){
+				Map<String, Object> m = yjlist.get(p);
+				OpinionEntity opinion = new OpinionEntity();
+				opinion.setId(String.valueOf(m.get("id")));
+				opinion.setContent((String)m.get("content"));
+				opinion.setCreateTime(m.get("create_time").toString().substring(0,10));
+				opinion.setUsername((String)m.get("username"));
+				opinion.setPolicy((String)m.get("policy"));
+				opinion.setFilename((String)m.get("filename"));
+				String policy = (String)m.get("policy");
+				if ("field0006".equals(policy)) {
+					dzbList.add(opinion);
+				}
+				if ("field0007".equals(policy)) {
+					xldpsList.add(opinion);
+				}
+				if ("field0008".equals(policy)) {
+					bmList.add(opinion);
+				}
+			}
+			modelAndView.addObject("dzbList", dzbList);
+			modelAndView.addObject("xldpsList", xldpsList);
+			modelAndView.addObject("bmList", bmList);
+
+
+			//附件 field0015
+			String fjmainId=(String)swxxdata.get("field0015");
+			String fjsql="select a.*,DATE_FORMAT(createdate,'%Y-%m-%d') as date,RIGHT(filename, INSTR(REVERSE(filename),'.')) filextension,round(a.ATTACHMENT_SIZE/1024,0) filesize from ctp_attachment  a where a.SUB_REFERENCE  ='"+fjmainId+"'";
+			List<Map<String, Object>> fjList=null;
+			jdbcAgent.execute(fjsql);
+			fjList=jdbcAgent.resultSetToList();
+			com.alibaba.fastjson.JSONArray fjsonArray = com.alibaba.fastjson.JSONArray.parseArray(JSON.toJSONString(fjList));
+			modelAndView.addObject("fjsonArray", fjsonArray);
+			modelAndView.addObject("fjlist", fjList);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return modelAndView;
+	}
+
+	/**
+	 * 跳转到收文-协同办公详情界面
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ModelAndView toXtbgDetail(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		ModelAndView modelAndView = new ModelAndView("gwxg/swxg/xtbg/xtbg_detail");
 		String formid = request.getParameter("formid");
 		String summaryid=request.getParameter("summaryid");
 		String sql="   select f.*, (select name from org_member r where r.id=f.field0012) as djr," +
