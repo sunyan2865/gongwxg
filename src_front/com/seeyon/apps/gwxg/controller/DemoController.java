@@ -1433,7 +1433,7 @@ public class DemoController extends BaseController {
 				for(int k=0;k<fjlist.size();k++){
 					FjEntity fj=fjlist.get(k);
 					String fjsql="insert into ctp_attachment(                   id,             att_reference,                sub_reference,              category,              type,              filename,             file_url,             mime_type,              createdate,   attachment_size,        description)" +
-							" values ('"+CommonUtil.generateID()+"','"+att_reference+"','"+formmain.getField0011()+"','"+fj.getCategory()+"','"+fj.getType()+"','"+fj.getFilename()+"','"+fj.getFileUrl()+"','"+fj.getMimeType()+"','"+fj.getCreateDate()+"','"+fj.getSize()+"','"+fj.getDescription()+"')";
+							" values ('"+CommonUtil.generateID()+"','"+att_reference+"','"+formmain.getField0011()+"','66','"+fj.getType()+"','"+fj.getFilename()+"','"+fj.getFileUrl()+"','"+fj.getMimeType()+"','"+fj.getCreateDate()+"','"+fj.getSize()+"','"+fj.getDescription()+"')";
 					jdbcAgent.execute(fjsql);
 				}
 			}
@@ -1599,7 +1599,7 @@ public class DemoController extends BaseController {
 				for(int k=0;k<fjlist.size();k++){
 					FjEntity fj=fjlist.get(k);
 					String fjsql="insert into ctp_attachment(                   id,             att_reference,                sub_reference,              category,              type,              filename,             file_url,             mime_type,              createdate,   attachment_size,        description)" +
-							" values ('"+CommonUtil.generateID()+"','"+att_reference+"','"+formmain.getField0025()+"','"+fj.getCategory()+"','"+fj.getType()+"','"+fj.getFilename()+"','"+fj.getFileUrl()+"','"+fj.getMimeType()+"','"+fj.getCreateDate()+"','"+fj.getSize()+"','"+fj.getDescription()+"')";
+							" values ('"+CommonUtil.generateID()+"','"+att_reference+"','"+formmain.getField0025()+"','66','"+fj.getType()+"','"+fj.getFilename()+"','"+fj.getFileUrl()+"','"+fj.getMimeType()+"','"+fj.getCreateDate()+"','"+fj.getSize()+"','"+fj.getDescription()+"')";
 					jdbcAgent.execute(fjsql);
 				}
 			}
@@ -1755,7 +1755,7 @@ public class DemoController extends BaseController {
 				for(int k=0;k<fjlist.size();k++){
 					FjEntity fj=fjlist.get(k);
 					String fjsql="insert into ctp_attachment(                   id,             att_reference,                sub_reference,              category,              type,              filename,             file_url,             mime_type,              createdate,   attachment_size,        description)" +
-							" values ('"+CommonUtil.generateID()+"','"+att_reference+"','"+formmain.getField0011()+"','"+fj.getCategory()+"','"+fj.getType()+"','"+fj.getFilename()+"','"+fj.getFileUrl()+"','"+fj.getMimeType()+"','"+fj.getCreateDate()+"','"+fj.getSize()+"','"+fj.getDescription()+"')";
+							" values ('"+CommonUtil.generateID()+"','"+att_reference+"','"+formmain.getField0011()+"','66','"+fj.getType()+"','"+fj.getFilename()+"','"+fj.getFileUrl()+"','"+fj.getMimeType()+"','"+fj.getCreateDate()+"','"+fj.getSize()+"','"+fj.getDescription()+"')";
 					jdbcAgent.execute(fjsql);
 				}
 			}

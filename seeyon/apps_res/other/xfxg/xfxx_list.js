@@ -197,7 +197,6 @@ function doModView(formid,summaryid){
  */
 function doDelete(){
     var rows = grid.grid.getSelectRows();
-        alert(JSON.stringify(rows));
     var simIds ="";
     if(rows.length <= 0) {
         //请选择要删除的公文

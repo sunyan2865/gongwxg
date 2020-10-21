@@ -92,21 +92,20 @@ public class FileController  extends BaseController {
                 File newfilerename = new File("D:/upload/" + newpathstr + oldfilename);//不在同一个目录下，先重命名再移动
                 File oldfile = new File("D:/upload/" + oldpathstr + oldfilename);
                 File oldfilebak = new File("D:/upload/" + oldpathstr + (oldfilename + "_" + CommonUtil.generateID()));
-*/
+                */
                 File oldfile = new File("/upload/" + oldpathstr + oldfilename);
                 File oldfilebak=new File("/upload/" + oldpathstr + (oldfilename+"_"+ CommonUtil.generateID()));
                 File newfile = new File("/upload/" + newpathstr + newfilename);
                 File newfilerename=new File("/upload/" + newpathstr + oldfilename);
 
-
                 //删除缓存中文件
                 String zwdate=oldzwdate.replaceAll("-","");
                 String viewpath1 = "/oa/Seeyon/A8/base/officetrans/" + zwdate + "/" + oldfilename;
                 String viewpath2 = "/oa/A8/base/officetrans/" + zwdate + "/" + oldfilename;
-
               /*  String viewpath1 = "D:/software/setup/Business_A8_7.1SP1/Seeyon/A8/base/officetrans/" + zwdate + "/" + oldfilename;
                 String viewpath2 = "D:/software/setup/Business_A8_7.1SP1/Seeyon/A8/base/officetrans/test/" + zwdate + "/" + oldfilename;
-*/
+               */
+
                 // 判断目录或文件是否存在
                 if (!oldfile.exists()) {
                     return null;

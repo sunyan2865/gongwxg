@@ -413,19 +413,19 @@
                                     <div align="left" >
                                         <span class="xdlabel"></span>
                                         <span id="field_spans_1" mappingfield="attachments" class="edit_class" fieldval="{name:&quot;field0010_1&quot;,isMasterFiled:&quot;true&quot;,displayName:&quot;attachments&quot;,fieldType:&quot;VARCHAR&quot;,inputType:&quot;attachment&quot;,formatType:&quot;&quot;,value:&quot;&quot;}" style="display: inline-block;">
-                                                    <div class="comp" comp="type:'fileupload',callMethod:'fileValueChangeCallBack',delCallMethod:'fileDelCallBack',takeOver:false,isBR:true,canDeleteOriginalAtts:true,canFavourite:'true',notNull:'false',displayMode:'visible',autoHeight:true,applicationCategory:'2',embedInput:'field0010_1',attachmentTrId:'1209558887199034034'"
+                                                    <div class="comp" comp="type:'fileupload',callMethod:'fileValueChangeCallBack_zw',delCallMethod:'fileDelCallBack',takeOver:false,isBR:true,canDeleteOriginalAtts:true,canFavourite:'true',notNull:'false',displayMode:'visible',autoHeight:true,applicationCategory:'2',embedInput:'field0010_1',attachmentTrId:'1209558887199034034'"
                                                          attsdata="${zwdata}" comptype="fileupload" style="display: none;">
 
                                                     </div>
-                                                    <div id="attachmentArea-1694224470510517263_1" style="overflow-x: hidden; min-height: 24px; width: 450px;" requrl="/seeyon/fileUpload.do?type=0&amp;inputId=undefined&amp;applicationCategory=2&amp;extensions=&amp;maxSize=&amp;isEncrypt=&amp;popupTitleKey=&amp;attachmentTrId=-1694224470510517263&amp;embedInput=field0010" class="left">
-                                                           	 <input type="text" style="display: none; width: 474px;" id="field0010_1" name="field0010" value="${zwdata.id}">
+                                                    <div id="attachmentArea-1694224470510517263_1" style="overflow-x: hidden; min-height: 24px; width: 450px;" requrl="/seeyon/fileUpload.do?type=0&amp;inputId=undefined&amp;applicationCategory=2&amp;extensions=&amp;maxSize=&amp;isEncrypt=&amp;popupTitleKey=&amp;attachmentTrId=-1694224470510517263&amp;embedInput=field0010_1" class="left">
+                                                           	 <input type="text" style="display: none; width: 474px;" id="field0010_1" name="field0010_1" value="${zwdata.id}">
                                                         <c:if test="${zwdata.content !='' }">
                                                                 <div id="attachmentDiv_${zwdata.content}" class="attachment_block attachmentShowDelete" style="font-size:12px; max-width:454px; float:left; line-height:22px;*line-height:22px;background:#e6eef7;padding:2px 10px;border-radius:3px; overflow:hidden; word-wrap:break-word; word-break:break-all;"<%-- onmouseenter="onAttachmentMouseEnter(this)" onmouseleave="onAttachmentMouseLeave(this)"--%>>&nbsp;
                                                                     <span style="word-wrap:break-word; word-break:break-all;" class="ico16 doc_16 margin_r_5"></span>
                                                                     <a  href="/seeyon/filedown.do?method=fileDownload_zdy&amp;fileurl=${zwdata.content}&amp;createDate=${zwdata.date}&amp;filename=正文.doc" title="正文" target="downloadFileFrame" style="font-size:12px;color:#757575;">
                                                                         <span id="field0010_txts" style="line-height:normal">正文</span>
                                                                     </a>
-                                                                    <span class="ico16 affix_del_16" title="删除" onclick="deletefj('${zwdata.content}')"></span>&nbsp;
+                                                                    <span class="ico16 affix_del_16" title="删除" onclick="deleteZw('${zwdata.content}')"></span>&nbsp;
                                                                      <%-- <iframe id="officeEditorIframe" name="officeEditorIframe" frameborder="0" height="0" width="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
                                                                         <span id="editOnline_${fj.id}">
                                                                             <a class="hand" title="编辑" onclick="editOfficeOnline4Form('-6716956894056724289','-2199317821978820492','test.docx','application/vnd.openxmlformats-officedocument.wordprocessingml.document','2','2020-10-10 10:31:33')" target="_blank">
@@ -443,7 +443,7 @@
                                                         <iframe name="downloadFileFrame" id="downloadFileFrame_1" frameborder="0" width="0" height="0"></iframe>
                                                     </div>
                                                     <span class="ico16 affix_16" onclick="insertAttachmentPoi('1209558887199034034')">
-                                                        <input type="hidden" id="field0010_0_editAtt_1" value="true">
+                                                        <input type="hidden" id="field0010_1_editAtt_1" value="true">
                                                     </span>
                                                 </span>
                                     </div>

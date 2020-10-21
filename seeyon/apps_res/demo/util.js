@@ -17,6 +17,12 @@ function deletefj(fileurl){
     });
 }
 
+
+function deleteZw(fileurl){
+    var obj=$("#attachmentDiv_"+fileurl);
+    obj.remove();
+}
+
 /**
  * 动态获得select下拉框的值
  */

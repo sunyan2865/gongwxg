@@ -230,7 +230,7 @@ function doDelete(){
             $.ajax({
                 url: _ctxPath + '/demo.do?method=toDelGwfw',
                 type:'POST',
-                data:{params:simId,tablename:'formmain_0195',summarytable:'edoc_summary'},
+                data:{params:simIds,tablename:'formmain_0195',summarytable:'edoc_summary'},
                 success:function (res) {
                     $.messageBox({
                         'title':$.i18n('collaboration.system.prompt.js'),

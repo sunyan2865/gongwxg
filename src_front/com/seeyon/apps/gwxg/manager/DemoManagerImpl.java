@@ -281,6 +281,8 @@ public class DemoManagerImpl implements DemoManager {
 
 		flipInfo.setTotal(swxxlist.size());
 		flipInfo.setData(revoler);
+
+		jdbcAgent.close();
 		return flipInfo;
 	}
 
