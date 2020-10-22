@@ -59,6 +59,8 @@ public class GwJkManagerImpl implements  GwJkManager {
             e.printStackTrace();
         } catch (SQLException e) {
             e.printStackTrace();
+        }finally {
+            jdbcAgent.close();
         }
 
         flipInfo.setTotal(swlist.size());
@@ -108,6 +110,8 @@ public class GwJkManagerImpl implements  GwJkManager {
             e.printStackTrace();
         } catch (SQLException e) {
             e.printStackTrace();
+        }finally {
+            jdbcAgent.close();
         }
 
         flipInfo.setTotal(swfkxxlist.size());
@@ -165,6 +169,8 @@ public class GwJkManagerImpl implements  GwJkManager {
             e.printStackTrace();
         } catch (SQLException e) {
             e.printStackTrace();
+        }finally {
+            jdbcAgent.close();
         }
 
         flipInfo.setTotal(swlist.size());
@@ -221,6 +227,8 @@ public class GwJkManagerImpl implements  GwJkManager {
             e.printStackTrace();
         } catch (SQLException e) {
             e.printStackTrace();
+        }finally {
+            jdbcAgent.close();
         }
 
         flipInfo.setTotal(swlist.size());

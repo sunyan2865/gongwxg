@@ -162,6 +162,8 @@ public class GwjkController  extends BaseController {
 
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            jdbcAgent.close();
         }
         return modelAndView;
     }
@@ -188,6 +190,8 @@ public class GwjkController  extends BaseController {
             map.put("code", 0);
         }catch(Exception e){
             map.put("code", -1);
+        } finally {
+            jdbcAgent.close();
         }
         com.alibaba.fastjson.JSONObject json = new JSONObject(map);
         render(response, json.toJSONString());

@@ -224,6 +224,8 @@ public class DemoManagerImpl implements DemoManager {
 			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
+		}finally {
+			jdbcAgent.close();
 		}
 
 		flipInfo.setTotal(swxxlist.size());
@@ -277,12 +279,12 @@ public class DemoManagerImpl implements DemoManager {
 			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
+		}finally {
+			jdbcAgent.close();
 		}
 
 		flipInfo.setTotal(swxxlist.size());
 		flipInfo.setData(revoler);
-
-		jdbcAgent.close();
 		return flipInfo;
 	}
 
@@ -335,6 +337,8 @@ public class DemoManagerImpl implements DemoManager {
 			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
+		}finally {
+			jdbcAgent.close();
 		}
 
 		flipInfo.setTotal(swxxlist.size());
@@ -386,6 +390,8 @@ public class DemoManagerImpl implements DemoManager {
 			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
+		}finally {
+			jdbcAgent.close();
 		}
 
 		flipInfo.setTotal(swxxlist.size());
@@ -440,6 +446,8 @@ public class DemoManagerImpl implements DemoManager {
 			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
+		}finally {
+			jdbcAgent.close();
 		}
 
 		flipInfo.setTotal(swxxlist.size());

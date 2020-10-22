@@ -171,6 +171,8 @@ public class DemoController extends BaseController {
 
 		} catch (Exception e) {
 			e.printStackTrace();
+		}finally {
+			jdbcAgent.close();
 		}
 		return modelAndView;
 	}
@@ -260,6 +262,10 @@ public class DemoController extends BaseController {
 					String fjsql="insert into ctp_attachment(                   id,             att_reference,                sub_reference,              category,              type,              filename,             file_url,             mime_type,              createdate,   attachment_size,        description)" +
 								" values ('"+CommonUtil.generateID()+"','"+att_reference+"','"+formmain.getField0010()+"','"+fj.getCategory()+"','"+fj.getType()+"','"+fj.getFilename()+"','"+fj.getFileUrl()+"','"+fj.getMimeType()+"','"+fj.getCreateDate()+"','"+fj.getSize()+"','"+fj.getDescription()+"')";
 					jdbcAgent.execute(fjsql);
+
+					String ctpfilesql="INSERT INTO ctp_file(   ID,              CATEGORY,              TYPE,              FILENAME,             MIME_TYPE,             CREATE_DATE,         FILE_SIZE, DESCRIPTION)" +
+							     " values ('"+fj.getFileUrl()+ "','"+fj.getCategory()+"','"+fj.getType()+"','"+fj.getFilename()+"','"+fj.getMimeType()+"','"+fj.getCreateDate()+"','"+fj.getSize()+"','"+fj.getDescription()+"')";
+					jdbcAgent.execute(ctpfilesql);
 				}
 			}
 
@@ -281,6 +287,8 @@ public class DemoController extends BaseController {
 		}catch(Exception e){
 			jsonMap.put("code", "1");
 			jsonMap.put("msg", "失败");
+		}finally {
+			jdbcAgent.close();
 		}
 		com.alibaba.fastjson.JSONObject json = new JSONObject(jsonMap);
 		render(response, json.toJSONString());
@@ -390,6 +398,8 @@ public class DemoController extends BaseController {
 
 		} catch (Exception e) {
 			e.printStackTrace();
+		}finally {
+			jdbcAgent.close();
 		}
 		return modelAndView;
 	}
@@ -476,6 +486,8 @@ public class DemoController extends BaseController {
 
 		} catch (Exception e) {
 			e.printStackTrace();
+		}finally {
+			jdbcAgent.close();
 		}
 		return modelAndView;
 	}
@@ -519,6 +531,10 @@ public class DemoController extends BaseController {
 					String fjsql="insert into ctp_attachment(                   id,             att_reference,                sub_reference,              category,              type,              filename,             file_url,             mime_type,              createdate,   attachment_size,        description)" +
 							" values ('"+CommonUtil.generateID()+"','"+att_reference+"','"+formmain.getField0005()+"','"+fj.getCategory()+"','"+fj.getType()+"','"+fj.getFilename()+"','"+fj.getFileUrl()+"','"+fj.getMimeType()+"','"+fj.getCreateDate()+"','"+fj.getSize()+"','"+fj.getDescription()+"')";
 					jdbcAgent.execute(fjsql);
+
+					String ctpfilesql="INSERT INTO ctp_file(   ID,              CATEGORY,              TYPE,              FILENAME,             MIME_TYPE,             CREATE_DATE,         FILE_SIZE, DESCRIPTION)" +
+							" values ('"+fj.getFileUrl()+ "','"+fj.getCategory()+"','"+fj.getType()+"','"+fj.getFilename()+"','"+fj.getMimeType()+"','"+fj.getCreateDate()+"','"+fj.getSize()+"','"+fj.getDescription()+"')";
+					jdbcAgent.execute(ctpfilesql);
 				}
 			}
 			jsonMap.put("code", "0");
@@ -526,6 +542,8 @@ public class DemoController extends BaseController {
 		}catch(Exception e){
 			jsonMap.put("code", "1");
 			jsonMap.put("msg", "失败");
+		}finally {
+			jdbcAgent.close();
 		}
 		com.alibaba.fastjson.JSONObject json = new JSONObject(jsonMap);
 		render(response, json.toJSONString());
@@ -552,7 +570,8 @@ public class DemoController extends BaseController {
 		}catch(Exception e){
 			jsonMap.put("code", "1");
 			jsonMap.put("msg", "失败");
-
+		}finally {
+			jdbcAgent.close();
 		}
 		com.alibaba.fastjson.JSONObject json = new JSONObject(jsonMap);
 		render(response, json.toJSONString());
@@ -607,6 +626,8 @@ public class DemoController extends BaseController {
 		}catch(Exception e){
 			jsonMap.put("code", "1");
 			jsonMap.put("msg", "失败");
+		}finally {
+			jdbcAgent.close();
 		}
 		com.alibaba.fastjson.JSONObject json = new JSONObject(jsonMap);
 		render(response, json.toJSONString());
@@ -655,12 +676,12 @@ public class DemoController extends BaseController {
 	 * @throws Exception
 	 */
 	public ModelAndView getJgdzData(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		JDBCAgent jdbcAgent = new JDBCAgent(true, false);
 		//机构代字
 		try {
 			String parent_id = request.getParameter("parent_id");
 			String ref_enumid = request.getParameter("ref_enumid");
 			String jgdzsql = "select id,showvalue from ctp_enum_item  t where ref_enumid='"+ref_enumid+"' and parent_id='" + parent_id + "' and state='1' order by t.sortnumber ";
-			JDBCAgent jdbcAgent = new JDBCAgent(true, false);
 			List<Map<String, Object>> jgdzOption = getOptionData(jgdzsql, jdbcAgent);
 			List<Map<String, Object>> revoler = new ArrayList<>();
 			for (int i = 0; i < jgdzOption.size(); i++) {
@@ -678,6 +699,8 @@ public class DemoController extends BaseController {
 			render(response, json.toJSONString());
 		} catch (Exception e) {
 			e.printStackTrace();
+		}finally {
+			jdbcAgent.close();
 		}
 		return null;
 	}
@@ -740,6 +763,8 @@ public class DemoController extends BaseController {
 		} catch (Exception e) {
 			map.put("code", -1);
 			e.printStackTrace();
+		}finally {
+			jdbcAgent.close();
 		}
 		com.alibaba.fastjson.JSONObject json = new JSONObject(map);
 		render(response, json.toJSONString());
@@ -766,6 +791,8 @@ public class DemoController extends BaseController {
 			modelAndView.addObject("summaryid",summaryid);
 		}catch(Exception e){
 			e.printStackTrace();
+		}finally {
+			jdbcAgent.close();
 		}
 		return modelAndView;
 	}
@@ -799,6 +826,8 @@ public class DemoController extends BaseController {
 		} catch (Exception e) {
 			map.put("code", -1);
 			e.printStackTrace();
+		}finally {
+			jdbcAgent.close();
 		}
 		com.alibaba.fastjson.JSONObject json = new JSONObject(map);
 		render(response, json.toJSONString());
@@ -919,6 +948,8 @@ public class DemoController extends BaseController {
 
 		} catch (Exception e) {
 			e.printStackTrace();
+		}finally {
+			jdbcAgent.close();
 		}
 		return modelAndView;
 	}
@@ -1009,6 +1040,10 @@ public class DemoController extends BaseController {
 					String fjsql="insert into ctp_attachment(                   id,             att_reference,                sub_reference,              category,              type,              filename,             file_url,             mime_type,              createdate,   attachment_size,        description)" +
 							" values ('"+CommonUtil.generateID()+"','"+att_reference+"','"+formmain.getField0019()+"','"+fj.getCategory()+"','"+fj.getType()+"','"+fj.getFilename()+"','"+fj.getFileUrl()+"','"+fj.getMimeType()+"','"+fj.getCreateDate()+"','"+fj.getSize()+"','"+fj.getDescription()+"')";
 					jdbcAgent.execute(fjsql);
+
+					String ctpfilesql="INSERT INTO ctp_file(   ID,              CATEGORY,              TYPE,              FILENAME,             MIME_TYPE,             CREATE_DATE,         FILE_SIZE, DESCRIPTION)" +
+							" values ('"+fj.getFileUrl()+ "','"+fj.getCategory()+"','"+fj.getType()+"','"+fj.getFilename()+"','"+fj.getMimeType()+"','"+fj.getCreateDate()+"','"+fj.getSize()+"','"+fj.getDescription()+"')";
+					jdbcAgent.execute(ctpfilesql);
 				}
 			}
 
@@ -1019,6 +1054,8 @@ public class DemoController extends BaseController {
 			jsonMap.put("code", "1");
 			jsonMap.put("msg", "失败");
 			e.printStackTrace();
+		}finally {
+			jdbcAgent.close();
 		}
 		com.alibaba.fastjson.JSONObject json = new JSONObject(jsonMap);
 		render(response, json.toJSONString());
@@ -1125,6 +1162,8 @@ public class DemoController extends BaseController {
 
 		} catch (Exception e) {
 			e.printStackTrace();
+		}finally {
+			jdbcAgent.close();
 		}
 		return modelAndView;
 	}
@@ -1206,6 +1245,8 @@ public class DemoController extends BaseController {
 
 		} catch (Exception e) {
 			e.printStackTrace();
+		}finally {
+			jdbcAgent.close();
 		}
 		return modelAndView;
 	}
@@ -1281,6 +1322,10 @@ public class DemoController extends BaseController {
 					String fjsql="insert into ctp_attachment(                   id,             att_reference,                sub_reference,              category,              type,              filename,             file_url,             mime_type,              createdate,   attachment_size,        description)" +
 							" values ('"+CommonUtil.generateID()+"','"+att_reference+"','"+formmain.getField0015()+"','"+fj.getCategory()+"','"+fj.getType()+"','"+fj.getFilename()+"','"+fj.getFileUrl()+"','"+fj.getMimeType()+"','"+fj.getCreateDate()+"','"+fj.getSize()+"','"+fj.getDescription()+"')";
 					jdbcAgent.execute(fjsql);
+
+					String ctpfilesql="INSERT INTO ctp_file(   ID,              CATEGORY,              TYPE,              FILENAME,             MIME_TYPE,             CREATE_DATE,         FILE_SIZE, DESCRIPTION)" +
+							" values ('"+fj.getFileUrl()+ "','"+fj.getCategory()+"','"+fj.getType()+"','"+fj.getFilename()+"','"+fj.getMimeType()+"','"+fj.getCreateDate()+"','"+fj.getSize()+"','"+fj.getDescription()+"')";
+					jdbcAgent.execute(ctpfilesql);
 				}
 			}
 			jsonMap.put("code", "0");
@@ -1288,6 +1333,8 @@ public class DemoController extends BaseController {
 		}catch(Exception e){
 			jsonMap.put("code", "1");
 			jsonMap.put("msg", "失败");
+		}finally {
+			jdbcAgent.close();
 		}
 		com.alibaba.fastjson.JSONObject json = new JSONObject(jsonMap);
 		render(response, json.toJSONString());
@@ -1353,6 +1400,8 @@ public class DemoController extends BaseController {
 
 		} catch (Exception e) {
 			e.printStackTrace();
+		}finally {
+			jdbcAgent.close();
 		}
 		return modelAndView;
 	}
@@ -1435,6 +1484,11 @@ public class DemoController extends BaseController {
 					String fjsql="insert into ctp_attachment(                   id,             att_reference,                sub_reference,              category,              type,              filename,             file_url,             mime_type,              createdate,   attachment_size,        description)" +
 							" values ('"+CommonUtil.generateID()+"','"+att_reference+"','"+formmain.getField0011()+"','66','"+fj.getType()+"','"+fj.getFilename()+"','"+fj.getFileUrl()+"','"+fj.getMimeType()+"','"+fj.getCreateDate()+"','"+fj.getSize()+"','"+fj.getDescription()+"')";
 					jdbcAgent.execute(fjsql);
+
+
+					String ctpfilesql="INSERT INTO ctp_file(   ID,              CATEGORY,              TYPE,              FILENAME,             MIME_TYPE,             CREATE_DATE,         FILE_SIZE, DESCRIPTION)" +
+							" values ('"+fj.getFileUrl()+ "','"+fj.getCategory()+"','"+fj.getType()+"','"+fj.getFilename()+"','"+fj.getMimeType()+"','"+fj.getCreateDate()+"','"+fj.getSize()+"','"+fj.getDescription()+"')";
+					jdbcAgent.execute(ctpfilesql);
 				}
 			}
 			jsonMap.put("code", "0");
@@ -1442,6 +1496,8 @@ public class DemoController extends BaseController {
 		}catch(Exception e){
 			jsonMap.put("code", "1");
 			jsonMap.put("msg", "失败");
+		}finally {
+			jdbcAgent.close();
 		}
 		com.alibaba.fastjson.JSONObject json = new JSONObject(jsonMap);
 		render(response, json.toJSONString());
@@ -1513,6 +1569,8 @@ public class DemoController extends BaseController {
 
 		} catch (Exception e) {
 			e.printStackTrace();
+		}finally {
+			jdbcAgent.close();
 		}
 		return modelAndView;
 	}
@@ -1601,6 +1659,10 @@ public class DemoController extends BaseController {
 					String fjsql="insert into ctp_attachment(                   id,             att_reference,                sub_reference,              category,              type,              filename,             file_url,             mime_type,              createdate,   attachment_size,        description)" +
 							" values ('"+CommonUtil.generateID()+"','"+att_reference+"','"+formmain.getField0025()+"','66','"+fj.getType()+"','"+fj.getFilename()+"','"+fj.getFileUrl()+"','"+fj.getMimeType()+"','"+fj.getCreateDate()+"','"+fj.getSize()+"','"+fj.getDescription()+"')";
 					jdbcAgent.execute(fjsql);
+
+					String ctpfilesql="INSERT INTO ctp_file(   ID,              CATEGORY,              TYPE,              FILENAME,             MIME_TYPE,             CREATE_DATE,         FILE_SIZE, DESCRIPTION)" +
+							" values ('"+fj.getFileUrl()+ "','"+fj.getCategory()+"','"+fj.getType()+"','"+fj.getFilename()+"','"+fj.getMimeType()+"','"+fj.getCreateDate()+"','"+fj.getSize()+"','"+fj.getDescription()+"')";
+					jdbcAgent.execute(ctpfilesql);
 				}
 			}
 			jsonMap.put("code", "0");
@@ -1608,6 +1670,8 @@ public class DemoController extends BaseController {
 		}catch(Exception e){
 			jsonMap.put("code", "1");
 			jsonMap.put("msg", "失败");
+		}finally {
+			jdbcAgent.close();
 		}
 		com.alibaba.fastjson.JSONObject json = new JSONObject(jsonMap);
 		render(response, json.toJSONString());
@@ -1673,6 +1737,8 @@ public class DemoController extends BaseController {
 
 		} catch (Exception e) {
 			e.printStackTrace();
+		}finally {
+			jdbcAgent.close();
 		}
 		return modelAndView;
 	}
@@ -1757,6 +1823,10 @@ public class DemoController extends BaseController {
 					String fjsql="insert into ctp_attachment(                   id,             att_reference,                sub_reference,              category,              type,              filename,             file_url,             mime_type,              createdate,   attachment_size,        description)" +
 							" values ('"+CommonUtil.generateID()+"','"+att_reference+"','"+formmain.getField0011()+"','66','"+fj.getType()+"','"+fj.getFilename()+"','"+fj.getFileUrl()+"','"+fj.getMimeType()+"','"+fj.getCreateDate()+"','"+fj.getSize()+"','"+fj.getDescription()+"')";
 					jdbcAgent.execute(fjsql);
+
+					String ctpfilesql="INSERT INTO ctp_file(   ID,              CATEGORY,              TYPE,              FILENAME,             MIME_TYPE,             CREATE_DATE,         FILE_SIZE, DESCRIPTION)" +
+							" values ('"+fj.getFileUrl()+ "','"+fj.getCategory()+"','"+fj.getType()+"','"+fj.getFilename()+"','"+fj.getMimeType()+"','"+fj.getCreateDate()+"','"+fj.getSize()+"','"+fj.getDescription()+"')";
+					jdbcAgent.execute(ctpfilesql);
 				}
 			}
 			jsonMap.put("code", "0");
@@ -1764,6 +1834,8 @@ public class DemoController extends BaseController {
 		}catch(Exception e){
 			jsonMap.put("code", "1");
 			jsonMap.put("msg", "失败");
+		}finally {
+			jdbcAgent.close();
 		}
 		com.alibaba.fastjson.JSONObject json = new JSONObject(jsonMap);
 		render(response, json.toJSONString());
