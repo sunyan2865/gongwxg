@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.seeyon.apps.gwjk.manager.GwJkManager;
 import com.seeyon.apps.gwxg.po.OpinionEntity;
 import com.seeyon.ctp.common.AppContext;
+import com.seeyon.ctp.common.authenticate.domain.User;
 import com.seeyon.ctp.common.controller.BaseController;
 import com.seeyon.ctp.common.log.CtpLogFactory;
 import com.seeyon.ctp.util.FlipInfo;
@@ -15,10 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class GwjkController  extends BaseController {
 
@@ -327,6 +325,43 @@ public class GwjkController  extends BaseController {
         request.setAttribute("fflistStudent",swlist);
 
         return view;
+    }
+
+
+    /**
+     * 跳转到待办界面
+     * @param request
+     * @param response
+     * @return
+     */
+    public ModelAndView doGwdb(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        JDBCAgent jdbcAgent = new JDBCAgent(true, false);
+        User user = AppContext.getCurrentUser();
+        Map<String, Object> swdata = null;
+        try {
+            String summaryid = request.getParameter("summaryid");
+            String sql = "select a.id affairid,r.id summaryid from edoc_summary r " +
+                    "left join ctp_affair a on a.object_id=r.id and a.member_id='"+user.getId()+"' and a.state='3'" +
+                    "where r.id='"+summaryid+"'  limit 1 ";
+            jdbcAgent.execute(sql);
+            swdata=jdbcAgent.resultSetToMap();
+
+            Map<String, Object> revoler = new HashMap<>();
+            for (Map.Entry<String, Object> entry : swdata.entrySet()) {
+                revoler.put(entry.getKey(), String.valueOf(entry.getValue()) + "");
+            }
+
+            Map<String, Object> map = new HashMap<>();
+            map.put("code", 0);
+            map.put("data", revoler);
+            com.alibaba.fastjson.JSONObject json = new JSONObject(map);
+            render(response, json.toJSONString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }finally {
+            jdbcAgent.close();
+        }
+        return null;
     }
 
 }

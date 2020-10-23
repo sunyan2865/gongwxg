@@ -3,8 +3,6 @@ pageX.openWin = null;
 var grid;
 
 $(document).ready(function () {
-
-
     new MxtLayout({
         'id': 'layout',
         'northArea': {
@@ -190,7 +188,7 @@ function rend(txt, data, r, c) {
                 var splitstrArr=strArr[i].split(';');//0姓名，1姓名id,2状态，3 affairId
                 if(null!=splitstrArr[0]){
                     if(splitstrArr[2]=='3'){//待办
-                        rendertxt+= "<button type='button' style='background-color:#d3d3d3;border:1px solid #D4D4D4;text-align:center;width:60px;height:30px;margin-top:10px' >" + splitstrArr[0] + "</button>&nbsp;&nbsp;&nbsp;";
+                        rendertxt+= "<button type='button' style='background-color:#d3d3d3;border:1px solid #D4D4D4;text-align:center;width:60px;height:30px;margin-top:10px'onClick='openOpinion(2,&quot;"+splitstrArr[0]+"&quot;,&quot;"+splitstrArr[3]+"&quot;,&quot;"+data.summaryid+"&quot;)'>" +  splitstrArr[0] + "</button>&nbsp;&nbsp;&nbsp;";
                     }
                 }
             }
@@ -201,6 +199,9 @@ function rend(txt, data, r, c) {
     }
     return txt;
 }
+
+
+
 
 /**
  * 查看意见详情
@@ -221,11 +222,38 @@ function openOpinion(type,xm,affair_id,edoc_id){
             }
         });
     }
-    var url= _ctxPath + '/gwjk.do?method=toOpinionView&affair_id='+affair_id+'&edoc_id='+edoc_id;
+    /*var url= _ctxPath + '/gwjk.do?method=toOpinionView&affair_id='+affair_id+'&edoc_id='+edoc_id;
     var window_name = "【"+xm+"】意见详情";
     var options = "status=no,resizable=no,menubar=no,top=200,left=500,width=400,height=232,scrollbars=no,center:Yes;";
-    window.open(url, window_name, options);
+    window.open(url, window_name, options);*/
+
+    $.ajax({
+        url: _ctxPath + '/gwjk.do?method=doGwdb',
+        type:'POST',
+        data:{summaryid: edoc_id},
+        dataType: "json",
+        success:function (res) {
+            var data=res["data"];
+            if(null==data.affairid || data.affairid=='' || data.affairid=='null'){
+                $.alert("此文件暂无待办！");
+            }else{
+                var url=_ctxPath + '/govdoc/govdoc.do?method=summary&affairId='+data.affairid+'&openFrom=listPending';
+                window.open(url, '_blank');
+            }
+
+            /*obj.children().remove();
+            obj.append("<option val4cal='0' value='' selected=''></option>");
+            for(var i=0;i<list.length;i++){
+                obj.append("<option value="+list[i].id+" title="+list[i].showvalue+"  >"+list[i].showvalue+"</option>");
+            }*/
+        }
+    });
 }
+
+
+
+
+
 
 function scanSwxx(formid,summaryid){
     var url= _ctxPath + '/demo.do?method=toXnqsDetail&formid='+formid+"&summaryid="+summaryid;
