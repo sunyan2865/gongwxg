@@ -241,6 +241,35 @@
                                     </div>
                                 </td>
                             </tr>
+
+
+                            <tr style="min-height: 49px; height: 49px;">
+                                <td style="BORDER-TOP: #ff0000 1pt solid; BORDER-RIGHT: #ff0000 1pt solid; VERTICAL-ALIGN: middle; BORDER-BOTTOM: #ff0000 1pt solid; PADDING-BOTTOM: 1px; PADDING-TOP: 1px; PADDING-LEFT: 1px; BORDER-LEFT: #ff0000 1pt solid; PADDING-RIGHT: 1px; BACKGROUND-COLOR: transparent">
+                                    <div align="center"><font face="宋体" size="4"
+                                                              color="#ff0000"><strong>报请单位意见</strong></font></div>
+                                </td>
+                                <td style="BORDER-TOP: #ff0000 1pt solid; BORDER-RIGHT: #ff0000 1pt solid; VERTICAL-ALIGN: middle; BORDER-BOTTOM: #ff0000 1pt solid; PADDING-BOTTOM: 1px; PADDING-TOP: 1px; PADDING-LEFT: 1px; BORDER-LEFT: #ff0000 1pt solid; PADDING-RIGHT: 1px"
+                                    colspan="3">
+                                    <div ><font face="宋体">
+                                        <c:forEach items="${bqdwList}" var="op">
+                                            <div id="div_${op.id}">
+                                                <input type="hidden" value="${op.id}"/>
+                                                <div style="float: left;width: 100%;" class="font-s">
+                                                    <span id="${op.id}" style="width:98%;height:28px;" >${op.content}</span>
+                                                </div>
+                                                <div style="width: 490px;">
+                                                    <div style="float:right;padding-right:30px;padding-top:5px;padding-bottom:5px;" class="font-s">
+                                                        <input readonly="readonly" style=" height:100%;border:none" value="${op.username} ${op.createTime}"></input>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </c:forEach>
+                                    </font></div>
+                                </td>
+                            </tr>
+
+
+
                             <tr style="min-height: 49px; height: 49px;">
                                 <td style="BORDER-TOP: #ff0000 1pt solid; BORDER-RIGHT: #ff0000 1pt solid; VERTICAL-ALIGN: middle; BORDER-BOTTOM: #ff0000 1pt solid; PADDING-BOTTOM: 1px; PADDING-TOP: 1px; PADDING-LEFT: 1px; BORDER-LEFT: #ff0000 1pt solid; PADDING-RIGHT: 1px; BACKGROUND-COLOR: transparent">
                                     <div align="center"><font face="宋体" size="4"

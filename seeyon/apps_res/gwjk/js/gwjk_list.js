@@ -244,7 +244,7 @@ function openOpinion(type,xm,affair_id,edoc_id){
             if(null==data.affairid || data.affairid=='' || data.affairid=='null'){
                 $.alert("此条公文暂无待办！");
             }else{
-                var url=_ctxPath + 'govdoc/govdoc.do?method=summary&openFrom=listPending&isFromHome=true&affairId='+data.affairid+'&app=4&summaryId='+data.summaryid;
+                var url=_ctxPath + '/govdoc/govdoc.do?method=summary&affairId='+data.affairid+'&openFrom=listPending';
                 window.open(url, '_blank');
             }
         }

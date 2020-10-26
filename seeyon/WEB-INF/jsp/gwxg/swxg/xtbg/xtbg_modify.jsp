@@ -265,6 +265,34 @@
                                     </div>
                                 </td>
                             </tr>
+
+                            <tr style="min-height: 49px; height: 49px;">
+                                <td style="BORDER-TOP: #ff0000 1pt solid; BORDER-RIGHT: #ff0000 1pt solid; VERTICAL-ALIGN: middle; BORDER-BOTTOM: #ff0000 1pt solid; PADDING-BOTTOM: 1px; PADDING-TOP: 1px; PADDING-LEFT: 1px; BORDER-LEFT: #ff0000 1pt solid; PADDING-RIGHT: 1px; BACKGROUND-COLOR: transparent">
+                                    <div align="center"><font face="宋体" size="4"
+                                                              color="#ff0000"><strong>报请单位意见</strong></font></div>
+                                </td>
+                                <td style="BORDER-TOP: #ff0000 1pt solid; BORDER-RIGHT: #ff0000 1pt solid; VERTICAL-ALIGN: middle; BORDER-BOTTOM: #ff0000 1pt solid; PADDING-BOTTOM: 1px; PADDING-TOP: 1px; PADDING-LEFT: 1px; BORDER-LEFT: #ff0000 1pt solid; PADDING-RIGHT: 1px"
+                                    colspan="3">
+                                    <div ><font face="宋体">
+                                        <c:forEach items="${bqdwList}" var="op">
+                                            <div id="div_${op.id}">
+                                                <input type="hidden" value="${op.id}"/>
+                                                <div style="float: left;width: 100%;" class="font-s">
+                                                    <input id="${op.id}" style="width:98%;height:28px;;border:1px solid #D4D4D4" value="${op.content}"/>
+                                                </div>
+                                                <div style="width: 490px;">
+                                                    <div style="float:right;padding-right:30px;padding-top:5px;padding-bottom:5px;" class="font-s">
+                                                        <input readonly="readonly" style=" height:100%;border:none" value="${op.username} ${op.createTime}"></input>
+                                                        <button type="button" style="background-color: lightskyblue;font-weight:bold" class="common_button" id="${op.id}_field0018_mod" onclick="buttonClick(this)" >修改保存</button>
+                                                        <button type="button" style="background-color:#ea9191;font-weight:bold"  class="common_button" id="${op.id}_field0018_del" onclick="buttonClick(this)">删除</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </c:forEach>
+                                    </font></div>
+                                </td>
+                            </tr>
+
                             <tr style="min-height: 49px; height: 49px;">
                                 <td style="BORDER-TOP: #ff0000 1pt solid; BORDER-RIGHT: #ff0000 1pt solid; VERTICAL-ALIGN: middle; BORDER-BOTTOM: #ff0000 1pt solid; PADDING-BOTTOM: 1px; PADDING-TOP: 1px; PADDING-LEFT: 1px; BORDER-LEFT: #ff0000 1pt solid; PADDING-RIGHT: 1px; BACKGROUND-COLOR: transparent">
                                     <div align="center"><font face="宋体" size="4"

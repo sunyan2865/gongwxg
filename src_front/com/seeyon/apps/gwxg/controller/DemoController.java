@@ -131,12 +131,15 @@ public class DemoController extends BaseController {
 			field0021：党政办意见
 			field0020：部门会签意见
 			field0022：校队意见
+
+			field0031：文件合规性审核
 			*/
 			List<OpinionEntity> bmfzrList = new ArrayList<>();
 			List<OpinionEntity> dzbList = new ArrayList<>();
 			List<OpinionEntity> bmhqList = new ArrayList<>();
 			List<OpinionEntity> xdyjList = new ArrayList<>();
 			List<OpinionEntity> xldspList = new ArrayList<>();
+			List<OpinionEntity> wjhgxList = new ArrayList<>();
 			for(int p=0;p<yjlist.size();p++){
 				Map<String, Object> m = yjlist.get(p);
 				OpinionEntity opinion = new OpinionEntity();
@@ -162,12 +165,16 @@ public class DemoController extends BaseController {
 				if ("field0022".equals(policy)) {
 					xdyjList.add(opinion);
 				}
+				if ("field0031".equals(policy)) {
+					wjhgxList.add(opinion);
+				}
 			}
 			modelAndView.addObject("bmfzrList", bmfzrList);
 			modelAndView.addObject("xldspList", xldspList);
 			modelAndView.addObject("dzbList", dzbList);
 			modelAndView.addObject("bmhqList", bmhqList);
 			modelAndView.addObject("xdyjList", xdyjList);
+			modelAndView.addObject("wjhgxList", wjhgxList);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1121,10 +1128,12 @@ public class DemoController extends BaseController {
 			yjlist=jdbcAgent.resultSetToList();
 		/*	field0006：党政办拟办意见  dzbList
 			field0007：校领导批示意见   xldList
-			field0008：部门意见  bmList*/
+			field0008：部门意见  bmList
+			field0018：报请单位意见 bqdwList*/
 			List<OpinionEntity> dzbList = new ArrayList<>();
 			List<OpinionEntity> xldpsList = new ArrayList<>();
 			List<OpinionEntity> bmList = new ArrayList<>();
+			List<OpinionEntity> bqdwList = new ArrayList<>();
 			for(int p=0;p<yjlist.size();p++){
 				Map<String, Object> m = yjlist.get(p);
 				OpinionEntity opinion = new OpinionEntity();
@@ -1144,11 +1153,14 @@ public class DemoController extends BaseController {
 				if ("field0008".equals(policy)) {
 					bmList.add(opinion);
 				}
+				if ("field0018".equals(policy)) {
+					bqdwList.add(opinion);
+				}
 			}
 			modelAndView.addObject("dzbList", dzbList);
 			modelAndView.addObject("xldpsList", xldpsList);
 			modelAndView.addObject("bmList", bmList);
-
+			modelAndView.addObject("bqdwList", bqdwList);
 
 			//附件 field0015
 			String fjmainId=(String)swxxdata.get("field0015");
@@ -1204,10 +1216,13 @@ public class DemoController extends BaseController {
 			yjlist=jdbcAgent.resultSetToList();
 		/*	field0006：党政办拟办意见  dzbList
 			field0007：校领导批示意见   xldList
-			field0008：部门意见  bmList*/
+			field0008：部门意见  bmList
+			field0018：报请单位意见 bqdwList*/
+
 			List<OpinionEntity> dzbList = new ArrayList<>();
 			List<OpinionEntity> xldpsList = new ArrayList<>();
 			List<OpinionEntity> bmList = new ArrayList<>();
+			List<OpinionEntity> bqdwList = new ArrayList<>();
 			for(int p=0;p<yjlist.size();p++){
 				Map<String, Object> m = yjlist.get(p);
 				OpinionEntity opinion = new OpinionEntity();
@@ -1227,10 +1242,14 @@ public class DemoController extends BaseController {
 				if ("field0008".equals(policy)) {
 					bmList.add(opinion);
 				}
+				if ("field0018".equals(policy)) {
+					bqdwList.add(opinion);
+				}
 			}
 			modelAndView.addObject("dzbList", dzbList);
 			modelAndView.addObject("xldpsList", xldpsList);
 			modelAndView.addObject("bmList", bmList);
+			modelAndView.addObject("bqdwList", bqdwList);
 
 
 			//附件 field0015
