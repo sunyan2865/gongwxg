@@ -14,16 +14,20 @@
     <script type="text/javascript" charset="UTF-8" src="${path}/apps_res/govdoc/js/govdoc_common.js${ctp:resSuffix()}"></script>
     <script type="text/javascript" charset="UTF-8" src="${path}/apps_res/info/js/content.js${ctp:resSuffix()}"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/common/office/license.js?v="+new Date().getTime()></script>
-    <script type="text/javascript" charset="UTF-8" src="${path}/common/office/js/baseOffice.js${ctp:resSuffix()}"></script>
+    <%-- <script type="text/javascript" charset="UTF-8" src="${path}/common/office/js/baseOffice.js${ctp:resSuffix()}"></script>
+    --%> <script type="text/javascript" src="<%=request.getContextPath()%>/common/office/js/baseOffice.js?v="+new Date().getTime()></script>
 
+    <script type="text/javascript" charset="UTF-8" src="${path}/common/ckeditor410/ckeditor.js${ctp:resSuffix()}"></script>
     <script type="text/javascript" charset="UTF-8" src="${path}/apps_res/demo/util.js${ctp:resSuffix()}"></script>
+    <script type="text/javascript" charset="UTF-8" src="${path}/apps_res/demo/fwxg/xxfw/zwzxbj.js${ctp:resSuffix()}"></script>
 </head>
 <body style="height:1500px">
+
 <div id="toolbar_4462223" style="float:right" class="toolbar_l clearfix">
- <%--   <a  href="/seeyon/filedown.do?method=fileDownload_zdy&amp;fileurl=${zwdata.content}&amp;createDate=${zwdata.date}&amp;filename=${entity.field0005}正文.doc" style="margin-right: 50px;margin-top: 20px;cursor: pointer;" class="common_button"  id="contentGovdoc_a" onclick="downloadZw()">&lt;%&ndash;&ndash;%&gt;
-        <em id="contentGovdoc_em" class="ico16 text_type_16"></em>
-        <span id="contentGovdoc_span" class="menu_span" title="正文">正文下载</span>
-    </a>--%>
+    <%--   <a  href="/seeyon/filedown.do?method=fileDownload_zdy&amp;fileurl=${zwdata.content}&amp;createDate=${zwdata.date}&amp;filename=${entity.field0005}正文.doc" style="margin-right: 50px;margin-top: 20px;cursor: pointer;" class="common_button"  id="contentGovdoc_a" onclick="downloadZw()">&lt;%&ndash;&ndash;%&gt;
+           <em id="contentGovdoc_em" class="ico16 text_type_16"></em>
+           <span id="contentGovdoc_span" class="menu_span" title="正文">正文下载</span>
+       </a>--%>
     <a style="margin-right: 50px;margin-top: 20px;cursor: pointer;" class="common_button" onclick="save()">
         <em id="saveDraft_em" class="ico16 save_traft_16"></em>
         <span id="saveDraft_span" class="menu_span" title="保存">保存</span>
@@ -426,12 +430,15 @@
                                                                         <span id="field0010_txts" style="line-height:normal">正文</span>
                                                                     </a>
                                                                     <span class="ico16 affix_del_16" title="删除" onclick="deleteZw('${zwdata.content}')"></span>&nbsp;
-                                                                     <%-- <iframe id="officeEditorIframe" name="officeEditorIframe" frameborder="0" height="0" width="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
-                                                                        <span id="editOnline_${fj.id}">
-                                                                            <a class="hand" title="编辑" onclick="editOfficeOnline4Form('-6716956894056724289','-2199317821978820492','test.docx','application/vnd.openxmlformats-officedocument.wordprocessingml.document','2','2020-10-10 10:31:33')" target="_blank">
-                                                                                <span class="ico16 editor_16"></span>
-                                                                            </a>
-                                                                        </span>&nbsp;--%>
+
+                                                                     <iframe id="officeEditorIframe" name="officeEditorIframe" frameborder="0" height="0" width="0" scrolling="no" marginheight="0" marginwidth="0">
+                                                                          <html><head></head><body marginwidth="0" marginheight="0"></body></html>
+                                                                     </iframe>
+                                                                    <span id="editOnline_${zwdata.id}">
+                                                                        <a class="hand" title="编辑" onclick="editOfficeOnline4Form_zw('${zwdata.id}','${zwdata.content}','正文','application/vnd.openxmlformats-officedocument.wordprocessingml.document','2','${zwdata.date}')" target="_blank">
+                                                                            <span class="ico16 editor_16"></span>
+                                                                        </a>
+                                                                    </span>
                                                                 </div>
                                                         </c:if>
 
