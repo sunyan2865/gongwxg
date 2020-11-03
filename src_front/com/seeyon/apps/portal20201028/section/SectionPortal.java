@@ -22,9 +22,9 @@ public class SectionPortal extends BaseSectionImpl {
 
     @Override
     public String getName(Map<String, String> map) {
-        String name = "学校发文";
+        String name = "学校文件";
         if (Strings.isBlank(name)) {
-            return "学校发文";
+            return "学校文件";
         } else {
             return name;
         }
