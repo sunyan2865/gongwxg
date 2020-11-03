@@ -2,4 +2,11 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 <beans default-autowire="byName">
 	<bean id="demoManager" class="com.seeyon.apps.gwxg.manager.DemoManagerImpl" />
+
+    <!-- 首页栏目-学校发文-->
+	<bean id="sectionPortal" class="com.seeyon.apps.portal20201028.section.SectionPortal" init-method="init">
+		<property name="sectionType" value="common"/>
+		<property name="sortId" value="99"/>
+	</bean>
+
 </beans>

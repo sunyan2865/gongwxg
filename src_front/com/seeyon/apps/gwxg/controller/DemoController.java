@@ -1861,4 +1861,78 @@ public class DemoController extends BaseController {
 		return null;
 	}
 
+
+	/**
+	 * 首页栏目-学校文件
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ModelAndView toXxwjPortalList(HttpServletRequest request, HttpServletResponse response)throws Exception{
+		response.setContentType("text/html;charset=UTF-8");
+		ModelAndView view =new ModelAndView("portal20201028/xxwj/xxwj_list");
+		FlipInfo list =null;
+		Map<String, Object> xxwjlist= null;
+
+		Map<String,String> query = new HashMap<String,String>();
+		FlipInfo fi = new FlipInfo();
+		if(demoManager == null) {
+			demoManager = (DemoManager) AppContext.getBean("demoManager");
+		}
+		list=demoManager.toXxwjPortalList(fi,query);
+		view.addObject("xxwjlist", list.getData());
+		request.setAttribute("fflistStudent",list);
+		return view;
+	}
+
+
+	/**
+	 * 首页栏目-学校文件更多
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ModelAndView toXxwjPortalMoreList(HttpServletRequest request, HttpServletResponse response)throws Exception{
+		response.setContentType("text/html;charset=UTF-8");
+		ModelAndView view = new ModelAndView("portal20201028/xxwj/xxwj_list_more");
+		FlipInfo swlist =null;
+
+		Map<String,String> query = new HashMap<String,String>();
+		FlipInfo fi = new FlipInfo();
+		if(demoManager == null) {
+			demoManager = (DemoManager) AppContext.getBean("demoManager");
+		}
+		swlist=demoManager.toXxwjPortalMoreList(fi,query);
+		request.setAttribute("fflistStudent",swlist);
+
+		return view;
+	}
+
+
+
+	public ModelAndView toPortalDownloadFj(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		ModelAndView modelAndView = new ModelAndView("portal20201028/xxwj/fj_download");
+		String summaryid=request.getParameter("summaryid");
+		Map<String, Object> swxxdata = null;
+		JDBCAgent jdbcAgent = new JDBCAgent(true, false);
+		try {
+			String fjsql="select a.*,DATE_FORMAT(createdate,'%Y-%m-%d') as date,RIGHT(filename, INSTR(REVERSE(filename),'.')) filextension,round(a.ATTACHMENT_SIZE/1024,0) filesize from ctp_attachment  a where a.ATT_REFERENCE  ='"+summaryid+"'";
+			List<Map<String, Object>> fjList=null;
+			jdbcAgent.execute(fjsql);
+			fjList=jdbcAgent.resultSetToList();
+			modelAndView.addObject("fjlist", fjList);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			jdbcAgent.close();
+		}
+		return modelAndView;
+	}
+
 }
+
+
+
+

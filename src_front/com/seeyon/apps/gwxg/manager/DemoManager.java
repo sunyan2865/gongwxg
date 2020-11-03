@@ -7,6 +7,7 @@ import java.util.Map;
 import com.seeyon.ctp.common.exceptions.BusinessException;
 import com.seeyon.ctp.util.FlipInfo;
 import com.seeyon.ctp.common.template.vo.TemplateTreeVo;
+import org.springframework.web.servlet.ModelAndView;
 
 public interface DemoManager {
 
@@ -17,5 +18,8 @@ public interface DemoManager {
 	FlipInfo toFlswList(FlipInfo fi, Map<String, String> query) throws BusinessException, SQLException;
 	FlipInfo toXfList(FlipInfo fi, Map<String, String> query) throws BusinessException, SQLException;
 	FlipInfo toZsbgList(FlipInfo fi, Map<String, String> query) throws BusinessException, SQLException;
+	FlipInfo toXxwjPortalList(FlipInfo fi, Map<String, String> query) throws BusinessException, SQLException;
+	FlipInfo toXxwjPortalMoreList(FlipInfo fi, Map<String, String> query) throws BusinessException, SQLException;
+
 
 }
