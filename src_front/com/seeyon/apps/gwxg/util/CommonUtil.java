@@ -37,4 +37,13 @@ public class CommonUtil {
         return sb.toString();
     }
 
+
+    public static String isJudgeNull(String str) throws Exception {
+        String result="";
+        if(null!=str ){
+            result=str;
+        }
+        return result;
+    }
+
 }

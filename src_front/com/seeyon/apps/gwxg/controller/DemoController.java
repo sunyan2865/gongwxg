@@ -1931,6 +1931,34 @@ public class DemoController extends BaseController {
 		return modelAndView;
 	}
 
+
+	/**
+	 * 获得学校文件管理员
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ModelAndView getXxwjGlyData(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		JDBCAgent jdbcAgent = new JDBCAgent(true, false);
+		try {
+			String glysql="select  group_concat(OBJECTIVE0_ID) gly from org_relationship  t where t.source_id='-8784815977654893165'";
+			jdbcAgent.execute(glysql);
+			Map<String, Object> glydata=jdbcAgent.resultSetToMap();
+			String gly=glydata.get("gly").toString();
+			Map<String, Object> map = new HashMap<>();
+			map.put("code", 0);
+			map.put("data", gly);
+			com.alibaba.fastjson.JSONObject json = new JSONObject(map);
+			render(response, json.toJSONString());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			jdbcAgent.close();
+		}
+		return null;
+	}
+
 }
 
 

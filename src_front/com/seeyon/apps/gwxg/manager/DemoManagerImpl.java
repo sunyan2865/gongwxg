@@ -14,6 +14,7 @@ import com.seeyon.ctp.organization.manager.OrgManager;
 import com.seeyon.ctp.util.*;
 import com.seeyon.ctp.util.annotation.AjaxAccess;
 import java.sql.SQLException;
+import com.seeyon.apps.gwxg.util.CommonUtil;
 public class DemoManagerImpl implements DemoManager {
 
 	private OrgManager orgManager;
@@ -465,60 +466,7 @@ public class DemoManagerImpl implements DemoManager {
 	@AjaxAccess
 	@SuppressWarnings("toXxwjPortalList")
 	public FlipInfo toXxwjPortalList(FlipInfo flipInfo, Map<String,String> query) throws SQLException, BusinessException {
-		String currentUserId = AppContext.getCurrentUser().getId().toString();
-		List<Map<String, Object>> xxwjlist = null;
-		List<Map<String, Object>> resultlist =  new ArrayList<>();
-		List<Map<String, Object>> revoler = new ArrayList<>();
-		JDBCAgent jdbcAgent = new JDBCAgent(true, false);
-
-
-		StringBuffer alldatasql=new StringBuffer("select * from( select  t.id summaryid,f.id formid,f.field0001 wjbt,f.field0005 wh,field0008 wjfbrq,f.field0006 gkfs,f.start_date,f.field0011 gly,f.field0012 ysqgkr,i.showvalue gksfmc,(select count(c.id) from ctp_attachment c where c.att_reference=t.id) fjcnt,c.content, date_format(c.create_date,'%Y-%m-%d') date from formmain_0170 f " +
-				" left join edoc_summary t on t.form_recordid=f.id " +
-				" left join ctp_content_all c on c.content is not null and c.module_id=t.id " +
-				" left join (select id,showvalue from ctp_enum_item t where t.REF_ENUMID='-6716972179926924238'  and state='1') i on i.id=f.field0006 " +
-				"  ) t where 1=1  order by start_date desc");
-		try{
-			jdbcAgent.execute(alldatasql.toString());
-			xxwjlist=jdbcAgent.resultSetToList();
-
-			String glysql="select  group_concat(OBJECTIVE0_ID) gly from org_relationship  t where t.source_id='-8784815977654893165'";
-            jdbcAgent.execute(glysql);
-			Map<String, Object> glydata=jdbcAgent.resultSetToMap();
-			String gly=glydata.get("gly").toString();
-			if(null!=gly &&  !(gly.equals(""))){
-				if(gly.indexOf(currentUserId)!=-1){//当前用户在“学校文件管理员”组里面
-					resultlist=xxwjlist;
-				}else{
-					for (int p = 0; p < xxwjlist.size(); p++) {
-						Map<String, Object> m = xxwjlist.get(p);
-						String gkfs=(String)m.get("gkfs");
-						//String gly=(String)m.get("gly");//学校文件管理员
-						String ysqgk=(String)m.get("ysqgkr");//依申请公开人
-						if(gkfs.equals("-7932555032561041306")){//公开
-							resultlist.add(m);
-						}else if(gkfs.equals("-6555425946729429389")){//依申请公开
-							if(ysqgk.indexOf(currentUserId)!=-1){
-								resultlist.add(m);
-							}
-						}
-					}
-				}
-				for (int i = 0; i < resultlist.size(); i++) {
-					Map<String, Object> m = new HashMap<>();
-					for (Map.Entry<String, Object> entry : resultlist.get(i).entrySet()) {
-						m.put(entry.getKey(), String.valueOf(entry.getValue()) + "");
-					}
-					revoler.add(m);
-				}
-			}
-		}catch (Exception e){
-			e.printStackTrace();
-		}finally {
-			jdbcAgent.close();
-		}
-
-		flipInfo.setTotal(revoler.size());
-		flipInfo.setData(revoler);
+		flipInfo=getPoratlList("limit",flipInfo, query);
 		return flipInfo;
 	}
 
@@ -528,33 +476,41 @@ public class DemoManagerImpl implements DemoManager {
 	@AjaxAccess
 	@SuppressWarnings("toXxwjPortalMoreList")
 	public FlipInfo toXxwjPortalMoreList(FlipInfo flipInfo, Map<String,String> query) throws SQLException, BusinessException {
+		flipInfo=getPoratlList("more",flipInfo, query);
+		return flipInfo;
+	}
+
+
+
+	private FlipInfo getPoratlList(String  type,FlipInfo flipInfo, Map<String,String> query){
 		String currentUserId = AppContext.getCurrentUser().getId().toString();
 		List<Map<String, Object>> xxwjlist = null;
 		List<Map<String, Object>> resultlist =  new ArrayList<>();
 		List<Map<String, Object>> revoler = new ArrayList<>();
 		JDBCAgent jdbcAgent = new JDBCAgent(true, false);
 
-
 		StringBuffer alldatasql=new StringBuffer("select * from( select  t.id summaryid,f.id formid,f.field0001 wjbt,f.field0005 wh,field0008 wjfbrq,f.field0006 gkfs,f.start_date,f.field0011 gly,f.field0012 ysqgkr,i.showvalue gksfmc,(select count(c.id) from ctp_attachment c where c.att_reference=t.id) fjcnt,c.content, date_format(c.create_date,'%Y-%m-%d') date from formmain_0170 f " +
 				" left join edoc_summary t on t.form_recordid=f.id " +
 				" left join ctp_content_all c on c.content is not null and c.module_id=t.id " +
 				" left join (select id,showvalue from ctp_enum_item t where t.REF_ENUMID='-6716972179926924238'  and state='1') i on i.id=f.field0006 " +
-				"  ) t where 1=1  ");
-		if(null != query.get("wjbt")) {
-			alldatasql.append(" and wjbt like  '%"+query.get("wjbt") +"%'");
-		}
-		if(null != query.get("wh")) {
-			alldatasql.append(" and wh like  '%"+query.get("wh") +"%'");
-		}
-		if(null != query.get("gksfmc")) {
-			alldatasql.append(" and gksfmc like  '%"+query.get("gksfmc") +"%'");
-		}
-		if(null != query.get("startime")) {
-			alldatasql.append(" and wjfbrq >= '"+query.get("startime")+"'");
-		}
+				"  ) t where 1=1 ");
+		if(type.equals("more")){
+			if(null != query.get("wjbt")) {
+				alldatasql.append(" and wjbt like  '%"+query.get("wjbt") +"%'");
+			}
+			if(null != query.get("wh")) {
+				alldatasql.append(" and wh like  '%"+query.get("wh") +"%'");
+			}
+			if(null != query.get("gksfmc")) {
+				alldatasql.append(" and gksfmc like  '%"+query.get("gksfmc") +"%'");
+			}
+			if(null != query.get("startime")) {
+				alldatasql.append(" and wjfbrq >= '"+query.get("startime")+"'");
+			}
 
-		if(null != query.get("endtime")) {
-			alldatasql.append(" and wjfbrq <= '"+query.get("endtime")+"'");
+			if(null != query.get("endtime")) {
+				alldatasql.append(" and wjfbrq <= '"+query.get("endtime")+"'");
+			}
 		}
 
 		alldatasql.append("  order by start_date desc ");
@@ -565,37 +521,31 @@ public class DemoManagerImpl implements DemoManager {
 			String glysql="select  group_concat(OBJECTIVE0_ID) gly from org_relationship  t where t.source_id='-8784815977654893165'";
 			jdbcAgent.execute(glysql);
 			Map<String, Object> glydata=jdbcAgent.resultSetToMap();
-			String gly=glydata.get("gly").toString();
-			if(null!=gly &&  !(gly.equals(""))){
+			String gly="";
+			if(null!=glydata.get("gly")){
+				gly=glydata.get("gly").toString();
+			}
+			if(!(gly.equals(""))){
 				if(gly.indexOf(currentUserId)!=-1){//当前用户在“学校文件管理员”组里面
 					resultlist=xxwjlist;
 				}else{
-					for (int p = 0; p < xxwjlist.size(); p++) {
-						Map<String, Object> m = xxwjlist.get(p);
-						String gkfs=(String)m.get("gkfs");
-						//String gly=(String)m.get("gly");//学校文件管理员
-						String ysqgk=(String)m.get("ysqgkr");//依申请公开人
-						if(gkfs.equals("-7932555032561041306")){//公开
-							resultlist.add(m);
-						}else if(gkfs.equals("-6555425946729429389")){//依申请公开
-							if(ysqgk.indexOf(currentUserId)!=-1){
-								resultlist.add(m);
-							}
-						}
-					}
+					resultlist=getXxwjList(currentUserId,xxwjlist);
 				}
-				for (int i = 0; i < resultlist.size(); i++) {
-					Map<String, Object> m = new HashMap<>();
-					for (Map.Entry<String, Object> entry : resultlist.get(i).entrySet()) {
-						m.put(entry.getKey(), String.valueOf(entry.getValue()) + "");
-					}
-					revoler.add(m);
-				}
+			}else{
+				resultlist=getXxwjList(currentUserId,xxwjlist);
 			}
 
-
-
-
+			int cnt=resultlist.size();
+			if(type.equals("limit")){
+				if(cnt>7){cnt=7;}
+			}
+			for (int i = 0; i < cnt; i++) {
+				Map<String, Object> m = new HashMap<>();
+				for (Map.Entry<String, Object> entry : resultlist.get(i).entrySet()) {
+					m.put(entry.getKey(), String.valueOf(entry.getValue()) + "");
+				}
+				revoler.add(m);
+			}
 		}catch (Exception e){
 			e.printStackTrace();
 		}finally {
@@ -606,6 +556,26 @@ public class DemoManagerImpl implements DemoManager {
 		flipInfo.setData(revoler);
 		return flipInfo;
 	}
+
+	private  List<Map<String, Object>>  getXxwjList(String currentUserId,List<Map<String, Object>> xxwjlist) throws Exception {
+		List<Map<String, Object>> resultlist =  new ArrayList<>();
+		for (int p = 0; p < xxwjlist.size(); p++) {
+			Map<String, Object> m = xxwjlist.get(p);
+			String gkfs=com.seeyon.apps.gwxg.util.CommonUtil.isJudgeNull((String)m.get("gkfs"));
+			//String gly=(String)m.get("gly");//学校文件管理员
+			String ysqgk=com.seeyon.apps.gwxg.util.CommonUtil.isJudgeNull((String)m.get("ysqgkr"));//依申请公开人
+			if(gkfs.equals("-7932555032561041306")){//公开
+				resultlist.add(m);
+			}else if(gkfs.equals("-6555425946729429389")){//依申请公开
+				if(ysqgk.indexOf(currentUserId)!=-1){
+					resultlist.add(m);
+				}
+			}
+		}
+		return resultlist;
+	}
+
+
 
 
 }

@@ -25,13 +25,27 @@ $(document).ready(function () {
         }
     });
 
-    var toolbarArray = new Array();
-    //编辑
-    toolbarArray.push({id: "delete",name:"删除流程",className: "ico16 del_16",click:doDelete});
-    //工具栏
-    toolbar = $("#toolbars").toolbar({
-        toolbar: toolbarArray
+    var currentUserId=document.getElementById("currentUser").value;
+    $.ajax({
+        url: _ctxPath + '/demo.do?method=getXxwjGlyData',
+        type:'POST',
+        success:function (res) {
+            var gly=res["data"];
+            if(null!=gly && gly!=''){
+                if(gly.indexOf(currentUserId)!=-1) {
+                    var toolbarArray = new Array();
+                    //编辑
+                    toolbarArray.push({id: "delete",name:"删除",className: "ico16 del_16",click:doDelete});
+                    //工具栏
+                    toolbar = $("#toolbars").toolbar({
+                        toolbar: toolbarArray
+                    });
+                }
+            }
+        }
     });
+
+
 
     //搜索框
     var topSearchSize = 7;

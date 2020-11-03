@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8"%>
 <%@ include file="/WEB-INF/jsp/common/common.jsp" %>
+<%@page import="com.seeyon.ctp.common.AppContext"%>
 <!DOCTYPE html>
 <html class="h100b">
 <head>
@@ -9,6 +10,8 @@
    <script type="text/javascript" charset="UTF-8" src="${path}/apps_res/portal20201028/xxwj/xxwj_more.js${ctp:resSuffix()}"></script>
 </head>
 <body class="h100b" onunload="">
+
+
 <div id='layout'>
     <div class="layout_north f0f0f0" id="north">
         <table width="100%" border="0" cellpadding="0">
@@ -22,7 +25,7 @@
     <div class="layout_center over_hidden" id="center">
         <table  class="flexme3" id="listStudent"></table>
     </div>
-
+   <input id="currentUser" type="hidden" value="<%=AppContext.getCurrentUser().getId()%>"/>
 
 
 
