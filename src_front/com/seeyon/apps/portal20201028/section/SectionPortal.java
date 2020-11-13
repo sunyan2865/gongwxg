@@ -2,6 +2,7 @@ package com.seeyon.apps.portal20201028.section;
 
 import com.seeyon.apps.portal20201028.util.ReadConfigTools;
 import com.seeyon.ctp.portal.section.BaseSectionImpl;
+import com.seeyon.ctp.portal.section.SectionReference;
 import com.seeyon.ctp.portal.section.templete.BaseSectionTemplete;
 import com.seeyon.ctp.portal.section.templete.HtmlTemplete;
 import com.seeyon.ctp.util.Strings;
@@ -14,6 +15,10 @@ import java.util.Map;
 public class SectionPortal extends BaseSectionImpl {
 
     private ReadConfigTools configTools = new ReadConfigTools();
+
+    public SectionPortal() {
+    }
+
 
     @Override
     public String getId() {
@@ -66,7 +71,6 @@ public class SectionPortal extends BaseSectionImpl {
 
 
 
-
         String sectionUrl = "/seeyon/demo.do?method=toXxwjPortalList";
         if (Strings.isNotBlank(preference.get("sectionUrl"))) {
             sectionUrl = preference.get("sectionUrl");
@@ -77,7 +81,9 @@ public class SectionPortal extends BaseSectionImpl {
         ht.setHtml(html.toString());
         ht.setModel(HtmlTemplete.ModelType.inner);
         ht.setShowBottomButton(true);
+        ht.setPermission(true);
         ht.addBottomButton("common_more_label", "/demo.do?method=toXxwjPortalMoreList", HtmlTemplete.OPEN_TYPE.href.name());
+
         return ht;
 
 //       // 栏目解析主方法
