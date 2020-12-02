@@ -46,7 +46,7 @@ $(document).ready(function () {
 
     var d1 = document.getElementsByClassName("bDiv");
     d1[0].style.overflow='hidden';
-    d1[0].style.height='240px';
+    d1[0].style.height='550px';
 
     var d2 = document.getElementsByClassName("pDiv");
     d2[0].style.display='none';

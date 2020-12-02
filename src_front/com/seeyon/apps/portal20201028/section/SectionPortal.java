@@ -37,7 +37,7 @@ public class SectionPortal extends BaseSectionImpl {
 
     @Override
     public Integer getTotal(Map<String, String> map) {
-        return 18;
+        return 20;
     }
 
     @Override
@@ -81,7 +81,6 @@ public class SectionPortal extends BaseSectionImpl {
         ht.setHtml(html.toString());
         ht.setModel(HtmlTemplete.ModelType.inner);
         ht.setShowBottomButton(true);
-        ht.setPermission(true);
         ht.addBottomButton("common_more_label", "/demo.do?method=toXxwjPortalMoreList", HtmlTemplete.OPEN_TYPE.href.name());
 
         return ht;

@@ -537,7 +537,7 @@ public class DemoManagerImpl implements DemoManager {
 
 			int cnt=resultlist.size();
 			if(type.equals("limit")){
-				if(cnt>7){cnt=7;}
+				if(cnt>20){cnt=20;}
 			}
 			for (int i = 0; i < cnt; i++) {
 				Map<String, Object> m = new HashMap<>();
@@ -553,6 +553,7 @@ public class DemoManagerImpl implements DemoManager {
 		}
 
 		flipInfo.setTotal(revoler.size());
+		flipInfo.setSize(10);
 		flipInfo.setData(revoler);
 		return flipInfo;
 	}
