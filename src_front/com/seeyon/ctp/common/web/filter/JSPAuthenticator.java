@@ -40,6 +40,8 @@ public class JSPAuthenticator extends AbstractAuthenticator {
 				"index.jsp",
 				"lightweightsso.jsp",
 				"openPendingsso.jsp",
+				"openDonesso.jsp",
+				"openSentsso.jsp",
 				"pc.jsp",
 				"pc2a8.jsp",
 				"ssoproxy/jsp/ssoproxy.jsp",
