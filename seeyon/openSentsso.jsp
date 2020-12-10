@@ -8,11 +8,11 @@
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
     <meta name="renderer" content="webkit|ie-stand|ie-comp"/>
-    <title>OA待办</title>
+    <title>OA已发</title>
 </head>
 <body>
 <%
-    OpenPendingController.formSend(request, response);
+    OpenPendingController.formSent(request, response);
 %>
 </body>
 </html>
