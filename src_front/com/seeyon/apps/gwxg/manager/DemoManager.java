@@ -20,6 +20,8 @@ public interface DemoManager {
 	FlipInfo toZsbgList(FlipInfo fi, Map<String, String> query) throws BusinessException, SQLException;
 	FlipInfo toXxwjPortalList(FlipInfo fi, Map<String, String> query) throws BusinessException, SQLException;
 	FlipInfo toXxwjPortalMoreList(FlipInfo fi, Map<String, String> query) throws BusinessException, SQLException;
-
+	FlipInfo toFwQuery(FlipInfo fi, Map<String, String> query) throws BusinessException, SQLException;
+	FlipInfo toSwQuery(FlipInfo fi, Map<String, String> query) throws BusinessException, SQLException;
+	FlipInfo toCbryQuery(FlipInfo fi, Map<String, String> query,String formson0216_id) throws BusinessException, SQLException;
 
 }

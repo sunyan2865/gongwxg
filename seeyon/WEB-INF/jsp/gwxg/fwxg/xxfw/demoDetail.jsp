@@ -652,7 +652,7 @@
         $.ajax({
             url: _ctxPath + '/demo.do?method=getJgdzData',
             type:'POST',
-            data:{parent_id: $("#field0023").val()},
+            data:{parent_id: $("#field0023").val(),ref_enumid:'-7394917914078590178'},
             error:function(res){},
             success:function (res) {
                 var list=res["data"];

@@ -1,6 +1,9 @@
 package com.seeyon.apps.gwxg.controller;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,8 +15,15 @@ import com.alibaba.fastjson.JSONObject;
 import com.seeyon.apps.gwxg.po.FormMain0081Entity;
 import com.seeyon.apps.gwxg.po.*;
 import com.seeyon.apps.gwxg.util.CommonUtil;
+import com.seeyon.apps.meetingroom.util.MeetingReadConfigTools;
 import com.seeyon.ctp.common.AppContext;
+import com.seeyon.ctp.services.ServiceResponse;
+import com.seeyon.ctp.services.UserToken;
 import com.seeyon.ctp.util.JDBCAgent;
+import com.seeyon.v3x.services.AuthorityService;
+import com.seeyon.v3x.services.impl.AuthorityServiceImpl;
+import com.seeyon.v3x.services.message.MessageService;
+import com.seeyon.v3x.services.message.impl.MessageServiceImpl;
 import org.apache.commons.logging.Log;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
@@ -57,6 +67,7 @@ public class DemoController extends BaseController {
 
 		return view;
 	}
+
 
 
 	/**
@@ -803,6 +814,81 @@ public class DemoController extends BaseController {
 		}
 		return modelAndView;
 	}
+
+
+	/**
+	 * 跳转到删除节点界面
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ModelAndView toNodeDeleteView(HttpServletRequest request,HttpServletResponse response)throws Exception{
+		ModelAndView modelAndView = new ModelAndView("gwxg/nodeDelete");
+		String summaryid=request.getParameter("summaryid");
+		String sql="select distinct member_id,object_id ,(select name from org_member o where o.id=t.member_id) name  from ctp_affair t where  t.state ='3' and t.object_id ='"+summaryid+"'";
+		List<Map<String, Object>> memberlist = null;
+		JDBCAgent jdbcAgent = new JDBCAgent(true, false);
+		try {
+			jdbcAgent.execute(sql);
+			memberlist = jdbcAgent.resultSetToList();
+
+			List<Map<String, Object>> revoler = new ArrayList<>();
+			for (int i = 0; i < memberlist.size(); i++) {
+				Map<String, Object> m = new HashMap<>();
+				for (Map.Entry<String, Object> entry : memberlist.get(i).entrySet()) {
+					m.put(entry.getKey(), String.valueOf(entry.getValue()) + "");
+				}
+				revoler.add(m);
+			}
+
+			com.alibaba.fastjson.JSONArray memberlistArray = com.alibaba.fastjson.JSONArray.parseArray(JSON.toJSONString(revoler));
+			modelAndView.addObject("memberlist",memberlistArray);
+			modelAndView.addObject("summaryid",summaryid);
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally {
+			jdbcAgent.close();
+		}
+		return modelAndView;
+	}
+
+
+	/**
+	 * 删除节点
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 * edoc_summary,ctp_affair,edoc_opinion
+	 */
+	public ModelAndView toDeleteNode(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		Map<String, Object> map = new HashMap<>();
+
+		String summaryid = request.getParameter("summaryid");
+		String memberid=request.getParameter("memberid");
+
+		JDBCAgent jdbcAgent = new JDBCAgent(true, false);
+		try {
+			List batchedSql=new ArrayList();
+
+			batchedSql.add(" update edoc_summary r set r.current_nodes_info=replace(r.current_nodes_info,'"+memberid+";','') where  r.id='"+summaryid+"'");
+			batchedSql.add(" delete from   ctp_affair   where object_id='"+summaryid+"' and member_id='"+memberid+"' and state='3'");
+			jdbcAgent.executeBatch(batchedSql);
+			map.put("code", 0);
+
+		} catch (Exception e) {
+			map.put("code", -1);
+			e.printStackTrace();
+		}finally {
+			jdbcAgent.close();
+		}
+		com.alibaba.fastjson.JSONObject json = new JSONObject(map);
+		render(response, json.toJSONString());
+		return null;
+	}
+
+
 
 	/**
 	 * 节点替换操作(关联三个表)
@@ -1957,6 +2043,194 @@ public class DemoController extends BaseController {
 			jdbcAgent.close();
 		}
 		return null;
+	}
+
+
+
+
+	/**
+	 * 跳转到发文查询界面
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ModelAndView toFwQuery(HttpServletRequest request,HttpServletResponse response)throws Exception{
+		response.setContentType("text/html;charset=UTF-8");
+		ModelAndView view = new ModelAndView("gwcx/fwcx_list");
+		Map<String,String> query = new HashMap<String,String>();
+		FlipInfo fi = new FlipInfo();
+		FlipInfo swlist = demoManager.toFwQuery(fi,query);
+		request.setAttribute("fflistStudent",swlist);
+
+		return view;
+	}
+
+	/**
+	 * 跳转到收文查询界面
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ModelAndView toSwQuery(HttpServletRequest request,HttpServletResponse response)throws Exception{
+		response.setContentType("text/html;charset=UTF-8");
+		ModelAndView view = new ModelAndView("gwcx/swcx_list");
+		Map<String,String> query = new HashMap<String,String>();
+		FlipInfo fi = new FlipInfo();
+		FlipInfo swlist = demoManager.toSwQuery(fi,query);
+		request.setAttribute("fflistStudent",swlist);
+
+		return view;
+	}
+
+	/**
+	 * 跳转到催办-待办人界面
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ModelAndView toCbryQuery(HttpServletRequest request,HttpServletResponse response)throws Exception{
+		response.setContentType("text/html;charset=UTF-8");
+		String formson0216_id = request.getParameter("formson0216_id");
+		ModelAndView view = new ModelAndView("cbxx/bs_cbxx_list");
+		Map<String,String> query = new HashMap<String,String>();
+		FlipInfo fi = new FlipInfo();
+		FlipInfo swlist = demoManager.toCbryQuery(fi,query,formson0216_id);
+		request.setAttribute("fflistStudent",swlist);
+
+		return view;
+	}
+
+
+	/**
+	 * 发送消息通知
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ModelAndView toSendMessage(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		try {
+			String loginnames=request.getParameter("loginnames");
+			String affairids=request.getParameter("affairids");
+
+
+			MessageService messageService = new MessageServiceImpl();
+
+			//String[] urls = {"/collaboration/collaboration.do?method=summary&openFrom=listPending&affairId=4078006414541604008&contentAnchor=&_isModalDialog=true"};
+			//String[] loginNames=loginnames.split(",");
+			String[] loginNames=loginnames.split(",");
+			String[] affairIds=affairids.split(",");
+
+			String content="系统管理员催办：请尽快处理《材料报送》待办事项！";
+			AuthorityService authorityService = new AuthorityServiceImpl();
+			String pass = new MeetingReadConfigTools().getString("passwordOfWebservice");
+			UserToken userToken = authorityService.authenticate("service-admin", pass);
+			String tokenId = userToken.getId();
+
+			for(int i=0;i<loginNames.length;i++){
+				String[] url= {"/seeyon/collaboration/collaboration.do?method=summary&openFrom=listPending&affairId="+affairIds[i]+"&contentAnchor=&_isModalDialog=true"};
+				String[] loginName=loginNames[i].split(",");
+				ServiceResponse serviceResponse = messageService.sendMessageByLoginName(tokenId, loginName, content, url);
+				serviceResponse.getResult();
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+
+
+	/**
+	 * 服务器2附件同步
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ModelAndView to2FjTb(HttpServletRequest request,HttpServletResponse response)throws Exception{
+		response.setContentType("text/html;charset=UTF-8");
+		ModelAndView view = new ModelAndView("fjxx/2_fjtb");
+		return view;
+	}
+
+
+	public ModelAndView toFileTb(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		ModelAndView modelAndView = new ModelAndView("other/zsbg/zsbg_modify");
+		String tablename = request.getParameter("tablename");
+		//String sql="select field0032,field0033 from formson_0135 t where field0033 like '/0%' order by field0033";
+		String path=request.getParameter("path");
+
+		String real_field="";//真实文件名
+		String server_field="";//服务器文件名
+		String sql="";
+		String realfile="";
+		String serverfile="";
+		if(tablename.equals("formson_0135")){
+			real_field="field0032";
+			server_field="field0033";
+			sql="select * from formson_0135 order by field0033";
+		}else if(tablename.equals("formson_0132")){
+			real_field="field0030";
+			server_field="field0031";
+			sql="select * from formson_0132 order by field0031";
+		}
+
+		List<Map<String, Object>> fjList  = null;
+		JDBCAgent jdbcAgent = new JDBCAgent(true, false);
+		try {
+			jdbcAgent.execute(sql);
+			fjList=jdbcAgent.resultSetToList();
+
+			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+			System.out.println("==="+tablename+"("+path+")===start==="+df.format(new Date()));
+			//formson_0135收文
+			//formson_0132发文
+			int cnt=0;
+			for(int i=0;i<fjList.size();i++){
+				Map<String, Object> m = fjList.get(i);
+				realfile=m.get(real_field).toString();//真实文件名
+				serverfile=m.get(server_field).toString();//服务器文件名
+
+				String hz = realfile.substring(realfile.lastIndexOf("."));//获取真实文件的后缀名 .jpg
+				File file = new File(path+serverfile);
+				if(file.exists()){
+					cnt++;
+					String newpathfile= path+serverfile.substring(0,serverfile.lastIndexOf("."))+hz;
+					//重命名
+					File dest = new File(newpathfile);
+					file.renameTo(dest);
+				}
+			}
+			System.out.println("==="+tablename+"("+path+")===end==="+df.format(new Date()));// new Date()为获取当前系统时间
+			System.out.println("==="+tablename+"("+path+")===sql查出数据数==="+fjList.size());
+			System.out.println("==="+tablename+"("+path+")===修改文件数==="+cnt);
+
+		} catch (Exception e) {
+			System.out.println("==="+tablename+"("+path+")===realfile:("+realfile+")==serverfile:("+serverfile+")");
+			e.printStackTrace();
+		}finally {
+			jdbcAgent.close();
+		}
+		return modelAndView;
+	}
+
+
+	/**
+	 * 服务器7附件同步
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ModelAndView to7FjTb(HttpServletRequest request,HttpServletResponse response)throws Exception{
+		response.setContentType("text/html;charset=UTF-8");
+		ModelAndView view = new ModelAndView("fjxx/7_fjtb");
+		return view;
 	}
 
 }

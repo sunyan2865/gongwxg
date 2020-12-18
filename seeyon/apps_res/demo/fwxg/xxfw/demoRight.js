@@ -136,10 +136,16 @@ function rend(txt, data, r, c) {
             txt = "<a style='word-wrap: break-word;word-break: break-all;overflow: hidden;' class='scoreA color_blue' onClick='doGwmodView(&quot;"+data.form_recordid+"&quot;,&quot;"+data.summaryid+"&quot;)'>" + txt + "</a>";
         }
     }else{
-        if(null==txt || txt=='null'){
-            txt = "";
+        if(null==txt || txt=='null' || txt==""){
+            if(c==4){
+                txt = "已结束";
+            }else{
+                txt = "";
+            }
         }
+
     }
+
     return txt;
 }
 

@@ -46,7 +46,7 @@ public class DemoManagerImpl implements DemoManager {
 				                                " select f.field0005 as sex ,DATE_FORMAT(f.field0016 ,'%Y-%m-%d')  as age,f.field0026 as subject,f.start_date, t.id summaryId,t.FORM_RECORDID,t.start_time ,t.edoc_type,r.CURRENT_NODES_INFO as currentId " +
 												"  from formmain_0086 f " +
 											    "  left join  (SELECT * FROM edoc_summary t WHERE t.EDOC_TYPE = '0') t on  t.FORM_RECORDId=f.id " +
-											    "  left join (select object_id,group_concat(distinct member_id) as CURRENT_NODES_INFO from ctp_affair r where    state!='2'  group by object_id) r on r.OBJECT_ID=t.id " +
+											    "  left join (select object_id,group_concat(distinct member_id) as CURRENT_NODES_INFO from ctp_affair r where    state='3'  group by object_id) r on r.OBJECT_ID=t.id " +
 											    " )t where 1=1 ");
 
 		if(null != query.get("subject")) {
@@ -578,5 +578,197 @@ public class DemoManagerImpl implements DemoManager {
 
 
 
+
+
+
+	/**
+	 * 发文查询
+	 */
+	@Override
+	@AjaxAccess
+	@SuppressWarnings("toFwQuery")
+	public FlipInfo toFwQuery(FlipInfo flipInfo,Map<String,String> query) throws SQLException, BusinessException {
+		StringBuffer sql=new StringBuffer("select * from ( " +
+				" select f.field0005 as sex ,DATE_FORMAT(f.field0016 ,'%Y-%m-%d')  as age,f.field0026 as subject,f.start_date, t.id summaryId,t.FORM_RECORDID,t.start_time ,t.edoc_type,r.CURRENT_NODES_INFO as currentId,t.form_app_id summary_formid,t.form_id summary_operationId " +
+				"  from formmain_0086 f " +
+				"  left join  (SELECT * FROM edoc_summary t WHERE t.EDOC_TYPE = '0') t on  t.FORM_RECORDId=f.id " +
+				"  left join (select object_id,group_concat(distinct member_id) as CURRENT_NODES_INFO from ctp_affair r where    state='3'  group by object_id) r on r.OBJECT_ID=t.id " +
+				" )t where 1=1 ");
+
+		if(null != query.get("subject")) {
+			sql.append(" and subject like  '%"+query.get("subject") +"%'");
+		}
+		if(null != query.get("startime")) {
+			sql.append(" and age >= '"+query.get("startime")+"'");
+		}
+
+		if(null != query.get("endtime")) {
+			sql.append(" and age <= '"+query.get("endtime")+"'");
+		}
+
+		if(null != query.get("sex")) {
+			sql.append(" and sex like '%"+query.get("sex")+"%'");
+		}
+		sql.append(" order by start_date desc");
+		List<Map<String, Object>> swlist = null;
+		JDBCAgent jdbcAgent = new JDBCAgent(true, false);
+		try {
+			jdbcAgent.execute(sql.toString());
+			swlist = jdbcAgent.resultSetToList();
+
+			for(int i=0;i<swlist.size();i++){
+				Map<String, Object> m = swlist.get(i);
+				String currentNodeIds= (String) m.get("currentid");
+
+				if(null!=currentNodeIds && !(currentNodeIds.equals(""))){
+					String[] currentNodeIdsArr=currentNodeIds.split(",");
+					String idstr="";
+					for(int j=0;j<currentNodeIdsArr.length;j++){
+						idstr+="'"+currentNodeIdsArr[j]+"',";
+					}
+					String str = "select group_concat(name) name from ORG_MEMBER where id in(" + idstr.substring(0,idstr.length()-1) + ")";
+					jdbcAgent.execute(str);
+					List<Map<String, Object>> l =jdbcAgent.resultSetToList();
+					for (Map.Entry<String, Object> entry : l.get(0).entrySet()) {
+						m.put(entry.getKey(), entry.getValue());
+					}
+				}
+			}
+
+		} catch (BusinessException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		int page = flipInfo.getPage();
+		int size = flipInfo.getSize();
+		flipInfo.setTotal(swlist.size());
+		List newList = new ArrayList();
+		int currIdx = page > 1 ? (page - 1) * size : 0;
+		for (int i = 0; i < size && i < (swlist).size() - currIdx; ++i) {
+			newList.add((swlist).get(currIdx + i));
+		}
+
+		flipInfo.setData(newList);
+		return flipInfo;
+	}
+
+
+	/**
+	 * 收文查询
+	 * @param flipInfo
+	 * @param query
+	 * @return
+	 * @throws SQLException
+	 * @throws BusinessException
+	 */
+	@Override
+	@AjaxAccess
+	@SuppressWarnings("toSwQuery")
+	public FlipInfo toSwQuery(FlipInfo flipInfo, Map<String,String> query) throws SQLException, BusinessException {
+
+		StringBuffer sql=new StringBuffer("  select t.*,e.showvalue clxzmc from (" +
+				"     select t.id summaryid,f.id formid, f.field0006 wjbt,f.field0016 blqx ,f.field0011 as clxz,f.field0014 swrq,f.start_date,GROUP_CONCAT(u.name) current_node_name,t.form_app_id summary_formid,t.form_id summary_operationId from formmain_0081 f " +
+				"                 left join  (SELECT * FROM edoc_summary t WHERE t.EDOC_TYPE = '1') t on  t.FORM_RECORDId=f.id " +
+				"                 left join ctp_affair r on r.OBJECT_ID=t.id and r.state ='3'" +
+				"                 left join ORG_MEMBER u on u.id=r.MEMBER_ID " +
+				"                 group by t.id,f.id,f.field0006,f.field0016,f.field0014,f.field0011,f.start_date " +
+				" )t  " +
+				" left join (select id,showvalue from ctp_enum_item i where i.REF_ENUMID='6534952330511468065') e on e.id=t.clxz "+
+				" where 1=1  "
+		);
+
+		if(null != query.get("wjbt")) {
+			sql.append(" and wjbt like  '%"+query.get("wjbt") +"%'");
+		}
+
+		if(null != query.get("startime")) {
+			sql.append(" and blqx >= '"+query.get("startime")+"'");
+		}
+
+		if(null != query.get("endtime")) {
+			sql.append(" and blqx <= '"+query.get("endtime")+"'");
+		}
+
+		sql.append(" order by start_date desc  ");
+		List<Map<String, Object>> swxxlist = null;
+		List<Map<String, Object>> revoler = new ArrayList<>();
+		JDBCAgent jdbcAgent = new JDBCAgent(true, false);
+		try {
+			jdbcAgent.execute(sql.toString());
+			swxxlist = jdbcAgent.resultSetToList();
+
+			for (int i = 0; i < swxxlist.size(); i++) {
+				Map<String, Object> m = new HashMap<>();
+				for (Map.Entry<String, Object> entry : swxxlist.get(i).entrySet()) {
+					m.put(entry.getKey(), String.valueOf(entry.getValue()) + "");
+				}
+				revoler.add(m);
+			}
+
+		} catch (BusinessException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			jdbcAgent.close();
+		}
+
+		flipInfo.setTotal(swxxlist.size());
+		flipInfo.setData(revoler);
+		return flipInfo;
+	}
+
+
+
+
+	@Override
+	@AjaxAccess
+	@SuppressWarnings("toCbryQuery")
+	public FlipInfo toCbryQuery(FlipInfo flipInfo, Map<String,String> query,String formson0216_id) throws SQLException, BusinessException {
+
+		StringBuffer sql=new StringBuffer("  select * from ( "+
+				" select t.id formmain0217_id,a.id affairid,p.login_name id,a.MEMBER_ID,m.name xm,m.EXT_attr_1 lxdh,a.create_date,a.subject,a.OBJECT_ID from ( "+
+				" select * from formmain_0217  f "+
+				" where f.field0023=( "+
+						" select field0022 from  formson_0216  where id='"+formson0216_id+"') "+
+				" )t "+
+				"  join col_summary s on s.form_recordid=t.id "+
+				"  join ctp_affair a on a.OBJECT_ID=s.id and a.state='3' "+
+				" left join org_member m on m.id=a.member_id "+
+				" left join org_principal p on p.MEMBER_ID=a.MEMBER_ID "+
+				" )t where 1=1 "
+		);
+		if(null != query.get("xm")) {
+			sql.append(" and xm like  '%"+query.get("xm") +"%'");
+		}
+		sql.append(" order by create_date desc  ");
+		List<Map<String, Object>> swxxlist = null;
+		List<Map<String, Object>> revoler = new ArrayList<>();
+		JDBCAgent jdbcAgent = new JDBCAgent(true, false);
+		try {
+			jdbcAgent.execute(sql.toString());
+			swxxlist = jdbcAgent.resultSetToList();
+
+			for (int i = 0; i < swxxlist.size(); i++) {
+				Map<String, Object> m = new HashMap<>();
+				for (Map.Entry<String, Object> entry : swxxlist.get(i).entrySet()) {
+					m.put(entry.getKey(), String.valueOf(entry.getValue()) + "");
+				}
+				revoler.add(m);
+			}
+
+		} catch (BusinessException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			jdbcAgent.close();
+		}
+
+		flipInfo.setTotal(swxxlist.size());
+		flipInfo.setData(revoler);
+		return flipInfo;
+	}
 
 }

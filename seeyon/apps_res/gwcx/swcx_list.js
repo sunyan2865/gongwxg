@@ -19,23 +19,15 @@ $(document).ready(function () {
         }
     });
 
-    var toolbarArray = new Array();
+   /* var toolbarArray = new Array();
     //编辑
     toolbarArray.push({id: "ceshi",name:"收文修改",className: "ico16 editor_16",click:doGwmod});
     toolbarArray.push({id: "delete",name:"删除流程",className: "ico16 del_16",click:doDelete});
     toolbarArray.push({id: "replace",name:"替换节点",className: "ico16 sign_16",click:doReplace});
-    toolbarArray.push({id: "deleteNode",name:"删除节点",className: "ico16 sign_16",click:doDeleteNode});
-
-    var el = document.getElementById('toolbars');
-    var childs = el.childNodes;
-    for(var i = childs .length - 1; i >= 0; i--) {
-        el.removeChild(childs[i]);
-    }
-
     //工具栏
     toolbar = $("#toolbars").toolbar({
         toolbar: toolbarArray
-    });
+    });*/
 
     //搜索框
     var topSearchSize = 7;
@@ -122,7 +114,7 @@ $(document).ready(function () {
         isHaveIframe:true,
         slideToggleBtn:false,
         managerName : "demoManager",
-        managerMethod : "toSwxxList"
+        managerMethod : "toSwQuery"
         //usepager : false
     });
 
@@ -144,7 +136,7 @@ $(document).ready(function () {
 function rend(txt, data, r, c) {
     if(c==1){ //文件标题
         if(null!=txt){
-            txt = "<a style='word-wrap: break-word;word-break: break-all;overflow: hidden;' class='scoreA color_blue' onClick='doGwmodView(&quot;"+data.formid+"&quot;,&quot;"+data.summaryid+"&quot;)'>" + txt + "</a>";
+            txt = "<a style='word-wrap: break-word;word-break: break-all;overflow: hidden;' class='scoreA color_blue' onClick='doGwmodView(&quot;"+data.formid+"&quot;,&quot;"+data.summaryid+"&quot;,&quot;"+data.summary_operationid+"&quot;,&quot;"+data.summary_formid+"&quot;)'>" + txt + "</a>";
         }
     }else{
         if(null==txt || txt=='null' || txt==""){
@@ -234,9 +226,10 @@ function doGwmod() {
 /**
  * 点击标题进入修改界面
  */
-function doGwmodView(formid,summaryid) {
-    var url= _ctxPath + '/demo.do?method=toSwDjMod&id='+formid+'&summaryid='+summaryid;
-    var options = "status=no,resizable=no,menubar=no,top=10,left=200,width=1073,height=742,scrollbars=no,center:Yes;";
+function doGwmodView(formid,summaryid,summary_operationId,summary_formId) {
+    var operationId=summary_operationId+".-5869788831630209953";
+    var url= _ctxPath + '/govdoc/govdoc.do?method=summary&summaryId='+summaryid+'&openFrom=formQuery&operationId='+operationId+"&formId="+summary_formId;
+    var options = "status=no,resizable=no,menubar=no,top=0,left=0,width=1660,height=742,scrollbars=no,center:Yes;";
     window.open(url, null, options);
 }
 
@@ -285,34 +278,6 @@ function doDelete(){
             $.alert(e);
         }
     });
-}
-
-/***
- * 删除公文节点
- */
-function doDeleteNode(){
-    var rows = grid.grid.getSelectRows();
-    var count = rows.length;
-    if (count == 0) {
-        // 请选择要编辑的事项
-        $.alert("请选择要删除节点的公文");
-        return;
-    }
-    if (count > 1) {
-        // 只能选择一项事项进行编辑
-        $.alert($.i18n('collaboration.grid.alert.selectOneEdit'));
-        return;
-    }
-    if (count == 1) {
-        showSuperviseDigram('-2812121956276810973','424831927670949194','true','govdocRec','670869647114347','秘书调度','秘书调度','公文督办','','','4521264473872221727','2957620817375219625');
-
-        /*var obj = rows[0];
-        var url= _ctxPath + '/demo.do?method=toNodeDeleteView&summaryid='+obj.summaryid;
-        var options = "status=no,resizable=no,menubar=no,top=200,left=500,width=600,height=400,scrollbars=no,center:Yes;";
-        window.open(url, null, options);*/
-    }
-
-
 }
 
 /**

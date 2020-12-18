@@ -327,7 +327,7 @@
                                 <td style="BORDER-TOP: #ff0000 1pt solid; BORDER-RIGHT: #ff0000 1pt solid; VERTICAL-ALIGN: middle; BORDER-BOTTOM: #ff0000 1pt solid; PADDING-BOTTOM: 1px; PADDING-TOP: 1px; PADDING-LEFT: 1px; BORDER-LEFT: #ff0000 1pt solid; PADDING-RIGHT: 1px"
                                     colspan="3">
                                     <div><font face="宋体">
-                                        <c:forEach items="${xldList}" var="op">
+                                        <c:forEach items="${xldpsList}" var="op">
                                             <div id="div_${op.id}">
                                                 <input type="hidden" value="${op.id}"/>
                                                 <div style="float: left;width: 100%;" class="font-s">
