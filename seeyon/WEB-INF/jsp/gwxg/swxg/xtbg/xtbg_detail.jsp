@@ -9,6 +9,13 @@
     <script type="text/javascript" charset="UTF-8" src="${path}/common/content/form.js${ctp:resSuffix()}"></script>
     <script type="text/javascript" charset="UTF-8" src="${path}/apps_res/govdoc/js/govdocBody.js${ctp:resSuffix()}"></script>
     <script type="text/javascript" charset="UTF-8" src="${path}/apps_res/demo/util.js${ctp:resSuffix()}"></script>
+    <style type="text/css">
+        .opinionclass{
+            width:175px;
+            height:100%;
+            border:none;
+        }
+    </style>
 </head>
 <body style="height:1000px">
 
@@ -259,7 +266,7 @@
                                                 </div>
                                                 <div style="width: 490px;">
                                                     <div style="float:right;padding-right:30px;padding-top:5px;padding-bottom:5px;" class="font-s">
-                                                        <input readonly="readonly" style=" height:100%;border:none" value="${op.username} ${op.createTime}"></input>
+                                                        <input readonly="readonly" class="opinionclass" value="${op.username} ${op.createTime}"></input>
                                                     </div>
                                                 </div>
                                             </div>
@@ -286,7 +293,7 @@
                                                 </div>
                                                 <div style="width: 490px;">
                                                     <div style="float:right;padding-right:30px;padding-top:5px;padding-bottom:5px;" class="font-s">
-                                                        <input readonly="readonly" style=" height:100%;border:none" value="${op.username} ${op.createTime}"></input>
+                                                        <input readonly="readonly" class="opinionclass" value="${op.username} ${op.createTime}"></input>
                                                     </div>
                                                 </div>
                                             </div>
@@ -302,7 +309,7 @@
                                 <td style="BORDER-TOP: #ff0000 1pt solid; BORDER-RIGHT: #ff0000 1pt solid; VERTICAL-ALIGN: middle; BORDER-BOTTOM: #ff0000 1pt solid; PADDING-BOTTOM: 1px; PADDING-TOP: 1px; PADDING-LEFT: 1px; BORDER-LEFT: #ff0000 1pt solid; PADDING-RIGHT: 1px"
                                     colspan="3">
                                     <div><font face="宋体">
-                                        <c:forEach items="${xldList}" var="op">
+                                        <c:forEach items="${xldpsList}" var="op">
                                             <div id="div_${op.id}">
                                                 <input type="hidden" value="${op.id}"/>
                                                 <div style="float: left;width: 100%;" class="font-s">
@@ -310,7 +317,7 @@
                                                 </div>
                                                 <div style="width: 490px;">
                                                     <div style="float:right;padding-right:30px;padding-top:5px;padding-bottom:5px;" class="font-s">
-                                                        <input readonly="readonly" style=" height:100%;border:none" value="${op.username} ${op.createTime}"></input>
+                                                        <input readonly="readonly" class="opinionclass" value="${op.username} ${op.createTime}"></input>
                                                     </div>
                                                 </div>
                                             </div>
@@ -335,7 +342,7 @@
                                                     </div>
                                                     <div style="width: 490px;">
                                                         <div style="float:right;padding-right:30px;padding-top:5px;padding-bottom:5px;" class="font-s">
-                                                            <input readonly="readonly" style=" height:100%;border:none" value="${op.username} ${op.createTime}"></input>
+                                                            <input readonly="readonly" class="opinionclass" value="${op.username} ${op.createTime}"></input>
                                                         </div>
                                                     </div>
                                                 </div>

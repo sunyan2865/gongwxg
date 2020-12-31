@@ -135,7 +135,7 @@ public class GwJkManagerImpl implements  GwJkManager {
                 " group by t.id,f.id,f.field0001,f.field0011, f.start_date " +
                 " )t  " +
                 " left join ctp_affair_define_state s on s.summaryid=t.summaryid " +
-                " where 1=1  ");
+                " where  1=1");
 
         if(null != query.get("wjbt")) {
             sql.append(" and wjbt like  '%"+query.get("wjbt") +"%'");

@@ -9,6 +9,13 @@
     <script type="text/javascript" charset="UTF-8" src="${path}/common/content/form.js${ctp:resSuffix()}"></script>
     <script type="text/javascript" charset="UTF-8" src="${path}/apps_res/govdoc/js/govdocBody.js${ctp:resSuffix()}"></script>
     <script type="text/javascript" charset="UTF-8" src="${path}/apps_res/demo/util.js${ctp:resSuffix()}"></script>
+    <style type="text/css">
+        .opinionclass{
+            width:175px;
+            height:100%;
+            border:none;
+        }
+    </style>
 </head>
 <body style="height:1000px">
 <div style="clear: both;"></div>
@@ -152,7 +159,7 @@
                                                 </div>
                                                 <div style="width: 490px;">
                                                     <div style="float:right;padding-right:30px;padding-top:5px;padding-bottom:5px;" class="font-s">
-                                                        <input readonly="readonly" style=" height:100%;border:none" value="${op.username} ${op.createTime}"></input>
+                                                        <input readonly="readonly" class="opinionclass" value="${op.username} ${op.createTime}"></input>
                                                     </div>
                                                 </div>
                                             </div>
@@ -176,7 +183,7 @@
                                                     </div>
                                                     <div style="width: 490px;">
                                                         <div style="float:right;padding-right:30px;padding-top:5px;padding-bottom:5px;" class="font-s">
-                                                            <input readonly="readonly" style=" height:100%;border:none" value="${op.username} ${op.createTime}"></input>
+                                                            <input readonly="readonly" class="opinionclass" value="${op.username} ${op.createTime}"></input>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -200,7 +207,7 @@
                                                 </div>
                                                 <div style="width: 490px;">
                                                     <div style="float:right;padding-right:30px;padding-top:5px;padding-bottom:5px;" class="font-s">
-                                                        <input readonly="readonly" style=" height:100%;border:none" value="${op.username} ${op.createTime}"></input>
+                                                        <input readonly="readonly" class="opinionclass" value="${op.username} ${op.createTime}"></input>
                                                     </div>
                                                 </div>
                                             </div>
@@ -224,7 +231,7 @@
                                                 </div>
                                                 <div style="width: 490px;">
                                                     <div style="float:right;padding-right:30px;padding-top:5px;padding-bottom:5px;" class="font-s">
-                                                        <input readonly="readonly" style=" height:100%;border:none" value="${op.username} ${op.createTime}"></input>
+                                                        <input readonly="readonly" class="opinionclass" value="${op.username} ${op.createTime}"></input>
                                                     </div>
                                                 </div>
                                             </div>
