@@ -8,6 +8,13 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <script type="text/javascript" charset="UTF-8" src="${path}/common/content/form.js${ctp:resSuffix()}"></script>
  </head>
+<style type="text/css">
+    .opinionclass{
+        width:175px;
+        height:100%;
+        border:none;
+    }
+</style>
 <body>
 <div id="mainbodyDiv" style="text-align: center;margin-top: 1px;margin-left: 70px;">
     <div align="center">
@@ -296,7 +303,7 @@
                                                    </div>
                                                    <div style="width: 490px;">
                                                        <div style="float:right;padding-right:30px;padding-top:5px;padding-bottom:5px;" class="font-s">
-                                                           <input readonly="readonly" style=" height:100%;border:none" value="${op.username} ${op.createTime}"></input>
+                                                           <input readonly="readonly" class="opinionclass" value="${op.username} ${op.createTime}"></input>
                                                        </div>
                                                    </div>
                                                </c:forEach>
@@ -320,7 +327,7 @@
                                                 </div>
                                                 <div style="width: 490px;">
                                                     <div style="float:right;padding-right:30px;padding-top:5px;padding-bottom:5px;" class="font-s">
-                                                        <input readonly="readonly" style=" height:100%;border:none" value="${op.username} ${op.createTime}"></input>
+                                                        <input readonly="readonly" class="opinionclass" value="${op.username} ${op.createTime}"></input>
                                                      </div>
                                                 </div>
                                             </c:forEach>
@@ -344,7 +351,7 @@
                                                 </div>
                                                 <div style="width: 490px;">
                                                     <div style="float:right;padding-right:30px;padding-top:5px;padding-bottom:5px;" class="font-s">
-                                                        <input readonly="readonly" style=" height:100%;border:none" value="${op.username} ${op.createTime}"></input>
+                                                        <input readonly="readonly" class="opinionclass" value="${op.username} ${op.createTime}"></input>
                                                     </div>
                                                 </div>
                                             </c:forEach>
