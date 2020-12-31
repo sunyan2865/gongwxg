@@ -489,10 +489,11 @@ public class DemoManagerImpl implements DemoManager {
 		List<Map<String, Object>> revoler = new ArrayList<>();
 		JDBCAgent jdbcAgent = new JDBCAgent(true, false);
 
-		StringBuffer alldatasql=new StringBuffer("select * from( select  t.id summaryid,f.id formid,f.field0001 wjbt,f.field0005 wh,field0008 wjfbrq,f.field0006 gkfs,f.start_date,f.field0011 gly,f.field0012 ysqgkr,i.showvalue gksfmc,(select count(c.id) from ctp_attachment c where c.att_reference=t.id) fjcnt,c.content, date_format(c.create_date,'%Y-%m-%d') date from formmain_0170 f " +
+		StringBuffer alldatasql=new StringBuffer("select * from( select distinct  t.id summaryid,f.id formid,f.field0001 wjbt,f.field0005 wh,field0008 wjfbrq,f.field0006 gkfs,f.start_date,f.field0011 gly,f.field0012 ysqgkr,i.showvalue gksfmc,(select count(c.id) from ctp_attachment c where c.att_reference=t.id) fjcnt,c.content, date_format(a.create_date,'%Y-%m-%d') date from formmain_0170 f " +
 				" left join edoc_summary t on t.form_recordid=f.id " +
-				" left join ctp_content_all c on c.content is not null and c.module_id=t.id " +
-				" left join (select id,showvalue from ctp_enum_item t where t.REF_ENUMID='-6716972179926924238'  and state='1') i on i.id=f.field0006 " +
+				" left join ctp_content_all c on c.content is not null and c.module_id=t.id "+
+				" left join ctp_content_all a on a.content  is null and a.module_id=t.id "+
+		" left join (select id,showvalue from ctp_enum_item t where t.REF_ENUMID='-6716972179926924238'  and state='1') i on i.id=f.field0006 " +
 				"  ) t where 1=1 ");
 		if(type.equals("more")){
 			if(null != query.get("wjbt")) {
