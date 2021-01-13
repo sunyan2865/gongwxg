@@ -127,10 +127,10 @@ public class GwJkManagerImpl implements  GwJkManager {
     @SuppressWarnings("unchecked")
     public FlipInfo toXtbgJkList(FlipInfo flipInfo, Map<String,String> query) throws SQLException, BusinessException {
 
-        StringBuffer sql=new StringBuffer(" select t.*,group_concat(CONCAT(s.name,';',s.memberid,';',s.state,';',s.affairid)) definestate from ( " +
+        StringBuffer sql=new StringBuffer(" select t.*,group_concat(CONCAT(s.name,';',s.memberid,';',s.state,';',s.affairid)) definestate,(select group_concat(objective0_id)  userid from org_relationship r where r.source_id=7870838360278515793) teamuserid from ( " +
                 " select t.id summaryid,f.id formid, f.field0001 wjbt,f.field0011 bqrq ,GROUP_CONCAT(CONCAT(u.name,';',u.id,';',r.state,';',r.id)) name ,f.start_date from formmain_0188 f " +
                 " left join  (SELECT * FROM edoc_summary t WHERE t.EDOC_TYPE = '1') t on  t.FORM_RECORDId=f.id " +
-                " left join ctp_affair r on r.OBJECT_ID=t.id and r.state in ('3','4') " +
+                " left join ctp_affair r on r.OBJECT_ID=t.id and r.state =3 " +
                 " left join ORG_MEMBER u on u.id=r.MEMBER_ID " +
                 " group by t.id,f.id,f.field0001,f.field0011, f.start_date " +
                 " )t  " +
@@ -172,7 +172,6 @@ public class GwJkManagerImpl implements  GwJkManager {
         }finally {
             jdbcAgent.close();
         }
-
         flipInfo.setTotal(swlist.size());
         flipInfo.setData(revoler);
         return flipInfo;

@@ -156,7 +156,7 @@ public class DemoController extends BaseController {
 				OpinionEntity opinion = new OpinionEntity();
 				opinion.setId(String.valueOf(m.get("id")));
 				opinion.setContent((String)m.get("content"));
-				opinion.setCreateTime(m.get("create_time").toString().substring(0,10));
+				opinion.setCreateTime(m.get("create_time").toString().substring(0,19));
 				opinion.setUsername((String)m.get("username"));
 				opinion.setPolicy((String)m.get("policy"));
 				opinion.setFilename((String)m.get("filename"));
@@ -391,7 +391,7 @@ public class DemoController extends BaseController {
 				OpinionEntity opinion = new OpinionEntity();
 				opinion.setId(String.valueOf(m.get("id")));
 				opinion.setContent((String)m.get("content"));
-				opinion.setCreateTime(m.get("create_time").toString().substring(0,10));
+				opinion.setCreateTime(m.get("create_time").toString().substring(0,19));
 				opinion.setUsername((String)m.get("username"));
 				opinion.setPolicy((String)m.get("policy"));
 				opinion.setFilename((String)m.get("filename"));
@@ -479,7 +479,7 @@ public class DemoController extends BaseController {
 				OpinionEntity opinion = new OpinionEntity();
 				opinion.setId(String.valueOf(m.get("id")));
 				opinion.setContent((String)m.get("content"));
-				opinion.setCreateTime(m.get("create_time").toString().substring(0,10));
+				opinion.setCreateTime(m.get("create_time").toString().substring(0,19));
 				opinion.setUsername((String)m.get("username"));
 				opinion.setPolicy((String)m.get("policy"));
 				opinion.setFilename((String)m.get("filename"));
@@ -1009,7 +1009,7 @@ public class DemoController extends BaseController {
 				OpinionEntity opinion = new OpinionEntity();
 				opinion.setId(String.valueOf(m.get("id")));
 				opinion.setContent((String)m.get("content"));
-				opinion.setCreateTime(m.get("create_time").toString().substring(0,10));
+				opinion.setCreateTime(m.get("create_time").toString().substring(0,19));
 				opinion.setUsername((String)m.get("username"));
 				opinion.setPolicy((String)m.get("policy"));
 				opinion.setFilename((String)m.get("filename"));
@@ -1225,7 +1225,7 @@ public class DemoController extends BaseController {
 				OpinionEntity opinion = new OpinionEntity();
 				opinion.setId(String.valueOf(m.get("id")));
 				opinion.setContent((String)m.get("content"));
-				opinion.setCreateTime(m.get("create_time").toString().substring(0,10));
+				opinion.setCreateTime(m.get("create_time").toString().substring(0,19));
 				opinion.setUsername((String)m.get("username"));
 				opinion.setPolicy((String)m.get("policy"));
 				opinion.setFilename((String)m.get("filename"));
@@ -1314,7 +1314,7 @@ public class DemoController extends BaseController {
 				OpinionEntity opinion = new OpinionEntity();
 				opinion.setId(String.valueOf(m.get("id")));
 				opinion.setContent((String)m.get("content"));
-				opinion.setCreateTime(m.get("create_time").toString().substring(0,10));
+				opinion.setCreateTime(m.get("create_time").toString().substring(0,19));
 				opinion.setUsername((String)m.get("username"));
 				opinion.setPolicy((String)m.get("policy"));
 				opinion.setFilename((String)m.get("filename"));
@@ -2233,6 +2233,528 @@ public class DemoController extends BaseController {
 		return view;
 	}
 
+
+
+
+	/**
+	 * 联动select:根据人员id获得组信息
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ModelAndView getTeamInfo(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		JDBCAgent jdbcAgent = new JDBCAgent(true, false);
+		Map<String, Object> map = new HashMap<>();
+		try {
+			String userIdstr = request.getParameter("userIdstr");
+
+			//String departcnt_sql = "select count(distinct org_department_id) cnt  from org_member  r where r.id in ("+userIdstr+") and is_deleted=0 and org_department_id!=-6623057140633416986";
+
+			String departcnt_sql="select * from ( select count(distinct org_department_id) cnt  from org_member  r where r.id in ("+userIdstr+") and is_deleted=0 and org_department_id!=-6623057140633416986" +
+									" union all " +
+									" select count(distinct org_department_id) cnt  from org_member  r where r.id in ("+userIdstr+") and is_deleted=0 and org_department_id=-6623057140633416986  )t";
+			jdbcAgent.execute(departcnt_sql);
+
+			List<Map<String, Object>> list = new ArrayList<>();
+			list=jdbcAgent.resultSetToList();
+			int not_cnt = Integer.parseInt(list.get(0).get("cnt").toString());//不是校领导批示
+			int is_cnt = Integer.parseInt(list.get(1).get("cnt").toString());//校领导批示
+			if(not_cnt>0 && is_cnt>0 ){
+				map.put("code", -1);
+			}else{
+				map.put("code", 0);
+				String depart_sql="select distinct org_department_id  from org_member  r where r.id in ("+userIdstr+") and is_deleted=0 ";
+				jdbcAgent.execute(depart_sql);
+				String departmentid=String.valueOf(jdbcAgent.resultSetToMap().get("org_department_id"));
+				map.put("data", departmentid);
+			}
+
+			/*
+			int cnt= Integer.parseInt(jdbcAgent.resultSetToMap().get("cnt").toString());
+			if(cnt>1){
+
+			}else{
+
+			}*/
+			com.alibaba.fastjson.JSONObject json = new JSONObject(map);
+			render(response, json.toJSONString());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			jdbcAgent.close();
+		}
+		return null;
+	}
+
+
+	/**
+	 * 跳转到内部转阅界面
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ModelAndView toNbReadView(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		ModelAndView modelAndView = new ModelAndView("nbzy/nbzy_add");
+		String summaryId = request.getParameter("summaryid");
+		String affair_id=request.getParameter("affairId");
+		String formappid=request.getParameter("formappid");
+		String sql="";
+		if(formappid.equals("4521264473872221727")){//文件处理笺
+			sql="select id,field0006 bt from formmain_0081 t  where t.id =(select form_recordid from edoc_summary s where s.id='"+summaryId+"')";
+		}else if(formappid.equals("-7104120039076376646")){//协同办公
+			sql="select  id,field0001 bt  from formmain_0188 t   where t.id =(select form_recordid from edoc_summary s where s.id='"+summaryId+"')";
+		}
+		Map<String, Object> swdata = null;
+		JDBCAgent jdbcAgent = new JDBCAgent(true, false);
+		try {
+			jdbcAgent.execute(sql);
+			swdata=jdbcAgent.resultSetToMap();
+			modelAndView.addObject("swdata", swdata);
+			modelAndView.addObject("summaryid",summaryId);
+			modelAndView.addObject("formappid",formappid);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return modelAndView;
+	}
+
+	/**
+	 * 根据原单子意见表是否改变插入内部传阅意见edoc_opinion
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ModelAndView toNbcyOpinion(HttpServletRequest request, HttpServletResponse response) throws  Exception{
+		Map<String, Object> jsonMap = new HashMap();
+		JDBCAgent jdbcAgent = new JDBCAgent(true, false);
+		try {
+			String summaryid =request.getParameter("summaryid");
+			String formappid=request.getParameter("formappid");//form_definion单子的id、
+			if(formappid.equals("4521264473872221727") || formappid.equals("-7104120039076376646")){
+				String judge_nbcy_sql="";
+
+				//判断是不是内部传阅表
+				if(formappid.equals("4521264473872221727")){ //收文文件处理笺
+					judge_nbcy_sql="select group_concat(s.id) nbcy_summaryids,count(*) cnt from (" +
+							"  select * from formmain_0243 t where t.field0031='"+summaryid+"'" +
+							")t" +
+							" left join edoc_summary s on s.form_recordid=t.id";
+				}else if(formappid.equals("-7104120039076376646")){//协同办公处理笺
+					judge_nbcy_sql="select group_concat(s.id) nbcy_summaryids,count(*) cnt from (" +
+							"  select * from formmain_0248 t where t.field0021='"+summaryid+"'" +
+							")t" +
+							" left join edoc_summary s on s.form_recordid=t.id";
+				}
+
+				jdbcAgent.execute(judge_nbcy_sql);
+				Map<String, Object> nbcydata=jdbcAgent.resultSetToMap();
+
+				int cnt= Integer.parseInt(nbcydata.get("cnt").toString());
+				if(cnt>=1) {//是内部传阅
+
+					String affairid =request.getParameter("affairid");
+					String nodepolicyname =request.getParameter("nodePolicy");
+					String nodeId =request.getParameter("nodeId");
+					String content=request.getParameter("content");
+					String nodepolicy=getPolicyId(formappid,nodepolicyname);
+
+					//获得当前用户单位
+					Long currentId=AppContext.getCurrentUser().getId();
+					String currentuser_sql=" select t.name,u.name deptname from ( " +
+							" select * from org_member r where r.id='" +currentId+"')t " +
+							" left join org_unit u on u.id=t.org_department_id";
+					jdbcAgent.execute(currentuser_sql);
+					Map<String, Object> user=jdbcAgent.resultSetToMap();
+					String userdeptname=(String) user.get("deptname");
+					String account=AppContext.getCurrentUser().getLoginAccountName();
+
+					//查看传阅文件的summaryid
+					String nbcy_summaryids = (String) nbcydata.get("nbcy_summaryids");
+					String[] nbcy_sumids = nbcy_summaryids.split(",");
+					for (int k = 0; k < nbcy_sumids.length; k++) {
+						String edoc_opinion_sql = "INSERT INTO `v5`.`edoc_opinion`(`ID`, `EDOC_ID`, `AFFAIR_ID`, `ATTRIBUTE`, `OPINION_TYPE`,    `CONTENT`, `IS_HIDDEN`, `CREATE_USER_ID`, `CREATE_TIME`,   `POLICY`,   `NODE_ID`,             `STATE`,`DEPARTMENT_NAME`, `ACCOUNT_NAME`, `DEPARTMENT_SORT_ID`)" +
+								" values ('"+CommonUtil.generateID()+"','"+nbcy_sumids[k]+"','"+affairid+  "',     -1,              1,'"+content+"',           0,'"+currentId+"',           now(),'"+nodepolicy+"','"+nodeId+"',                  0,'"+userdeptname+"',  '"+account+"',       '1004')";
+						jdbcAgent.execute(edoc_opinion_sql);
+					}
+				}
+				jsonMap.put("code", "0");
+				jsonMap.put("msg", "成功");
+			}
+
+		}catch(Exception e){
+			jsonMap.put("code", "1");
+			jsonMap.put("msg", "失败");
+		}finally {
+			jdbcAgent.close();
+		}
+		com.alibaba.fastjson.JSONObject json = new JSONObject(jsonMap);
+		render(response, json.toJSONString());
+		return null;
+	}
+
+	private String getPolicyId(String formappid,String nodepolicyname){
+		String nodepolicy="";
+		if(formappid.equals("4521264473872221727")){ //收文-文件处理笺
+			switch(nodepolicyname){
+				case "党政办拟办":nodepolicy="field0007";break;
+				case "校领导批示":nodepolicy="field0008";break;
+				case "部门承办":nodepolicy="field0010";break;
+				case "内部传阅":nodepolicy="field0030";break;
+				default:;break;
+			}
+		}else if(formappid.equals("-7104120039076376646")){//收文-协同办公处理笺
+			switch(nodepolicyname){
+				case "党政办拟办":nodepolicy="field0006";break;
+				case "校领导批示":nodepolicy="field0007";break;
+				case "部门承办":nodepolicy="field0008";break;
+				case "报请单位":nodepolicy="field0018";break;
+				case "内部传阅":nodepolicy="field0019";break;
+				default:;break;
+			}
+		}
+		return nodepolicy;
+	}
+	/**
+	 * 保存转阅信息-真实
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ModelAndView toSaveZyxx(HttpServletRequest request, HttpServletResponse response) throws  Exception{
+		Map<String, Object> jsonMap = new HashMap();
+		JDBCAgent jdbcAgent = new JDBCAgent(true, false);
+		try {
+			String yformid =request.getParameter("yformid");
+			String summaryid =request.getParameter("summaryid");
+			String selectzyr =request.getParameter("selectzyr");//转阅人
+			String wjbt=request.getParameter("wjbt");
+			String zfrcontent=request.getParameter("bz");
+			String formappid=request.getParameter("formappid");
+
+
+			String id=CommonUtil.generateID();
+
+			//formmain_0243
+			//String formain0238_sql="INSERT INTO `v5`.`formmain_0243`(`ID`, `state`, `start_member_id`, `start_date`, `approve_member_id`, `approve_date`, `finishedflag`, `ratifyflag`, `ratify_member_id`, `ratify_date`, `sort`, `modify_member_id`, `modify_date`, `field0001`, `field0002`, `field0003`, `field0004`, `field0005`, `field0006`, `field0007`, `field0008`, `field0009`, `field0010`, `field0011`, `field0012`, `field0013`, `field0014`, `field0015`, `field0016`, `field0017`, `field0018`, `field0019`, `field0020`, `field0021`, `field0022`, `field0023`, `field0024`, `field0025`, `field0026`, `field0027`,  `field0029`,    `field0031`) " +
+			//		                                      "select '"+id+"',`state`, `start_member_id`,        now(), `approve_member_id`, `approve_date`, `finishedflag`, `ratifyflag`, `ratify_member_id`, `ratify_date`, `sort`, `modify_member_id`,         now(), `field0001`, `field0002`, `field0003`, `field0004`, `field0005`, `field0006`, `field0007`, `field0008`, `field0009`, `field0010`, `field0011`, `field0012`, `field0013`, `field0014`, `field0015`, `field0016`, `field0017`, `field0018`, `field0019`, `field0020`, `field0021`, `field0022`, `field0023`, `field0024`, `field0025`, `field0026`, `field0027`, '"+yformid+"','"+summaryid+"' from formmain_0081 t where t.id='"+yformid+"'";
+
+			String formain_sql="";
+			if(formappid.equals("4521264473872221727")){//文件处理笺
+				formain_sql="INSERT INTO `v5`.`formmain_0243`(`ID`, `state`, `start_member_id`, `start_date`, `approve_member_id`, `approve_date`, `finishedflag`, `ratifyflag`, `ratify_member_id`, `ratify_date`, `sort`, `modify_member_id`, `modify_date`, `field0001`, `field0002`, `field0003`, `field0004`, `field0005`, `field0006`, `field0007`, `field0008`, `field0009`, `field0010`, `field0011`, `field0012`, `field0013`, `field0014`, `field0015`, `field0016`, `field0017`, `field0018`, `field0019`, `field0020`, `field0021`, `field0022`, `field0023`, `field0024`, `field0025`, `field0026`, `field0027`,  `field0029`,    `field0031`,`field0030`) " +
+						"select '"+id+"',`state`, `start_member_id`,        now(), `approve_member_id`, `approve_date`, `finishedflag`, `ratifyflag`, `ratify_member_id`, `ratify_date`, `sort`, `modify_member_id`,         now(), `field0001`, `field0002`, `field0003`, `field0004`, `field0005`, `field0006`, `field0007`, `field0008`, `field0009`, `field0010`, `field0011`, `field0012`, `field0013`, `field0014`, `field0015`, `field0016`, `field0017`, `field0018`, `field0019`, `field0020`, `field0021`, `field0022`, `field0023`, `field0024`, `field0025`, `field0026`, `field0027`, '"+yformid+"','"+summaryid+"','"+zfrcontent+"' from formmain_0081 t where t.id='"+yformid+"'";
+			}else if(formappid.equals("-7104120039076376646")){//协同办公
+				formain_sql="INSERT INTO `v5`.`formmain_0248`(`ID`, `state`,   `start_member_id`,   `start_date`, `approve_member_id`, `approve_date`, `finishedflag`, `ratifyflag`, `ratify_member_id`, `ratify_date`, `sort`, `modify_member_id`, `modify_date`, `field0001`, `field0002`, `field0003`, `field0004`, `field0005`, `field0006`, `field0007`, `field0008`, `field0009`, `field0010`, `field0011`, `field0012`, `field0013`, `field0014`, `field0015`, `field0016`, `field0017`, `field0018`,`field0019`, `field0020`, `field0021`) " +
+						"select '"+id+"', `state`,  `start_member_id`,          now(), `approve_member_id`, `approve_date`, `finishedflag`, `ratifyflag`, `ratify_member_id`, `ratify_date`, `sort`, `modify_member_id`, `modify_date`, `field0001`, `field0002`, `field0003`, `field0004`, `field0005`, `field0006`, `field0007`, `field0008`, `field0009`, `field0010`, `field0011`, `field0012`, `field0013`, `field0014`, `field0015`, `field0016`, `field0017`, `field0018`,'"+zfrcontent+"', '"+yformid+"','"+summaryid+"' from formmain_0188 t where t.id='"+yformid+"'";
+			}
+            String processid="",caseid="",templateid="",node_id="",form_app_id="",sub_object_id="",policy="",content_template_id="";
+			String expropx="",activity_id="",match_department_id="",match_post_id="",match_account_id="";
+			String fjfieldsql="";
+			if(formappid.equals("4521264473872221727")){//文件处理笺
+				processid="-8616086381970240538";
+				caseid="-7394047394254012073";
+				templateid="7664658925479545300";
+
+				node_id="6338382634892019116";
+				form_app_id="-2222614464458768261";
+				sub_object_id="-8432180377161349162";
+
+				policy="field0030";
+				content_template_id="中国矿业大学文件处理笺(内部传阅单)";
+
+				expropx="<map>\\r\\n<entry><string>edoc_lastOperateState</string><string><![CDATA[]]></string></entry>\\r\\n<entry><string>edoc_edocMark</string><string><![CDATA[]]></string></entry>\\r\\n<entry><string>edoc_sendUnit</string><string><![CDATA[]]></string></entry>\\r\\n</map>";
+				activity_id="6338382634892019116";
+				match_department_id=AppContext.getCurrentUser().getDepartmentId().toString();
+				//match_department_id="7697236995411887744";
+				match_post_id="5907544896615956503";
+				match_account_id="670869647114347";
+
+				fjfieldsql=" select  field0019  from  formmain_0243  t";
+			}else if(formappid.equals("-7104120039076376646")){//协同办公
+				processid="5155419376792979079";
+				caseid="-4811003073510619989";
+				templateid="-2911085481197681260";
+
+				node_id="6338382634892019116";
+				form_app_id="1085524643678604938";
+				sub_object_id="3849964209468818942";
+
+				policy="field0019";
+				content_template_id="中国矿业大学协同办公文件处理笺(内部传阅单)";
+
+				expropx="<map>\\r\\n<entry><string>edoc_lastOperateState</string><string><![CDATA[]]></string></entry>\\r\\n<entry><string>edoc_edocMark</string><string><![CDATA[]]></string></entry>\\r\\n<entry><string>edoc_sendUnit</string><string><![CDATA[]]></string></entry>\\r\\n</map>";
+				activity_id="160265946571313";
+				match_department_id=AppContext.getCurrentUser().getDepartmentId().toString();
+				match_post_id="5907544896615956503";
+				match_account_id="670869647114347";
+
+				fjfieldsql="  select  field0015  from  formmain_0248  t ";
+			}
+
+
+			//edoc_summary
+			String edocsummary_sql=" INSERT INTO `v5`.`edoc_summary`(`ID`, `IDENTIFIER`, `HAS_ARCHIVE`, `EDOC_TYPE`, `DEADLINE`, `CAN_TRACK`, `COMMENTS`,          `PROCESS_ID`,              `CASE_ID`, `FORM_ID`, `CREATE_TIME`, `START_USER_ID`, `START_TIME`, `CREATE_PERSON`, `COMPLETE_TIME`, `STATE`, `SUBJECT`, `DOC_TYPE`, `SEND_TYPE`, `DOC_MARK`, `SERIAL_NO`, `SECRET_LEVEL`, `URGENT_LEVEL`, `SEND_UNIT`, `SEND_UNIT_ID`, `ISSUER`, `SIGNING_DATE`, `SEND_TO`, `SEND_TO_ID`, `COPY_TO`, `COPY_TO_ID`, `REPORT_TO`, `REPORT_TO_ID`, `KEYWORDS`, `PRINT_UNIT`, `COPIES`, `PRINTER`, `ADVANCE_REMIND`,       `TEMPLETE_ID`, `WORKFLOW_RULE`, `PACK_DATE`, `ISUNIT`, `DOC_MARK2`, `SEND_UNIT2`, `SEND_UNIT_ID2`, `SEND_TO2`, `SEND_TO_ID2`, `COPY_TO2`, `COPY_TO_ID2`, `REPORT_TO2`, `REPORT_TO_ID2`, `COPIES2`, `ORG_DEPARTMENT_ID`, `ORG_ACCOUNT_ID`, `UPDATE_TIME`, `ARCHIVE_ID`, `SUB_EDOC_TYPE`, `FILESM`, `FILEFZ`, `PARTY`, `ADMINISTRATIVE`, `SEND_DEPARTMENT`, `SEND_DEPARTMENT2`, `SEND_DEPARTMENT_ID`, `SEND_DEPARTMENT_ID2`, `ATTACHMENTS`, `OVER_WORKTIME`, `RUN_WORKTIME`, `OVER_TIME`, `RUN_TIME`, `KEEP_PERIOD`, `IS_COVER_TIME`, `RECEIPT_DATE`, `REGISTRATION_DATE`, `AUDITOR`, `REVIEW`, `UNDERTAKER`, `PHONE`, `DEADLINE_DATETIME`, `IS_QUICK_SEND`, `CURRENT_NODES_INFO`, `UNDERTAKENOFFICE`, `UNDERTAKENOFFICE_ID`, `UNIT_LEVEL`, `TRANSFER_STATUS`, `GOVDOC_TYPE`, `SIGN_PERSON`, `SIGN_ACCOUNT_ID`, `EDOC_SECRET_LEVEL`, `JIANBAN_TYPE`, `GOVCODE`, `TO_EDOC_LIB_FLAG`, `TO_EDOC_LIB_TYPE`, `SEND_DATE`, `PRINT_UNIT_ID`, `RECEIVE_UNIT`, `RECEIVE_UNIT_ID`, `CHECK_PERSON`, `PROXY_DATE`, `PISHI_NO`, `PISHI_NAME`, `PISHI_YEAR`, `PISHI_LEADER_NAME`, `PUBLIC_INFO`,     `FORM_APP_ID`, `NEWFLOW_TYPE`, `ATTACHMENT_ARCHIVE_ID`, `CAN_MODIFY`, `FORM_RECORDID`, `IS_AUDITED`, `VOUCH`, `BODY_TYPE`, `EXCHANGE_TYPE`, `CAN_ARCHIVE`, `EXCHANGE_SEND_AFFAIRID`, `CAN_EDIT_ATTACHMENT`, `CAN_MERGE_DEAL`, `CAN_ANY_MERGE`, `CAN_EDIT`, `PROCESS_TYPE`, `SECRET_RELATED_LEVEL`, `FROM_TYPE`, `PROCESS_TERM_TYPE`, `REMIND_INTERVAL`, `DEAL_SUGGESTION`, `MERGE_DEAL_TYPE`, `AUTO_RUN`, `CAN_DELETE_NODE`) " +
+					                                     "select '"+id+"', `IDENTIFIER`, `HAS_ARCHIVE`, `EDOC_TYPE`, `DEADLINE`, `CAN_TRACK`, `COMMENTS`,       '"+processid+"','"+           caseid+"', `FORM_ID`, `CREATE_TIME`, `START_USER_ID`, `START_TIME`, `CREATE_PERSON`, `COMPLETE_TIME`, `STATE`, `SUBJECT`, `DOC_TYPE`, `SEND_TYPE`, `DOC_MARK`, `SERIAL_NO`, `SECRET_LEVEL`, `URGENT_LEVEL`, `SEND_UNIT`, `SEND_UNIT_ID`, `ISSUER`, `SIGNING_DATE`, `SEND_TO`, `SEND_TO_ID`, `COPY_TO`, `COPY_TO_ID`, `REPORT_TO`, `REPORT_TO_ID`, `KEYWORDS`, `PRINT_UNIT`, `COPIES`, `PRINTER`, `ADVANCE_REMIND`,    '"+templateid+"', `WORKFLOW_RULE`, `PACK_DATE`, `ISUNIT`, `DOC_MARK2`, `SEND_UNIT2`, `SEND_UNIT_ID2`, `SEND_TO2`, `SEND_TO_ID2`, `COPY_TO2`, `COPY_TO_ID2`, `REPORT_TO2`, `REPORT_TO_ID2`, `COPIES2`, `ORG_DEPARTMENT_ID`, `ORG_ACCOUNT_ID`, `UPDATE_TIME`, `ARCHIVE_ID`, `SUB_EDOC_TYPE`, `FILESM`, `FILEFZ`, `PARTY`, `ADMINISTRATIVE`, `SEND_DEPARTMENT`, `SEND_DEPARTMENT2`, `SEND_DEPARTMENT_ID`, `SEND_DEPARTMENT_ID2`, `ATTACHMENTS`, `OVER_WORKTIME`, `RUN_WORKTIME`, `OVER_TIME`, `RUN_TIME`, `KEEP_PERIOD`, `IS_COVER_TIME`, `RECEIPT_DATE`, `REGISTRATION_DATE`, `AUDITOR`, `REVIEW`, `UNDERTAKER`, `PHONE`, `DEADLINE_DATETIME`, `IS_QUICK_SEND`, `CURRENT_NODES_INFO`, `UNDERTAKENOFFICE`, `UNDERTAKENOFFICE_ID`, `UNIT_LEVEL`, `TRANSFER_STATUS`, `GOVDOC_TYPE`, `SIGN_PERSON`, `SIGN_ACCOUNT_ID`, `EDOC_SECRET_LEVEL`, `JIANBAN_TYPE`, `GOVCODE`, `TO_EDOC_LIB_FLAG`, `TO_EDOC_LIB_TYPE`, `SEND_DATE`, `PRINT_UNIT_ID`, `RECEIVE_UNIT`, `RECEIVE_UNIT_ID`, `CHECK_PERSON`, `PROXY_DATE`, `PISHI_NO`, `PISHI_NAME`, `PISHI_YEAR`, `PISHI_LEADER_NAME`, `PUBLIC_INFO`, '"+form_app_id+"', `NEWFLOW_TYPE`, `ATTACHMENT_ARCHIVE_ID`, `CAN_MODIFY`,        '"+id+"', `IS_AUDITED`, `VOUCH`, `BODY_TYPE`, `EXCHANGE_TYPE`, `CAN_ARCHIVE`, `EXCHANGE_SEND_AFFAIRID`, `CAN_EDIT_ATTACHMENT`, `CAN_MERGE_DEAL`, `CAN_ANY_MERGE`, `CAN_EDIT`, `PROCESS_TYPE`, `SECRET_RELATED_LEVEL`, `FROM_TYPE`, `PROCESS_TERM_TYPE`, `REMIND_INTERVAL`, `DEAL_SUGGESTION`, `MERGE_DEAL_TYPE`, `AUTO_RUN`, `CAN_DELETE_NODE` from edoc_summary r where r.id='"+summaryid+"'";
+
+			//获得当前用户单位
+			Long currentId=AppContext.getCurrentUser().getId();
+			String currentuser_sql=" select t.name,u.name deptname from ( " +
+					" select * from org_member r where r.id='" +currentId+"')t " +
+					" left join org_unit u on u.id=t.org_department_id";
+			jdbcAgent.execute(currentuser_sql);
+			Map<String, Object> user=jdbcAgent.resultSetToMap();
+			String userdeptname=(String) user.get("deptname");
+			String account=AppContext.getCurrentUser().getLoginAccountName();
+
+
+           //ctp_affair 添加已发人  state=2
+			String ctpaffair_sender_sql="INSERT INTO `v5`.`ctp_affair`(`ID`, `IS_COVER_TIME`,     `MEMBER_ID`,     `SENDER_ID`, `SUBJECT`, `APP`,   `OBJECT_ID`, `SUB_OBJECT_ID`, `STATE`, `SUB_STATE`, `HASTEN_TIMES`, `REMIND_DATE`, `DEADLINE_DATE`, `CAN_DUE_REMIND`, `CREATE_DATE`, `RECEIVE_TIME`, `COMPLETE_TIME`, `REMIND_INTERVAL`, `IS_DELETE`, `TRACK`, `ARCHIVE_ID`, `ADDITION`,   `EXT_PROPS`, `UPDATE_DATE`, `IS_FINISH`, `BODY_TYPE`, `IMPORTANT_LEVEL`, `RESENT_TIME`, `FORWARD_MEMBER`,           `IDENTIFIER`, `TRANSACTOR_ID`, `NODE_POLICY`,    `ACTIVITY_ID`,      `FORM_APP_ID`, `FORM_ID`, `FORM_OPERATION_ID`,        `TEMPLETE_ID`, `FROM_ID`, `OVER_WORKTIME`, `RUN_WORKTIME`, `OVER_TIME`, `RUN_TIME`, `DEAL_TERM_TYPE`, `DEAL_TERM_USERID`, `SUB_APP`, `EXPECTED_PROCESS_TIME`,        `ORG_ACCOUNT_ID`,          `PROCESS_ID`,  `IS_PROCESS_OVER_TIME`, `FORM_MULTI_OPERATION_ID`, `BACK_FROM_ID`, `FORM_RELATIVE_STATIC_IDS`, `FORM_RELATIVE_QUERY_IDS`, `HAS_FAVORITE`, `FROM_TYPE`,     `FORM_RECORDID`,            `CASE_ID`, `RELATION_DATA_ID`, `FIRSTVIEW_PERIOD`, `FIRSTVIEW_DATE`, `FIRSTRESPONSE_PERIOD`, `SIGNLEVIEW_PERIOD`,       `PRE_APPROVER`, `AUTO_RUN`,          `SUMMARY_STATE`,          `TOP_TIME`, `SORT_WEIGHT`, `AI_PROCESSING`, `PROCESS_DEADLINE_TIME`,   `PROXY_MEMBER_ID`, `MATCH_DEPARTMENT_ID`,     `MATCH_POST_ID`, `NODE_NAME`,    `MATCH_ACCOUNT_ID`, `PRINT_NM`, `MESSAGE_RULE_ID`, `MATCH_ROLE_ID`)" +
+					                " VALUES ('"+CommonUtil.generateID()+"',               0, '"+currentId+"', '"+currentId+"','"+wjbt+"',     4,      '"+id+"',             null,       2,          0,           NULL,          null,            null,                0,         now(),          now(),            NULL,              NULL,           0,        1,        NULL,       NULL, '"+expropx+"',         now(),           0,        '10',              null,          NULL,             NULL, '00000000000000000000',            NULL,     '内部传阅',             null,  '"+form_app_id+"',     NULL,                  NULL,     '"+templateid+"',       NULL,          NULL,            NULL,        NULL,      NULL,             null,                null,         2,                   NULL, '"+match_account_id+"',   '"+processid+"',                       0,                      NULL,           NULL,                     null,                        null,              0,        NULL,            '"+id+"',         '"+caseid+"',               NULL,           15432977,            now(),                   NULL,                NULL,                 null,          0,                        0,              '1970-01-01 00:00:00',          -1,               0,                     NULL,                 NULL, null, null,        NULL,        null,        NULL,            NULL,        NULL)";
+
+		   //ctp_content_all
+			String ctpcontentall_sql_1= "INSERT INTO `v5`.`ctp_content_all`(`ID`, `CREATE_ID`, `CREATE_DATE`, `MODIFY_ID`, `MODIFY_DATE`, `MODULE_TYPE`, `MODULE_ID`, `MODULE_TEMPLATE_ID`, `CONTENT_TYPE`, `CONTENT`, `CONTENT_DATA_ID`, `CONTENT_TEMPLATE_ID`, `TITLE`, `SORT`) " +
+					"VALUES ('"+CommonUtil.generateID()+"', '"+currentId+"', now(), '"+currentId+"', now(),   4, '"+id+"', 0, 10, '', NULL, 0, NULL, 1)" ;
+			String ctpcontentall_sql_2="INSERT INTO `v5`.`ctp_content_all`(`ID`,    `CREATE_ID`, `CREATE_DATE`, `MODIFY_ID`,  `MODIFY_DATE`, `MODULE_TYPE`, `MODULE_ID`,  `MODULE_TEMPLATE_ID`, `CONTENT_TYPE`, `CONTENT`,             `CONTENT_DATA_ID`, `CONTENT_TEMPLATE_ID`, `TITLE`, `SORT`) " +
+					                     "VALUES ('"+CommonUtil.generateID()+"','"+currentId+"',         now(), '"+currentId+"',      now(),             4,    '"+id+"',      '"+templateid+"',             20,        '', '"+id+"',   '"+form_app_id+"', '"+content_template_id+"', 0)";
+
+		   //发起人意见插入
+			String fqropinion_sql="INSERT INTO `v5`.`edoc_opinion`(             `ID`, `EDOC_ID`,    `AFFAIR_ID`, `ATTRIBUTE`, `OPINION_TYPE`,       `CONTENT`, `IS_HIDDEN`, `CREATE_USER_ID`, `CREATE_TIME`,    `POLICY`, `PROXY_NAME`,    `NODE_ID`,      `STATE`, `SUB_EDOC_ID`, `UPDATE_TIME`, `SUB_OPINION_ID`, `DEPARTMENT_NAME`, `ACCOUNT_NAME`, `DEPARTMENT_SORT_ID`, `SOURCE_SUMMARY_ID`) " +
+					                           "values('"+CommonUtil.generateID()+"',  '"+id+"','"+currentId+"',          -1,              1,'"+zfrcontent+"',           0,  '"+currentId+"',         now(),'"+policy+"',         null,'"+node_id+"',             0,          null,          null,             null,'"+userdeptname+"',  '"+account+"',               '1004',             null)";
+
+
+			List batchedSql=new ArrayList();
+
+			batchedSql.add(formain_sql);
+			batchedSql.add(edocsummary_sql);
+			batchedSql.add(ctpaffair_sender_sql);
+			batchedSql.add(ctpcontentall_sql_1);
+			batchedSql.add(ctpcontentall_sql_2);
+			batchedSql.add(fqropinion_sql);
+
+			jdbcAgent.executeBatch(batchedSql);
+
+
+            String[] zyr=selectzyr.split(",");
+            for(int i=0;i<zyr.length;i++){
+				String ctpaffair_reciver_sql="INSERT INTO `v5`.`ctp_affair`(         `ID`, `IS_COVER_TIME`,  `MEMBER_ID`,      `SENDER_ID`, `SUBJECT`, `APP`, `OBJECT_ID`,      `SUB_OBJECT_ID`,     `STATE`,  `SUB_STATE`, `HASTEN_TIMES`, `REMIND_DATE`, `DEADLINE_DATE`, `CAN_DUE_REMIND`, `CREATE_DATE`, `RECEIVE_TIME`, `COMPLETE_TIME`, `REMIND_INTERVAL`, `IS_DELETE`, `TRACK`, `ARCHIVE_ID`, `ADDITION`, `EXT_PROPS`,   `UPDATE_DATE`, `IS_FINISH`, `BODY_TYPE`, `IMPORTANT_LEVEL`, `RESENT_TIME`, `FORWARD_MEMBER`,          `IDENTIFIER`, `TRANSACTOR_ID`, `NODE_POLICY`,     `ACTIVITY_ID`,        `FORM_APP_ID`, `FORM_ID`, `FORM_OPERATION_ID`,  `TEMPLETE_ID`,       `FROM_ID`, `OVER_WORKTIME`, `RUN_WORKTIME`, `OVER_TIME`, `RUN_TIME`, `DEAL_TERM_TYPE`, `DEAL_TERM_USERID`, `SUB_APP`, `EXPECTED_PROCESS_TIME`, `ORG_ACCOUNT_ID`,    `PROCESS_ID`, `IS_PROCESS_OVER_TIME`, `FORM_MULTI_OPERATION_ID`, `BACK_FROM_ID`, `FORM_RELATIVE_STATIC_IDS`, `FORM_RELATIVE_QUERY_IDS`, `HAS_FAVORITE`, `FROM_TYPE`, `FORM_RECORDID`,    `CASE_ID`, `RELATION_DATA_ID`, `FIRSTVIEW_PERIOD`, `FIRSTVIEW_DATE`, `FIRSTRESPONSE_PERIOD`, `SIGNLEVIEW_PERIOD`,       `PRE_APPROVER`,`AUTO_RUN`, `SUMMARY_STATE`,            `TOP_TIME`, `SORT_WEIGHT`, `AI_PROCESSING`, `PROCESS_DEADLINE_TIME`, `PROXY_MEMBER_ID`,     `MATCH_DEPARTMENT_ID`,    `MATCH_POST_ID`, `NODE_NAME`,  `MATCH_ACCOUNT_ID`, `PRINT_NM`, `MESSAGE_RULE_ID`, `MATCH_ROLE_ID`)" +
+						                           " VALUES ('"+CommonUtil.generateID()+"',              0, '"+zyr[i]+"',  '"+currentId+"','"+wjbt+"',     4,    '"+id+"',  '"+sub_object_id+"',           3,          11,          NULL,               0,              0,               0 ,          now(),          now(),            NULL,              NULL,           0,       0,         NULL,      NULL, '"+expropx+"',          now(),           0,        '10',              null,           NULL,            NULL, '00000000000000000000',           NULL,     '内部传阅', '"+activity_id+"',    '"+form_app_id+"',      NULL,               NULL,'"+templateid+"', '"+currentId+"',            NULL,           NULL,        NULL,       NULL,               0,                  -1,         2,                    NULL,  '"+match_account_id+"', '"+processid+"',                    0,                      NULL,           NULL,                         '',                        '',              0,         NULL,        '"+id+"',  '"+caseid+"',               NULL,           15432977,            now(),                   NULL,                NULL,      '"+currentId+"',         0,               0, '1970-01-01 00:00:00',            -1,               0,                    NULL,              NULL, '"+match_department_id+"','"+match_post_id+"',      NULL,'"+match_account_id+"',       NULL,              NULL, NULL)";
+				jdbcAgent.execute(ctpaffair_reciver_sql);
+            }
+
+			//原单子中所有意见插入edoc_opinion
+			String yj_sql="select * from edoc_opinion o where o.edoc_id='"+summaryid+"'";
+			List<Map<String, Object>> yjlist = null;
+			jdbcAgent.execute(yj_sql);
+			yjlist=jdbcAgent.resultSetToList();
+			for(int p=0;p<yjlist.size();p++) {
+				Map<String, Object> m = yjlist.get(p);
+				String opinion_id = String.valueOf(m.get("id"));
+				String opinion_sql = "INSERT INTO `v5`.`edoc_opinion`(`ID`, `EDOC_ID`, `AFFAIR_ID`, `ATTRIBUTE`, `OPINION_TYPE`, `CONTENT`, `IS_HIDDEN`, `CREATE_USER_ID`, `CREATE_TIME`, `POLICY`, `PROXY_NAME`, `NODE_ID`, `STATE`, `SUB_EDOC_ID`, `UPDATE_TIME`, `SUB_OPINION_ID`, `DEPARTMENT_NAME`, `ACCOUNT_NAME`, `DEPARTMENT_SORT_ID`, `SOURCE_SUMMARY_ID`) " +
+						"select '" + CommonUtil.generateID() + "', '" + id + "', `AFFAIR_ID`, `ATTRIBUTE`, `OPINION_TYPE`, `CONTENT`, `IS_HIDDEN`, `CREATE_USER_ID`, `CREATE_TIME`, `POLICY`, `PROXY_NAME`, `NODE_ID`, `STATE`, `SUB_EDOC_ID`, `UPDATE_TIME`, `SUB_OPINION_ID`, `DEPARTMENT_NAME`, `ACCOUNT_NAME`, `DEPARTMENT_SORT_ID`, `SOURCE_SUMMARY_ID` from  edoc_opinion o where o.id='" + opinion_id + "'";
+				jdbcAgent.execute(opinion_sql);
+			}
+			//ctp_attachment 附件表
+			String fj_sql="select * from ctp_attachment t  where t.att_reference='"+summaryid+"'";
+			List<Map<String, Object>> fjlist = null;
+			jdbcAgent.execute(fj_sql);
+			fjlist=jdbcAgent.resultSetToList();
+			for(int p=0;p<fjlist.size();p++) {
+				Map<String, Object> m = fjlist.get(p);
+				String fj_id = String.valueOf(m.get("id"));
+				String insert_fj_sql = "INSERT INTO `v5`.`ctp_attachment`(`ID`, `ATT_REFERENCE`, `SUB_REFERENCE`, `CATEGORY`, `TYPE`, `FILENAME`, `FILE_URL`, `MIME_TYPE`, `CREATEDATE`, `ATTACHMENT_SIZE`, `DESCRIPTION`, `GENESIS_ID`, `SORT`)" +
+						"select '"+CommonUtil.generateID()+"','"+        id+"',("+fjfieldsql+"  where t.id='"+id+"'), `CATEGORY`, `TYPE`, `FILENAME`, `FILE_URL`, `MIME_TYPE`, `CREATEDATE`, `ATTACHMENT_SIZE`, `DESCRIPTION`, `GENESIS_ID`, `SORT` from ctp_attachment t where t.id='"+fj_id+"'";
+				jdbcAgent.execute(insert_fj_sql);
+			}
+
+
+			jsonMap.put("code", "0");
+			jsonMap.put("msg", "成功");
+		}catch(Exception e){
+			e.printStackTrace();
+			jsonMap.put("code", "1");
+			jsonMap.put("msg", "失败");
+		}finally {
+			jdbcAgent.close();
+		}
+		com.alibaba.fastjson.JSONObject json = new JSONObject(jsonMap);
+		render(response, json.toJSONString());
+		return null;
+	}
+	/**
+	 * 测试环境转阅保存
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	/*public ModelAndView toSaveZyxx(HttpServletRequest request, HttpServletResponse response) throws  Exception{
+		Map<String, Object> jsonMap = new HashMap();
+		JDBCAgent jdbcAgent = new JDBCAgent(true, false);
+		try {
+			String yformid =request.getParameter("yformid");
+			String summaryid =request.getParameter("summaryid");
+			String selectzyr =request.getParameter("selectzyr");//转阅人
+			String wjbt=request.getParameter("wjbt");
+			String zfrcontent=request.getParameter("bz");
+			String formappid=request.getParameter("formappid");
+
+			String id=CommonUtil.generateID();
+
+
+			//formmain_0243内部传阅单
+			*//*String formain_sql="INSERT INTO `v5`.`formmain_0243`(`ID`, `state`, `start_member_id`, `start_date`, `approve_member_id`, `approve_date`, `finishedflag`, `ratifyflag`, `ratify_member_id`, `ratify_date`, `sort`, `modify_member_id`, `modify_date`, `field0001`, `field0002`, `field0003`, `field0004`, `field0005`, `field0006`, `field0007`, `field0008`, `field0009`, `field0010`, `field0011`, `field0012`, `field0013`, `field0014`, `field0015`, `field0016`, `field0017`, `field0018`, `field0019`, `field0020`, `field0021`, `field0022`, `field0023`, `field0024`, `field0025`, `field0026`, `field0027`,  `field0029`,    `field0031`) " +
+					"select '"+id+"',`state`, `start_member_id`,        now(), `approve_member_id`, `approve_date`, `finishedflag`, `ratifyflag`, `ratify_member_id`, `ratify_date`, `sort`, `modify_member_id`,         now(), `field0001`, `field0002`, `field0003`, `field0004`, `field0005`, `field0006`, `field0007`, `field0008`, `field0009`, `field0010`, `field0011`, `field0012`, `field0013`, `field0014`, `field0015`, `field0016`, `field0017`, `field0018`, `field0019`, `field0020`, `field0021`, `field0022`, `field0023`, `field0024`, `field0025`, `field0026`, `field0027`, '"+yformid+"','"+summaryid+"' from formmain_0081 t where t.id='"+yformid+"'";
+*//*
+			String formain_sql="";
+			if(formappid.equals("4521264473872221727")){//文件处理笺
+				formain_sql="INSERT INTO `v5`.`formmain_0243`(`ID`, `state`, `start_member_id`, `start_date`, `approve_member_id`, `approve_date`, `finishedflag`, `ratifyflag`, `ratify_member_id`, `ratify_date`, `sort`, `modify_member_id`, `modify_date`, `field0001`, `field0002`, `field0003`, `field0004`, `field0005`, `field0006`, `field0007`, `field0008`, `field0009`, `field0010`, `field0011`, `field0012`, `field0013`, `field0014`, `field0015`, `field0016`, `field0017`, `field0018`, `field0019`, `field0020`, `field0021`, `field0022`, `field0023`, `field0024`, `field0025`, `field0026`, `field0027`,  `field0029`,    `field0031`,`field0030`) " +
+						"select '"+id+"',`state`, `start_member_id`,        now(), `approve_member_id`, `approve_date`, `finishedflag`, `ratifyflag`, `ratify_member_id`, `ratify_date`, `sort`, `modify_member_id`,         now(), `field0001`, `field0002`, `field0003`, `field0004`, `field0005`, `field0006`, `field0007`, `field0008`, `field0009`, `field0010`, `field0011`, `field0012`, `field0013`, `field0014`, `field0015`, `field0016`, `field0017`, `field0018`, `field0019`, `field0020`, `field0021`, `field0022`, `field0023`, `field0024`, `field0025`, `field0026`, `field0027`, '"+yformid+"','"+summaryid+"','"+zfrcontent+"' from formmain_0081 t where t.id='"+yformid+"'";
+			}else if(formappid.equals("-7104120039076376646")){//协同办公
+				formain_sql="INSERT INTO `v5`.`formmain_0248`(`ID`, `state`,   `start_member_id`,   `start_date`, `approve_member_id`, `approve_date`, `finishedflag`, `ratifyflag`, `ratify_member_id`, `ratify_date`, `sort`, `modify_member_id`, `modify_date`, `field0001`, `field0002`, `field0003`, `field0004`, `field0005`, `field0006`, `field0007`, `field0008`, `field0009`, `field0010`, `field0011`, `field0012`, `field0013`, `field0014`, `field0015`, `field0016`, `field0017`, `field0018`,`field0019`, `field0020`, `field0021`) " +
+						                           "select '"+id+"', `state`,  `start_member_id`,          now(), `approve_member_id`, `approve_date`, `finishedflag`, `ratifyflag`, `ratify_member_id`, `ratify_date`, `sort`, `modify_member_id`, `modify_date`, `field0001`, `field0002`, `field0003`, `field0004`, `field0005`, `field0006`, `field0007`, `field0008`, `field0009`, `field0010`, `field0011`, `field0012`, `field0013`, `field0014`, `field0015`, `field0016`, `field0017`, `field0018`,'"+zfrcontent+"', '"+yformid+"','"+summaryid+"' from formmain_0188 t where t.id='"+yformid+"'";
+			}
+			//edoc_summary
+			String edocsummary_sql=" INSERT INTO `v5`.`edoc_summary`(`ID`, `IDENTIFIER`, `HAS_ARCHIVE`, `EDOC_TYPE`, `DEADLINE`, `CAN_TRACK`, `COMMENTS`,          `PROCESS_ID`,              `CASE_ID`, `FORM_ID`, `CREATE_TIME`, `START_USER_ID`, `START_TIME`, `CREATE_PERSON`, `COMPLETE_TIME`, `STATE`, `SUBJECT`, `DOC_TYPE`, `SEND_TYPE`, `DOC_MARK`, `SERIAL_NO`, `SECRET_LEVEL`, `URGENT_LEVEL`, `SEND_UNIT`, `SEND_UNIT_ID`, `ISSUER`, `SIGNING_DATE`, `SEND_TO`, `SEND_TO_ID`, `COPY_TO`, `COPY_TO_ID`, `REPORT_TO`, `REPORT_TO_ID`, `KEYWORDS`, `PRINT_UNIT`, `COPIES`, `PRINTER`, `ADVANCE_REMIND`,       `TEMPLETE_ID`, `WORKFLOW_RULE`, `PACK_DATE`, `ISUNIT`, `DOC_MARK2`, `SEND_UNIT2`, `SEND_UNIT_ID2`, `SEND_TO2`, `SEND_TO_ID2`, `COPY_TO2`, `COPY_TO_ID2`, `REPORT_TO2`, `REPORT_TO_ID2`, `COPIES2`, `ORG_DEPARTMENT_ID`, `ORG_ACCOUNT_ID`, `UPDATE_TIME`, `ARCHIVE_ID`, `SUB_EDOC_TYPE`, `FILESM`, `FILEFZ`, `PARTY`, `ADMINISTRATIVE`, `SEND_DEPARTMENT`, `SEND_DEPARTMENT2`, `SEND_DEPARTMENT_ID`, `SEND_DEPARTMENT_ID2`, `ATTACHMENTS`, `OVER_WORKTIME`, `RUN_WORKTIME`, `OVER_TIME`, `RUN_TIME`, `KEEP_PERIOD`, `IS_COVER_TIME`, `RECEIPT_DATE`, `REGISTRATION_DATE`, `AUDITOR`, `REVIEW`, `UNDERTAKER`, `PHONE`, `DEADLINE_DATETIME`, `IS_QUICK_SEND`, `CURRENT_NODES_INFO`, `UNDERTAKENOFFICE`, `UNDERTAKENOFFICE_ID`, `UNIT_LEVEL`, `TRANSFER_STATUS`, `GOVDOC_TYPE`, `SIGN_PERSON`, `SIGN_ACCOUNT_ID`, `EDOC_SECRET_LEVEL`, `JIANBAN_TYPE`, `GOVCODE`, `TO_EDOC_LIB_FLAG`, `TO_EDOC_LIB_TYPE`, `SEND_DATE`, `PRINT_UNIT_ID`, `RECEIVE_UNIT`, `RECEIVE_UNIT_ID`, `CHECK_PERSON`, `PROXY_DATE`, `PISHI_NO`, `PISHI_NAME`, `PISHI_YEAR`, `PISHI_LEADER_NAME`, `PUBLIC_INFO`, `FORM_APP_ID`, `NEWFLOW_TYPE`, `ATTACHMENT_ARCHIVE_ID`, `CAN_MODIFY`, `FORM_RECORDID`, `IS_AUDITED`, `VOUCH`, `BODY_TYPE`, `EXCHANGE_TYPE`, `CAN_ARCHIVE`, `EXCHANGE_SEND_AFFAIRID`, `CAN_EDIT_ATTACHMENT`, `CAN_MERGE_DEAL`, `CAN_ANY_MERGE`, `CAN_EDIT`, `PROCESS_TYPE`, `SECRET_RELATED_LEVEL`, `FROM_TYPE`, `PROCESS_TERM_TYPE`, `REMIND_INTERVAL`, `DEAL_SUGGESTION`, `MERGE_DEAL_TYPE`, `AUTO_RUN`, `CAN_DELETE_NODE`) " +
+					"select '"+id+"', `IDENTIFIER`, `HAS_ARCHIVE`, `EDOC_TYPE`, `DEADLINE`, `CAN_TRACK`, `COMMENTS`, -5709615003221930261, 5696870082158086801, `FORM_ID`, `CREATE_TIME`, `START_USER_ID`, `START_TIME`, `CREATE_PERSON`, `COMPLETE_TIME`, `STATE`, `SUBJECT`, `DOC_TYPE`, `SEND_TYPE`, `DOC_MARK`, `SERIAL_NO`, `SECRET_LEVEL`, `URGENT_LEVEL`, `SEND_UNIT`, `SEND_UNIT_ID`, `ISSUER`, `SIGNING_DATE`, `SEND_TO`, `SEND_TO_ID`, `COPY_TO`, `COPY_TO_ID`, `REPORT_TO`, `REPORT_TO_ID`, `KEYWORDS`, `PRINT_UNIT`, `COPIES`, `PRINTER`, `ADVANCE_REMIND`, 7664658925479545300, `WORKFLOW_RULE`, `PACK_DATE`, `ISUNIT`, `DOC_MARK2`, `SEND_UNIT2`, `SEND_UNIT_ID2`, `SEND_TO2`, `SEND_TO_ID2`, `COPY_TO2`, `COPY_TO_ID2`, `REPORT_TO2`, `REPORT_TO_ID2`, `COPIES2`, `ORG_DEPARTMENT_ID`, `ORG_ACCOUNT_ID`, `UPDATE_TIME`, `ARCHIVE_ID`, `SUB_EDOC_TYPE`, `FILESM`, `FILEFZ`, `PARTY`, `ADMINISTRATIVE`, `SEND_DEPARTMENT`, `SEND_DEPARTMENT2`, `SEND_DEPARTMENT_ID`, `SEND_DEPARTMENT_ID2`, `ATTACHMENTS`, `OVER_WORKTIME`, `RUN_WORKTIME`, `OVER_TIME`, `RUN_TIME`, `KEEP_PERIOD`, `IS_COVER_TIME`, `RECEIPT_DATE`, `REGISTRATION_DATE`, `AUDITOR`, `REVIEW`, `UNDERTAKER`, `PHONE`, `DEADLINE_DATETIME`, `IS_QUICK_SEND`, `CURRENT_NODES_INFO`, `UNDERTAKENOFFICE`, `UNDERTAKENOFFICE_ID`, `UNIT_LEVEL`, `TRANSFER_STATUS`, `GOVDOC_TYPE`, `SIGN_PERSON`, `SIGN_ACCOUNT_ID`, `EDOC_SECRET_LEVEL`, `JIANBAN_TYPE`, `GOVCODE`, `TO_EDOC_LIB_FLAG`, `TO_EDOC_LIB_TYPE`, `SEND_DATE`, `PRINT_UNIT_ID`, `RECEIVE_UNIT`, `RECEIVE_UNIT_ID`, `CHECK_PERSON`, `PROXY_DATE`, `PISHI_NO`, `PISHI_NAME`, `PISHI_YEAR`, `PISHI_LEADER_NAME`, `PUBLIC_INFO`, '-2222614464458768261', `NEWFLOW_TYPE`, `ATTACHMENT_ARCHIVE_ID`, `CAN_MODIFY`, '"+id+"', `IS_AUDITED`, `VOUCH`, `BODY_TYPE`, `EXCHANGE_TYPE`, `CAN_ARCHIVE`, `EXCHANGE_SEND_AFFAIRID`, `CAN_EDIT_ATTACHMENT`, `CAN_MERGE_DEAL`, `CAN_ANY_MERGE`, `CAN_EDIT`, `PROCESS_TYPE`, `SECRET_RELATED_LEVEL`, `FROM_TYPE`, `PROCESS_TERM_TYPE`, `REMIND_INTERVAL`, `DEAL_SUGGESTION`, `MERGE_DEAL_TYPE`, `AUTO_RUN`, `CAN_DELETE_NODE` from edoc_summary r where r.id='"+summaryid+"'";
+
+			//获得当前用户单位
+			Long currentId=AppContext.getCurrentUser().getId();
+			String currentuser_sql=" select t.name,u.name deptname from ( " +
+					" select * from org_member r where r.id='" +currentId+"')t " +
+					" left join org_unit u on u.id=t.org_department_id";
+			jdbcAgent.execute(currentuser_sql);
+			Map<String, Object> user=jdbcAgent.resultSetToMap();
+			String userdeptname=(String) user.get("deptname");
+			String account=AppContext.getCurrentUser().getLoginAccountName();
+
+
+			//ctp_affair 添加已发人  state=2
+			String ctpaffair_sender_sql="INSERT INTO `v5`.`ctp_affair`(`ID`, `IS_COVER_TIME`,     `MEMBER_ID`,     `SENDER_ID`, `SUBJECT`, `APP`,   `OBJECT_ID`, `SUB_OBJECT_ID`, `STATE`, `SUB_STATE`, `HASTEN_TIMES`, `REMIND_DATE`, `DEADLINE_DATE`, `CAN_DUE_REMIND`, `CREATE_DATE`, `RECEIVE_TIME`, `COMPLETE_TIME`, `REMIND_INTERVAL`, `IS_DELETE`, `TRACK`, `ARCHIVE_ID`, `ADDITION`,                                                                                                                                                                                                                                      `EXT_PROPS`,                    `UPDATE_DATE`, `IS_FINISH`, `BODY_TYPE`, `IMPORTANT_LEVEL`, `RESENT_TIME`, `FORWARD_MEMBER`,           `IDENTIFIER`, `TRANSACTOR_ID`, `NODE_POLICY`,    `ACTIVITY_ID`,      `FORM_APP_ID`, `FORM_ID`, `FORM_OPERATION_ID`,        `TEMPLETE_ID`, `FROM_ID`, `OVER_WORKTIME`, `RUN_WORKTIME`, `OVER_TIME`, `RUN_TIME`, `DEAL_TERM_TYPE`, `DEAL_TERM_USERID`, `SUB_APP`, `EXPECTED_PROCESS_TIME`, `ORG_ACCOUNT_ID`,          `PROCESS_ID`,  `IS_PROCESS_OVER_TIME`, `FORM_MULTI_OPERATION_ID`, `BACK_FROM_ID`, `FORM_RELATIVE_STATIC_IDS`, `FORM_RELATIVE_QUERY_IDS`, `HAS_FAVORITE`, `FROM_TYPE`,     `FORM_RECORDID`,            `CASE_ID`, `RELATION_DATA_ID`, `FIRSTVIEW_PERIOD`, `FIRSTVIEW_DATE`, `FIRSTRESPONSE_PERIOD`, `SIGNLEVIEW_PERIOD`,       `PRE_APPROVER`, `AUTO_RUN`,          `SUMMARY_STATE`,          `TOP_TIME`, `SORT_WEIGHT`, `AI_PROCESSING`, `PROCESS_DEADLINE_TIME`,   `PROXY_MEMBER_ID`, `MATCH_DEPARTMENT_ID`,     `MATCH_POST_ID`, `NODE_NAME`,    `MATCH_ACCOUNT_ID`, `PRINT_NM`, `MESSAGE_RULE_ID`, `MATCH_ROLE_ID`)" +
+					" VALUES ('"+CommonUtil.generateID()+"',               0, '"+currentId+"', '"+currentId+"','"+wjbt+"',     4,      '"+id+"',             null,       2,          0,           NULL,          null,            null,                0,         now(),          now(),            NULL,              NULL,           0,        1,        NULL,       NULL, '<map>\\r\\n<entry><string>edoc_lastOperateState</string><string><![CDATA[]]></string></entry>\\r\\n<entry><string>edoc_edocMark</string><string><![CDATA[]]></string></entry>\\r\\n<entry><string>edoc_sendUnit</string><string><![CDATA[]]></string></entry>\\r\\n</map>', now(),           0,        '10',              null,          NULL,             NULL, '00000000000000000000',            NULL,     '内部传阅',             null, -2222614464458768261,     NULL,                NULL, 7664658925479545300,       NULL,          NULL,            NULL,        NULL,      NULL,             null,                null,         2,                   NULL,   670869647114347,   -5709615003221930261,                       0,                      NULL,           NULL,                     null,                        null,              0,        NULL,            '"+id+"', 5696870082158086801,               NULL,           15432977,            now(),                   NULL,                NULL,                 null,          0,                        0,              '1970-01-01 00:00:00',          -1,               0,                     NULL,                 NULL, null, null,        NULL,        null,        NULL,            NULL,        NULL)";
+
+
+			//ctp_content_all 正文
+			String ctpcontentall_sql_1= "INSERT INTO `v5`.`ctp_content_all`(`ID`, `CREATE_ID`, `CREATE_DATE`, `MODIFY_ID`, `MODIFY_DATE`, `MODULE_TYPE`, `MODULE_ID`, `MODULE_TEMPLATE_ID`, `CONTENT_TYPE`, `CONTENT`, `CONTENT_DATA_ID`, `CONTENT_TEMPLATE_ID`, `TITLE`, `SORT`) " +
+					"VALUES ('"+CommonUtil.generateID()+"', '"+currentId+"', now(), '"+currentId+"', now(),   4, '"+id+"', 0, 10, '', NULL, 0, NULL, 1)" ;
+			String ctpcontentall_sql_2="INSERT INTO `v5`.`ctp_content_all`(`ID`,    `CREATE_ID`, `CREATE_DATE`, `MODIFY_ID`,  `MODIFY_DATE`, `MODULE_TYPE`, `MODULE_ID`,  `MODULE_TEMPLATE_ID`, `CONTENT_TYPE`, `CONTENT`,   `CONTENT_DATA_ID`, `CONTENT_TEMPLATE_ID`, `TITLE`, `SORT`) " +
+					"VALUES ('"+CommonUtil.generateID()+"','"+currentId+"',         now(), '"+currentId+"',      now(),             4,    '"+id+"',  7664658925479545300,             20,        '', '"+id+"', -2222614464458768261, '中国矿业大学文件处理笺(内部传阅单)', 0)";
+
+			//发起人意见插入
+			String fqropinion_sql="INSERT INTO `v5`.`edoc_opinion`(             `ID`, `EDOC_ID`,    `AFFAIR_ID`, `ATTRIBUTE`, `OPINION_TYPE`,       `CONTENT`, `IS_HIDDEN`, `CREATE_USER_ID`, `CREATE_TIME`, `POLICY`, `PROXY_NAME`, `NODE_ID`,      `STATE`, `SUB_EDOC_ID`, `UPDATE_TIME`, `SUB_OPINION_ID`, `DEPARTMENT_NAME`, `ACCOUNT_NAME`, `DEPARTMENT_SORT_ID`, `SOURCE_SUMMARY_ID`) " +
+					"values('"+CommonUtil.generateID()+"',  '"+id+"','"+currentId+"',          -1,              1,'"+zfrcontent+"',           0,  '"+currentId+"',         now(),'field0030',       null,6338382634892019116,   0,          null,          null,             null,'"+userdeptname+"',  '"+account+"',               '1004',             null)";
+
+
+			List batchedSql=new ArrayList();
+
+			batchedSql.add(formain_sql);
+			batchedSql.add(edocsummary_sql);
+			batchedSql.add(ctpaffair_sender_sql);
+			batchedSql.add(ctpcontentall_sql_1);
+			batchedSql.add(ctpcontentall_sql_2);
+			batchedSql.add(fqropinion_sql);
+
+			jdbcAgent.executeBatch(batchedSql);
+
+
+			String[] zyr=selectzyr.split(",");
+			for(int i=0;i<zyr.length;i++){
+				String ctpaffair_reciver_sql="INSERT INTO `v5`.`ctp_affair`(`ID`, `IS_COVER_TIME`, `MEMBER_ID`,      `SENDER_ID`, `SUBJECT`, `APP`, `OBJECT_ID`,    `SUB_OBJECT_ID`,     `STATE`,  `SUB_STATE`, `HASTEN_TIMES`, `REMIND_DATE`, `DEADLINE_DATE`, `CAN_DUE_REMIND`, `CREATE_DATE`, `RECEIVE_TIME`, `COMPLETE_TIME`, `REMIND_INTERVAL`, `IS_DELETE`, `TRACK`, `ARCHIVE_ID`, `ADDITION`,                                                                                                                                                                                                                                                      `EXT_PROPS`,   `UPDATE_DATE`, `IS_FINISH`, `BODY_TYPE`, `IMPORTANT_LEVEL`, `RESENT_TIME`, `FORWARD_MEMBER`,          `IDENTIFIER`, `TRANSACTOR_ID`, `NODE_POLICY`,       `ACTIVITY_ID`,       `FORM_APP_ID`, `FORM_ID`, `FORM_OPERATION_ID`,        `TEMPLETE_ID`,       `FROM_ID`, `OVER_WORKTIME`, `RUN_WORKTIME`, `OVER_TIME`, `RUN_TIME`, `DEAL_TERM_TYPE`, `DEAL_TERM_USERID`, `SUB_APP`, `EXPECTED_PROCESS_TIME`, `ORG_ACCOUNT_ID`,        `PROCESS_ID`, `IS_PROCESS_OVER_TIME`, `FORM_MULTI_OPERATION_ID`, `BACK_FROM_ID`, `FORM_RELATIVE_STATIC_IDS`, `FORM_RELATIVE_QUERY_IDS`, `HAS_FAVORITE`, `FROM_TYPE`, `FORM_RECORDID`,      `CASE_ID`, `RELATION_DATA_ID`, `FIRSTVIEW_PERIOD`, `FIRSTVIEW_DATE`, `FIRSTRESPONSE_PERIOD`, `SIGNLEVIEW_PERIOD`,       `PRE_APPROVER`,`AUTO_RUN`, `SUMMARY_STATE`,            `TOP_TIME`, `SORT_WEIGHT`, `AI_PROCESSING`, `PROCESS_DEADLINE_TIME`, `PROXY_MEMBER_ID`, `MATCH_DEPARTMENT_ID`, `MATCH_POST_ID`, `NODE_NAME`, `MATCH_ACCOUNT_ID`, `PRINT_NM`, `MESSAGE_RULE_ID`, `MATCH_ROLE_ID`)" +
+						" VALUES ('"+CommonUtil.generateID()+"',     0, '"+zyr[i]+"', '"+currentId+"','"+wjbt+"',      4,   '"+id+"', -6592426574091302916,           3,          11,          NULL,               0,              0,               0 ,        now(),           now(),            NULL,              NULL,           0,       0,         NULL,      NULL, '<map>\\r\\n<entry><string>edoc_lastOperateState</string><string><![CDATA[]]></string></entry>\\r\\n<entry><string>edoc_edocMark</string><string><![CDATA[]]></string></entry>\\r\\n<entry><string>edoc_sendUnit</string><string><![CDATA[]]></string></entry>\\r\\n</map>', now(),           0,        '10',              null,           NULL,            NULL, '00000000000000000000',           NULL,     '内部传阅', 6338382634892019116, -2222614464458768261,      NULL,               NULL,  7664658925479545300, '"+currentId+"',            NULL,           NULL,        NULL,       NULL,               0,                  -1,         2,                    NULL,  670869647114347, -5709615003221930261,                      0,                      NULL,           NULL,                         '',                        '',              0,        NULL, '"+id+"',  5696870082158086801,               NULL,           15432977,            now(),                   NULL,                                          NULL, -4120520206381135530,         0,               0, '1970-01-01 00:00:00',            -1,               0,                    NULL,              NULL, 7697236995411887744, 5907544896615956503,      NULL,    670869647114347,       NULL,              NULL, NULL)";
+				jdbcAgent.execute(ctpaffair_reciver_sql);
+			}
+
+			//原单子中所有意见插入edoc_opinion
+			String yj_sql="select * from edoc_opinion o where o.edoc_id='"+summaryid+"'";
+			List<Map<String, Object>> yjlist = null;
+			jdbcAgent.execute(yj_sql);
+			yjlist=jdbcAgent.resultSetToList();
+			for(int p=0;p<yjlist.size();p++) {
+				Map<String, Object> m = yjlist.get(p);
+				String opinion_id = String.valueOf(m.get("id"));
+				String opinion_sql = "INSERT INTO `v5`.`edoc_opinion`(`ID`, `EDOC_ID`, `AFFAIR_ID`, `ATTRIBUTE`, `OPINION_TYPE`, `CONTENT`, `IS_HIDDEN`, `CREATE_USER_ID`, `CREATE_TIME`, `POLICY`, `PROXY_NAME`, `NODE_ID`, `STATE`, `SUB_EDOC_ID`, `UPDATE_TIME`, `SUB_OPINION_ID`, `DEPARTMENT_NAME`, `ACCOUNT_NAME`, `DEPARTMENT_SORT_ID`, `SOURCE_SUMMARY_ID`) " +
+						"select '" + CommonUtil.generateID() + "', '" + id + "', `AFFAIR_ID`, `ATTRIBUTE`, `OPINION_TYPE`, `CONTENT`, `IS_HIDDEN`, `CREATE_USER_ID`, `CREATE_TIME`, `POLICY`, `PROXY_NAME`, `NODE_ID`, `STATE`, `SUB_EDOC_ID`, `UPDATE_TIME`, `SUB_OPINION_ID`, `DEPARTMENT_NAME`, `ACCOUNT_NAME`, `DEPARTMENT_SORT_ID`, `SOURCE_SUMMARY_ID` from  edoc_opinion o where o.id='" + opinion_id + "'";
+				jdbcAgent.execute(opinion_sql);
+			}
+
+			//ctp_attachment 附件表
+			String fj_sql="select * from ctp_attachment t  where t.att_reference='"+summaryid+"'";
+			List<Map<String, Object>> fjlist = null;
+			jdbcAgent.execute(fj_sql);
+			fjlist=jdbcAgent.resultSetToList();
+			for(int p=0;p<fjlist.size();p++) {
+				Map<String, Object> m = fjlist.get(p);
+				String fj_id = String.valueOf(m.get("id"));
+				String insert_fj_sql = "INSERT INTO `v5`.`ctp_attachment`(`ID`, `ATT_REFERENCE`, `SUB_REFERENCE`, `CATEGORY`, `TYPE`, `FILENAME`, `FILE_URL`, `MIME_TYPE`, `CREATEDATE`, `ATTACHMENT_SIZE`, `DESCRIPTION`, `GENESIS_ID`, `SORT`)" +
+						               "select '"+CommonUtil.generateID()+"','"+        id+"',(select field0019 from formmain_0243 t where t.id='"+id+"'), `CATEGORY`, `TYPE`, `FILENAME`, `FILE_URL`, `MIME_TYPE`, `CREATEDATE`, `ATTACHMENT_SIZE`, `DESCRIPTION`, `GENESIS_ID`, `SORT` from ctp_attachment t where t.id='"+fj_id+"'";
+				jdbcAgent.execute(insert_fj_sql);
+			}
+
+
+
+			jsonMap.put("code", "0");
+			jsonMap.put("msg", "成功");
+		}catch(Exception e){
+			e.printStackTrace();
+			jsonMap.put("code", "1");
+			jsonMap.put("msg", "失败");
+		}finally {
+			jdbcAgent.close();
+		}
+		com.alibaba.fastjson.JSONObject json = new JSONObject(jsonMap);
+		render(response, json.toJSONString());
+		return null;
+	}
+*/
+
+	/**
+	 * 内部传阅选择人员
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ModelAndView toSelectPeopleView(HttpServletRequest request,HttpServletResponse response)throws Exception{
+		ModelAndView modelAndView = new ModelAndView("nbzy/nbzy_selectzyr");
+		String department=request.getParameter("department");
+		//String sql="select * from org_member  where org_department_id='"+department+"' order by sort_id asc";
+
+        String sql=" select r.id,r.name,r.sort_id from (" +
+						" select distinct a.id from (" +
+						"    select r.id from org_member r  where org_department_id='"+department +"'"+
+						"     union all " +
+						"   select source_id id from org_relationship    where  objective0_id='" +department +"'"+
+						")a" +
+					" )t" +
+					"  join org_member r on r.id=t.id " +
+					" where r.org_department_id!=-6623057140633416986  and r.is_enable=1 and r.is_deleted=0 " +
+					" order by r.sort_id asc";
+		List<Map<String, Object>> memberlist = null;
+		JDBCAgent jdbcAgent = new JDBCAgent(true, false);
+		try {
+			jdbcAgent.execute(sql);
+			memberlist = jdbcAgent.resultSetToList();
+
+			List<Map<String, Object>> revoler = new ArrayList<>();
+			for (int i = 0; i < memberlist.size(); i++) {
+				Map<String, Object> m = new HashMap<>();
+				for (Map.Entry<String, Object> entry : memberlist.get(i).entrySet()) {
+					m.put(entry.getKey(), String.valueOf(entry.getValue()) + "");
+				}
+				revoler.add(m);
+			}
+
+			com.alibaba.fastjson.JSONArray memberlistArray = com.alibaba.fastjson.JSONArray.parseArray(JSON.toJSONString(revoler));
+			modelAndView.addObject("memberlist",memberlistArray);
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally {
+			jdbcAgent.close();
+		}
+		return modelAndView;
+	}
 }
 
 

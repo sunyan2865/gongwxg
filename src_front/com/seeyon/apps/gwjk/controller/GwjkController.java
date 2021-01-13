@@ -128,7 +128,7 @@ public class GwjkController  extends BaseController {
                 OpinionEntity opinion = new OpinionEntity();
                 opinion.setId(String.valueOf(m.get("id")));
                 opinion.setContent((String)m.get("content"));
-                opinion.setCreateTime(m.get("create_time").toString().substring(0,10));
+                opinion.setCreateTime(m.get("create_time").toString().substring(0,19));
                 opinion.setUsername((String)m.get("username"));
                 opinion.setPolicy((String)m.get("policy"));
                 opinion.setFilename((String)m.get("filename"));
@@ -364,4 +364,29 @@ public class GwjkController  extends BaseController {
         return null;
     }
 
+
+    /**
+     * 获得监控组人员信息
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception
+     */
+    public ModelAndView getTeamData(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        JDBCAgent jdbcAgent = new JDBCAgent(true, false);
+        Map<String, Object> map = new HashMap<>();
+        try {
+            String departcnt_sql="select group_concat(objective0_id)  userid from org_relationship r where r.source_id=7870838360278515793\n";
+            jdbcAgent.execute(departcnt_sql);
+            String userid=jdbcAgent.resultSetToMap().get("userid").toString();
+            map.put("data", userid);
+            com.alibaba.fastjson.JSONObject json = new JSONObject(map);
+            render(response, json.toJSONString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }finally {
+            jdbcAgent.close();
+        }
+        return null;
+    }
 }

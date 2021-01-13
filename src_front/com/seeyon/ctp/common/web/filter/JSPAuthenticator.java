@@ -28,7 +28,6 @@ import com.seeyon.ctp.util.Strings;
  *
  */
 public class JSPAuthenticator extends AbstractAuthenticator {
-
 	private static Log LOG = LogFactory.getLog(JSPAuthenticator.class);
 	// 可匿名访问的白名单
 	private static Set<String> anonymouswhiteList = new HashSet<String>();

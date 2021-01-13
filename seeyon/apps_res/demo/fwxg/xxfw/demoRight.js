@@ -29,7 +29,22 @@ $(document).ready(function () {
     //编辑
     toolbarArray.push({id: "ceshi",name:"发文修改",className: "ico16 editor_16",click:doGwmod});
     toolbarArray.push({id: "delete",name:"删除流程",className: "ico16 del_16",click:doDelete});
-    toolbarArray.push({id: "replace",name:"替换节点",className: "ico16 sign_16",click:doReplace});
+    /*toolbarArray.push({id: "replace",name:"替换节点",className: "ico16 sign_16",click:doReplace});*/
+    toolbarArray.push({id: "deleteNode",name:"节点管理",className: "ico16 sign_16",click:doNodeManager});
+
+    var el = document.getElementById('toolbars');
+    var childs = el.childNodes;
+    for(var i = childs .length - 1; i >= 0; i--) {
+        el.removeChild(childs[i]);
+    }
+
+    var el_1 = document.getElementsByClassName('common_search common_search_condition clearfix');
+    for(i=0;i<el_1.length;i++){
+        //删除元素 元素.parentNode.removeChild(元素);
+        if (el_1[i] != null)
+            el_1[i].parentNode.removeChild(el_1[i]);
+    }
+
     //工具栏
     toolbar = $("#toolbars").toolbar({
         toolbar: toolbarArray
@@ -288,4 +303,33 @@ function getSearchValueObj(){
         }
 	}
     return o;
+}
+
+/***
+ * 节点管理：删除替换催办等功能
+ */
+function doNodeManager(){
+    var rows = grid.grid.getSelectRows();
+    var count = rows.length;
+    if (count == 0) {
+        // 请选择要编辑的事项
+        $.alert("请选择要删除节点的公文");
+        return;
+    }
+    if (count > 1) {
+        // 只能选择一项事项进行编辑
+        $.alert($.i18n('collaboration.grid.alert.selectOneEdit'));
+        return;
+    }
+    if (count == 1) {
+        //showSuperviseDigram('-5495669453692124852','-7006014112495351622','true','govdocRec','670869647114347','秘书调度','秘书调度','公文督办','','','4521264473872221727','-5838882599011988754');
+        var obj = rows[0];
+        showSuperviseDigram(obj.case_id,obj.process_id,'true','govdocRec',obj.org_department_id,obj.node_policy,obj.node_policy,'节点管理','','',obj.form_app_id,obj.formid);
+        /*var obj = rows[0];
+        var url= _ctxPath + '/demo.do?method=toNodeDeleteView&summaryid='+obj.summaryid;
+        var options = "status=no,resizable=no,menubar=no,top=200,left=500,width=600,height=400,scrollbars=no,center:Yes;";
+        window.open(url, null, options);*/
+    }
+
+
 }

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="libraryTable">
+    <library name="lib">
+      <CLASSES>
+        <root url="file://D:/software/setup/Seeyon/A8/ApacheJetspeed/webapps/seeyon/WEB-INF/lib" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="file://D:/software/setup/Seeyon/A8/ApacheJetspeed/webapps/seeyon/WEB-INF/lib" />
+      </SOURCES>
+      <jarDirectory url="file://D:/software/setup/Seeyon/A8/ApacheJetspeed/webapps/seeyon/WEB-INF/lib" recursive="false" />
+      <jarDirectory url="file://D:/software/setup/Seeyon/A8/ApacheJetspeed/webapps/seeyon/WEB-INF/lib" recursive="false" type="SOURCES" />
+    </library>
+  </component>
+</project>

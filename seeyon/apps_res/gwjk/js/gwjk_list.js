@@ -210,6 +210,7 @@ function rend(txt, data, r, c) {
     return txt;
 }
 
+
 /**
  * 查看意见详情
  * @param type

@@ -43,7 +43,7 @@ public class DemoManagerImpl implements DemoManager {
 		*/
 
 		StringBuffer sql=new StringBuffer("select * from ( " +
-				                                " select f.field0005 as sex ,DATE_FORMAT(f.field0016 ,'%Y-%m-%d')  as age,f.field0026 as subject,f.start_date, t.id summaryId,t.FORM_RECORDID,t.start_time ,t.edoc_type,r.CURRENT_NODES_INFO as currentId " +
+				                                " select t.id summaryId,t.FORM_RECORDID,t.case_id,t.process_id,t.org_department_id,t.form_app_id,f.field0005 as sex ,DATE_FORMAT(f.field0016 ,'%Y-%m-%d')  as age,f.field0026 as subject,f.start_date, t.start_time ,t.edoc_type,r.CURRENT_NODES_INFO as currentId " +
 												"  from formmain_0086 f " +
 											    "  left join  (SELECT * FROM edoc_summary t WHERE t.EDOC_TYPE = '0') t on  t.FORM_RECORDId=f.id " +
 											    "  left join (select object_id,group_concat(distinct member_id) as CURRENT_NODES_INFO from ctp_affair r where    state='3'  group by object_id) r on r.OBJECT_ID=t.id " +
@@ -185,11 +185,11 @@ public class DemoManagerImpl implements DemoManager {
 	public FlipInfo toSwxxList(FlipInfo flipInfo, Map<String,String> query) throws SQLException, BusinessException {
 
 		StringBuffer sql=new StringBuffer("  select t.*,e.showvalue clxzmc from (" +
-				"     select t.id summaryid,f.id formid, f.field0006 wjbt,f.field0016 blqx ,f.field0011 as clxz,f.field0014 swrq,f.start_date,GROUP_CONCAT(u.name) current_node_name from formmain_0081 f " +
+				"     select t.id summaryid,f.id formid, t.case_id,t.process_id,t.org_department_id,t.form_app_id,f.field0006 wjbt,f.field0016 blqx ,f.field0011 as clxz,f.field0014 swrq,f.start_date,GROUP_CONCAT(u.name) current_node_name from formmain_0081 f " +
 				"                 left join  (SELECT * FROM edoc_summary t WHERE t.EDOC_TYPE = '1') t on  t.FORM_RECORDId=f.id " +
 				"                 left join ctp_affair r on r.OBJECT_ID=t.id and r.state ='3'" +
 				"                 left join ORG_MEMBER u on u.id=r.MEMBER_ID " +
-				"                 group by t.id,f.id,f.field0006,f.field0016,f.field0014,f.field0011,f.start_date " +
+				"                 group by t.id,f.id,t.case_id,t.process_id,t.org_department_id,t.form_app_id,r.node_policy,f.field0006,f.field0016,f.field0014,f.field0011,f.start_date " +
 				" )t  " +
 				" left join (select id,showvalue from ctp_enum_item i where i.REF_ENUMID='6534952330511468065') e on e.id=t.clxz "+
 				" where 1=1  "
@@ -244,7 +244,7 @@ public class DemoManagerImpl implements DemoManager {
 	public FlipInfo toXtbgList(FlipInfo flipInfo, Map<String,String> query) throws SQLException, BusinessException {
 
 		StringBuffer sql=new StringBuffer("  select * from (" +
-				" select t.id summaryid,f.id formid,f.field0001 bt, f.field0002 bqdw,f.field0013 blqx,f.start_date," +
+				" select t.id summaryid,f.id formid,t.case_id,t.process_id,t.org_department_id,t.form_app_id,f.field0001 bt, f.field0002 bqdw,f.field0013 blqx,f.start_date," +
 				" (select u.name from org_unit u where u.id=f.field0002) bqdwmc" +
 				" from formmain_0188 f" +
 				" left join  (SELECT * FROM edoc_summary t WHERE t.EDOC_TYPE = '1') t on  t.FORM_RECORDId=f.id " +
