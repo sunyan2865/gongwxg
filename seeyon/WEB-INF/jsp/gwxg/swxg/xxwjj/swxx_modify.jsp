@@ -90,12 +90,15 @@
                                     <div >
                                         <font face="宋体">
                                             <div align="left">
-                                                <select name="field0001" id="field0001" style="width:100%"  >
+                                                <div>
+                                                    <input id="field0001" style="width:99%;height:30px;border:1px solid #D4D4D4" value="${entity.field0001}"/>
+                                                </div>
+                                                <%--<select name="field0001" id="field0001" style="width:100%"  >
                                                     <option val4cal="0" value="" selected=""></option>
                                                     <c:forEach items="${lwdwoption}" var="t">
                                                         <option value="${t.id}" title="${t.showvalue}">${t.showvalue}</option>
                                                     </c:forEach>
-                                                </select>
+                                                </select>--%>
                                             </div>
                                         </font>
                                     </div>
@@ -474,7 +477,7 @@
 </div>
 <script type="text/javascript">
     $(document).ready(function(){
-        initOption("field0001",${entity.field0001});//来文单位
+        /*initOption("field0001",${entity.field0001});*///来文单位
         initOption("field0021",${entity.field0021});//收文机构代字编码
         initOption("field0011",${entity.field0011});//处理性质
         initOption("field0012",${entity.field0012});//缓急

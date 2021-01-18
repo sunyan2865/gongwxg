@@ -189,7 +189,7 @@ public class DemoManagerImpl implements DemoManager {
 				"                 left join  (SELECT * FROM edoc_summary t WHERE t.EDOC_TYPE = '1') t on  t.FORM_RECORDId=f.id " +
 				"                 left join ctp_affair r on r.OBJECT_ID=t.id and r.state ='3'" +
 				"                 left join ORG_MEMBER u on u.id=r.MEMBER_ID " +
-				"                 group by t.id,f.id,t.case_id,t.process_id,t.org_department_id,t.form_app_id,r.node_policy,f.field0006,f.field0016,f.field0014,f.field0011,f.start_date " +
+				"                 group by t.id,f.id,t.case_id,t.process_id,t.org_department_id,t.form_app_id,f.field0006,f.field0016,f.field0014,f.field0011,f.start_date " +
 				" )t  " +
 				" left join (select id,showvalue from ctp_enum_item i where i.REF_ENUMID='6534952330511468065') e on e.id=t.clxz "+
 				" where 1=1  "
@@ -244,7 +244,7 @@ public class DemoManagerImpl implements DemoManager {
 	public FlipInfo toXtbgList(FlipInfo flipInfo, Map<String,String> query) throws SQLException, BusinessException {
 
 		StringBuffer sql=new StringBuffer("  select * from (" +
-				" select t.id summaryid,f.id formid,t.case_id,t.process_id,t.org_department_id,t.form_app_id,f.field0001 bt, f.field0002 bqdw,f.field0013 blqx,f.start_date," +
+				" select t.id summaryid,t.state,f.id formid,t.case_id,t.process_id,t.org_department_id,t.form_app_id,f.field0001 bt, f.field0002 bqdw,f.field0013 blqx,f.start_date," +
 				" (select u.name from org_unit u where u.id=f.field0002) bqdwmc" +
 				" from formmain_0188 f" +
 				" left join  (SELECT * FROM edoc_summary t WHERE t.EDOC_TYPE = '1') t on  t.FORM_RECORDId=f.id " +
@@ -489,12 +489,17 @@ public class DemoManagerImpl implements DemoManager {
 		List<Map<String, Object>> revoler = new ArrayList<>();
 		JDBCAgent jdbcAgent = new JDBCAgent(true, false);
 
-		StringBuffer alldatasql=new StringBuffer("select * from( select distinct  t.id summaryid,f.id formid,f.field0001 wjbt,f.field0005 wh,field0008 wjfbrq,f.field0006 gkfs,f.start_date,f.field0011 gly,f.field0012 ysqgkr,i.showvalue gksfmc,(select count(c.id) from ctp_attachment c where c.att_reference=t.id) fjcnt,c.content, date_format(a.create_date,'%Y-%m-%d') date from formmain_0170 f " +
+		/*StringBuffer alldatasql=new StringBuffer("select * from( select distinct  t.id summaryid,f.id formid,f.field0001 wjbt,f.field0005 wh,field0008 wjfbrq,f.field0006 gkfs,f.start_date,f.field0011 gly,f.field0012 ysqgkr,i.showvalue gksfmc,(select count(c.id) from ctp_attachment c where c.att_reference=t.id) fjcnt,c.content, date_format(a.create_date,'%Y-%m-%d') date from formmain_0170 f " +
 				" left join edoc_summary t on t.form_recordid=f.id " +
 				" left join ctp_content_all c on c.content is not null and c.module_id=t.id "+
 				" left join ctp_content_all a on a.content  is null and a.module_id=t.id "+
 		" left join (select id,showvalue from ctp_enum_item t where t.REF_ENUMID='-6716972179926924238'  and state='1') i on i.id=f.field0006 " +
-				"  ) t where 1=1 ");
+				"  ) t where 1=1 ");*/
+		StringBuffer alldatasql=new StringBuffer(" select * from( select distinct  t.id summaryid,f.id formid,f.field0005 wjbt,f.field0026 wh,t.complete_time wjfbrq,f.field0014 gkfs,f.start_date,f.field0030 gly,f.field0029 ysqgkr,i.showvalue gksfmc,(select count(c.id) from ctp_attachment c where c.att_reference=t.id) fjcnt,c.content,t.state,t.complete_time,date_format(c.create_date,'%Y-%m-%d') date from formmain_0086 f " +
+				" left join edoc_summary t on t.form_recordid=f.id " +
+				" left join ctp_content_all c on (c.content is not null and c.content!='') and c.module_id=t.id "+
+				" left join (select id,showvalue from ctp_enum_item t where t.REF_ENUMID='-6716972179926924238'  and state='1') i on i.id=f.field0014 " +
+				"  ) t where t.complete_time is not null  ");
 		if(type.equals("more")){
 			if(null != query.get("wjbt")) {
 				alldatasql.append(" and wjbt like  '%"+query.get("wjbt") +"%'");
@@ -514,7 +519,7 @@ public class DemoManagerImpl implements DemoManager {
 			}
 		}
 
-		alldatasql.append("  order by start_date desc ");
+		alldatasql.append("  order by complete_time desc ");
 		try{
 			jdbcAgent.execute(alldatasql.toString());
 			xxwjlist=jdbcAgent.resultSetToList();

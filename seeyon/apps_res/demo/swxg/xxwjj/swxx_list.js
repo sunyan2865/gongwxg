@@ -25,6 +25,7 @@ $(document).ready(function () {
     toolbarArray.push({id: "delete",name:"删除文单",className: "ico16 del_16",click:doDelete});
    /* toolbarArray.push({id: "replace",name:"替换节点",className: "ico16 sign_16",click:doReplace});*/
     toolbarArray.push({id: "deleteNode",name:"节点管理",className: "ico16 sign_16",click:doNodeManager});
+    toolbarArray.push({id: "cb",name:"催办",className:"ico16 notify_16 noClick ",click:doCbManager});
 
     var el = document.getElementById('toolbars');
     var childs = el.childNodes;
@@ -303,7 +304,7 @@ function doNodeManager(){
     var count = rows.length;
     if (count == 0) {
         // 请选择要编辑的事项
-        $.alert("请选择要删除节点的公文");
+        $.alert("请选择要管理节点的公文");
         return;
     }
     if (count > 1) {
@@ -312,21 +313,44 @@ function doNodeManager(){
         return;
     }
     if (count == 1) {
-        //showSuperviseDigram('-5495669453692124852','-7006014112495351622','true','govdocRec','670869647114347','秘书调度','秘书调度','公文督办','','','4521264473872221727','-5838882599011988754');
         var obj = rows[0];
-        showSuperviseDigram(obj.case_id,obj.process_id,'true','govdocRec',obj.org_department_id,'','','节点管理','','',obj.form_app_id,obj.formid);
-    // alert("showSuperviseDigram("+obj.case_id+","+obj.process_id+",'true','govdocRec'"+","+obj.org_department_id+",'秘书调度','秘书调度','节点管理','',''"+","+obj.form_app_id,obj.formid+")");
-     //   showSuperviseDigram('-5345149148483403518','2426124513253017961','true','govdocRec','670869647114347','秘书调度','秘书调度','公文督办','','','4521264473872221727','8507114368057491940');
-
-
-
-        /*var obj = rows[0];
-        var url= _ctxPath + '/demo.do?method=toNodeDeleteView&summaryid='+obj.summaryid;
-        var options = "status=no,resizable=no,menubar=no,top=200,left=500,width=600,height=400,scrollbars=no,center:Yes;";
-        window.open(url, null, options);*/
+        if(obj.current_node_name=="" || obj.current_node_name=="null" || null==obj.current_node_name){
+            $.alert("流程已结束！");
+            return;
+        }else{
+            showSuperviseDigram(obj.case_id,obj.process_id,'true','govdocRec','670869647114347','部门承办','部门承办','节点管理','','',obj.form_app_id,obj.formid);
+        }
+    //   showSuperviseDigram('-5345149148483403518','2426124513253017961','true','govdocRec','670869647114347','秘书调度','秘书调度','公文督办','','','4521264473872221727','8507114368057491940');
     }
 
 
+}
+
+/**
+ * 催办功能
+ */
+function doCbManager(){
+    var rows = grid.grid.getSelectRows();
+    var count = rows.length;
+    if (count == 0) {
+        // 请选择要编辑的事项
+        $.alert("请选择要催办的公文");
+        return;
+    }
+    if (count > 1) {
+        // 只能选择一项事项进行编辑
+        $.alert($.i18n('collaboration.grid.alert.selectOneEdit'));
+        return;
+    }
+    if (count == 1) {
+        var obj = rows[0];
+        if(obj.current_node_name=="" || obj.current_node_name=="null" || null==obj.current_node_name){
+            $.alert("流程已结束！");
+            return;
+        }else{
+            showSuperviseDigram(obj.case_id,obj.process_id,'true','govdocRec','670869647114347','','undefined','催办',true,refreshWindow)
+        }
+    }
 }
 
 /**

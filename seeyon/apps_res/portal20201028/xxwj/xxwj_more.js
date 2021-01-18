@@ -25,7 +25,7 @@ $(document).ready(function () {
         }
     });
 
-    var currentUserId=document.getElementById("currentUser").value;
+  /*  var currentUserId=document.getElementById("currentUser").value;
     $.ajax({
         url: _ctxPath + '/demo.do?method=getXxwjGlyData',
         type:'POST',
@@ -44,7 +44,7 @@ $(document).ready(function () {
             }
         }
     });
-
+*/
 
 
     //搜索框
@@ -163,6 +163,12 @@ function rend(txt, data, r, c) {
                 txt = "";
             }
          }
+    }else if(c==5){
+        if(null==txt || txt=='null'){
+            txt = "";
+        }else{
+            txt=txt.substring(0,10);
+        }
     }else{
         if(null==txt || txt=='null'){
             txt = "";

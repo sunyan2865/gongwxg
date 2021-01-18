@@ -150,10 +150,14 @@ public class GwjkController  extends BaseController {
 
             //附件 field0019
             String fjmainId=(String)swxxdata.get("field0019");
-            String fjsql="select a.*,DATE_FORMAT(createdate,'%Y-%m-%d') as date,RIGHT(filename, INSTR(REVERSE(filename),'.')) filextension,round(a.ATTACHMENT_SIZE/1024,0) filesize from ctp_attachment  a where a.SUB_REFERENCE  ='"+fjmainId+"'";
+            /*String fjsql="select a.*,DATE_FORMAT(createdate,'%Y-%m-%d') as date,RIGHT(filename, INSTR(REVERSE(filename),'.')) filextension,round(a.ATTACHMENT_SIZE/1024,0) filesize from ctp_attachment  a where a.SUB_REFERENCE  ='"+fjmainId+"'";
             List<Map<String, Object>> fjList=null;
             jdbcAgent.execute(fjsql);
-            fjList=jdbcAgent.resultSetToList();
+            fjList=jdbcAgent.resultSetToList();*/
+
+            List<Map<String, Object>> fjList=null;
+            fjList=getfjlist(summaryid,fjmainId);
+
             com.alibaba.fastjson.JSONArray fjsonArray = com.alibaba.fastjson.JSONArray.parseArray(JSON.toJSONString(fjList));
             modelAndView.addObject("fjsonArray", fjsonArray);
             modelAndView.addObject("fjlist", fjList);
@@ -166,7 +170,18 @@ public class GwjkController  extends BaseController {
         return modelAndView;
     }
 
-
+    private List<Map<String, Object>> getfjlist(String att_reference,String sub_reference){
+        JDBCAgent jdbcAgent = new JDBCAgent(true, false);
+        List<Map<String, Object>> fjList=null;
+        try{
+            String fjsql="select a.*,DATE_FORMAT(createdate,'%Y-%m-%d') as date,RIGHT(filename, INSTR(REVERSE(filename),'.')) filextension,round(a.ATTACHMENT_SIZE/1024,0) filesize from ctp_attachment  a where a.SUB_REFERENCE  ='"+sub_reference+"' and a.att_reference='"+att_reference+"'";
+            jdbcAgent.execute(fjsql);
+            fjList=jdbcAgent.resultSetToList();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return fjList;
+    }
 
     /**
      * 更新自定义表中的个人事项状态：

@@ -89,6 +89,12 @@ function rend(txt, data, r, c) {
                 txt = "";
             }
         }
+    }else if(c==2){
+        if(null==txt || txt=='null'){
+            txt = "";
+        }else{
+            txt=txt.substring(0,10);
+        }
     }else{
         if(null==txt || txt=='null'){
             txt = "";

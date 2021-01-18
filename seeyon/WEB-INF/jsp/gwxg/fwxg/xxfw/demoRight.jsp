@@ -10,6 +10,7 @@
     <script type="text/javascript" charset="UTF-8" src="${path}/apps_res/demo/fwxg/xxfw/demoRight.js${ctp:resSuffix()}"></script>
     <script type="text/javascript" src="${path}/common/workflow/workflowDesigner_api.js${ctp:resSuffix()}"></script>
     <%@ include file="/WEB-INF/jsp/ctp/workflow/workflowDesigner_js_api.jsp" %>
+
     <script text="text/javascript">
         //显示流程图
         var isShowRecord = false;
