@@ -169,15 +169,11 @@ function rend(txt, data, r, c) {
         }
     }
     if(c==3){
-        debugger;
         var rendertxt="";
         var definestrArr='';
         var definestate=data.definestate;//每个里面包括姓名，姓名id,个人事项中的state,个人事项id
-        if(null!=txt && txt!='' && txt!='null'){
-            var teamuserid=data.teamuserid;
-            var teamarr=teamuserid.split(',');
-
-            //先读取ctp_affair_define_state状态
+       /* if(null!=txt && txt!='' && txt!='null'){*/
+           //先读取ctp_affair_define_state状态
             if(null!=definestate && definestate!='' && definestate!='null'){
                 definestrArr=definestate.split(",");
                 for(var k=0;k<definestrArr.length;k++){
@@ -186,20 +182,10 @@ function rend(txt, data, r, c) {
                     }
                     var splitdefinestrArr=definestrArr[k].split(';');//0姓名，1姓名id,2状态，3 affairId
                     if(null!=splitdefinestrArr[0]){
-                        var curuserid=splitdefinestrArr[1];
-                        var flag=true;
-                        for(var m=0;m<teamarr.length;m++){
-                            if(curuserid==teamarr[m]){
-                                flag=false;
-                                break;
-                            }
-                        }
-                        if(flag){
-                            if(splitdefinestrArr[2]=='20'){//已办未读
-                                rendertxt+= "<button type='button' style='background-color:#a7d0f6;border:1px solid #D4D4D4;text-align:center;width:60px;height:30px;margin-top:10px' onClick='openOpinion(1,&quot;"+splitdefinestrArr[0]+"&quot;,&quot;"+splitdefinestrArr[3]+"&quot;,&quot;"+data.summaryid+"&quot;)'>" + splitdefinestrArr[0] + "</button><span style='position:absolute;color:red;padding-top:5px;margin-left:-10px'>⬤</span>&nbsp;&nbsp;&nbsp;";
-                            }else if(splitdefinestrArr[2]=='21'){//已办已读
-                                rendertxt+= "<button type='button' style='background-color:#a7d0f6;border:1px solid #D4D4D4;text-align:center;width:60px;height:30px;margin-top:10px' onClick='openOpinion(2,&quot;"+splitdefinestrArr[0]+"&quot;,&quot;"+splitdefinestrArr[3]+"&quot;,&quot;"+data.summaryid+"&quot;)'>" + splitdefinestrArr[0] + "</button>&nbsp;&nbsp;&nbsp;";
-                            }
+                        if(splitdefinestrArr[2]=='20'){//已办未读
+                            rendertxt+= "<button type='button' style='background-color:#a7d0f6;border:1px solid #D4D4D4;text-align:center;width:60px;height:30px;margin-top:10px' onClick='openOpinion(1,&quot;"+splitdefinestrArr[0]+"&quot;,&quot;"+splitdefinestrArr[3]+"&quot;,&quot;"+data.summaryid+"&quot;)'>" + splitdefinestrArr[0] + "</button><span id="+splitdefinestrArr[3]+" class='ico16 speech_read2_16' style='background-position:-224px -206px;position:absolute;color:red;padding-top:4px;margin-left:-10px'></span>&nbsp;&nbsp;&nbsp;";
+                        }else if(splitdefinestrArr[2]=='21'){//已办已读
+                            rendertxt+= "<button type='button' style='background-color:#a7d0f6;border:1px solid #D4D4D4;text-align:center;width:60px;height:30px;margin-top:10px' onClick='openOpinion(2,&quot;"+splitdefinestrArr[0]+"&quot;,&quot;"+splitdefinestrArr[3]+"&quot;,&quot;"+data.summaryid+"&quot;)'>" + splitdefinestrArr[0] + "</button>&nbsp;&nbsp;&nbsp;";
                         }
                     }
                 }
@@ -210,26 +196,15 @@ function rend(txt, data, r, c) {
                 if((p+i)!=0 && (p+i)%7==0){  rendertxt+="</br>" }
                 var splitstrArr=strArr[i].split(';');//0姓名，1姓名id,2状态，3 affairId
                 if(null!=splitstrArr[0]){
-                    var curuserid=splitstrArr[1];
-                    var flag=true;
-                    for(var m=0;m<teamarr.length;m++){
-                        if(curuserid==teamarr[m]){
-                            flag=false;
-                            break;
-                        }
-                    }
-                    if(flag){
-                        if(splitstrArr[2]=='3'){//待办
-                            rendertxt+= "<button type='button' style='background-color:#d3d3d3;border:1px solid #D4D4D4;text-align:center;width:60px;height:30px;margin-top:10px' onClick='openOpinion(2,&quot;"+splitstrArr[0]+"&quot;,&quot;"+splitstrArr[3]+"&quot;,&quot;"+data.summaryid+"&quot;)'>" +  splitstrArr[0] + "</button>&nbsp;&nbsp;&nbsp;";
-                        }
-                    }
-
+                  if(splitstrArr[2]=='3'){//待办
+                      rendertxt+= "<button type='button' style='background-color:#d3d3d3;border:1px solid #D4D4D4;text-align:center;width:60px;height:30px;margin-top:10px' onClick='openOpinion(2,&quot;"+splitstrArr[0]+"&quot;,&quot;"+splitstrArr[3]+"&quot;,&quot;"+data.summaryid+"&quot;)'>" +  splitstrArr[0] + "</button>&nbsp;&nbsp;&nbsp;";
+                  }
                 }
             }
             txt = rendertxt;
-        }else{
+        /*}else{
             txt="";
-        }
+        }*/
     }
     return txt;
 }
@@ -249,7 +224,8 @@ function openOpinion(type,xm,affair_id,edoc_id){
             data:{summaryid: edoc_id,affairid:affair_id},
             success:function (res) {
                 var code=res["code"];
-                $("#listStudent").ajaxgridLoad(getSearchValueObj());
+                $("#"+affair_id).removeClass("ico16 speech_read2_16");
+                //$("#listStudent").ajaxgridLoad(getSearchValueObj());
             }
         });
     }

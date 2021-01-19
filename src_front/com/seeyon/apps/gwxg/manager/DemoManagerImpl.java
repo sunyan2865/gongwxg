@@ -495,7 +495,7 @@ public class DemoManagerImpl implements DemoManager {
 				" left join ctp_content_all a on a.content  is null and a.module_id=t.id "+
 		" left join (select id,showvalue from ctp_enum_item t where t.REF_ENUMID='-6716972179926924238'  and state='1') i on i.id=f.field0006 " +
 				"  ) t where 1=1 ");*/
-		StringBuffer alldatasql=new StringBuffer(" select * from( select distinct  t.id summaryid,f.id formid,f.field0005 wjbt,f.field0026 wh,t.complete_time wjfbrq,f.field0014 gkfs,f.start_date,f.field0030 gly,f.field0029 ysqgkr,i.showvalue gksfmc,(select count(c.id) from ctp_attachment c where c.att_reference=t.id) fjcnt,c.content,t.state,t.complete_time,date_format(c.create_date,'%Y-%m-%d') date from formmain_0086 f " +
+		StringBuffer alldatasql=new StringBuffer(" select * from( select distinct  t.id summaryid,f.id formid,f.field0005 wjbt,f.field0026 wh,t.complete_time wjfbrq,f.field0014 gkfs,f.start_date,f.field0030 gly,f.field0029 ysqgkr,i.showvalue gksfmc,(select count(c.id) from ctp_attachment c where c.att_reference=t.id) fjcnt,c.content,t.state,t.complete_time,date_format(c.modify_date,'%Y-%m-%d') date from formmain_0086 f " +
 				" left join edoc_summary t on t.form_recordid=f.id " +
 				" left join ctp_content_all c on (c.content is not null and c.content!='') and c.module_id=t.id "+
 				" left join (select id,showvalue from ctp_enum_item t where t.REF_ENUMID='-6716972179926924238'  and state='1') i on i.id=f.field0014 " +
