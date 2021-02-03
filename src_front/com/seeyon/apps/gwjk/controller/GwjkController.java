@@ -76,6 +76,8 @@ public class GwjkController  extends BaseController {
             modelAndView.addObject("opinion", opiniondata);
         } catch (Exception e) {
             e.printStackTrace();
+        }finally {
+            jdbcAgent.close();
         }
         return modelAndView;
     }
@@ -105,7 +107,7 @@ public class GwjkController  extends BaseController {
             jdbcAgent.execute(sql);
             swxxdata=jdbcAgent.resultSetToMap();
 
-            swxxdata.put("zrdwmc",getDepartmentName(swxxdata.get("field0018"),jdbcAgent));
+            swxxdata.put("zrdwmc",getDepartmentName(swxxdata.get("field0018")));
             modelAndView.addObject("entity", swxxdata);
 
 
@@ -179,6 +181,8 @@ public class GwjkController  extends BaseController {
             fjList=jdbcAgent.resultSetToList();
         }catch(Exception e){
             e.printStackTrace();
+        }finally {
+            jdbcAgent.close();
         }
         return fjList;
     }
@@ -227,7 +231,8 @@ public class GwjkController  extends BaseController {
         }
     }
 
-    private  String getDepartmentName(Object obj,JDBCAgent jdbcAgent){
+    private  String getDepartmentName(Object obj){
+        JDBCAgent jdbcAgent = new JDBCAgent(true, false);
         String result="";
         if(null==obj || obj.equals("")){
             return result;
@@ -244,6 +249,8 @@ public class GwjkController  extends BaseController {
                 result=(String)jdbcAgent.resultSetToMap().get("zbname");
             }catch (Exception e) {
                 e.printStackTrace();
+            }finally {
+                jdbcAgent.close();
             }
         }
         return result;
@@ -291,6 +298,8 @@ public class GwjkController  extends BaseController {
             map.put("code", 0);
         }catch(Exception e){
             map.put("code", -1);
+        }finally {
+            jdbcAgent.close();
         }
         com.alibaba.fastjson.JSONObject json = new JSONObject(map);
         render(response, json.toJSONString());

@@ -227,7 +227,8 @@ function doGwmod() {
  * 点击标题进入修改界面
  */
 function doGwmodView(formid,summaryid,summary_operationId,summary_formId) {
-    var operationId=summary_operationId+".-5869788831630209953";
+    //var operationId=summary_operationId+".-5869788831630209953";
+    var operationId="-5090690108441605781.-5869788831630209953";
     var url= _ctxPath + '/govdoc/govdoc.do?method=summary&summaryId='+summaryid+'&openFrom=formQuery&operationId='+operationId+"&formId="+summary_formId;
     var options = "status=no,resizable=no,menubar=no,top=0,left=0,width=1660,height=742,scrollbars=no,center:Yes;";
     window.open(url, null, options);

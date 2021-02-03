@@ -94,10 +94,10 @@ public class DemoManagerImpl implements DemoManager {
 				}
 			}
 
-		} catch (BusinessException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
+		}finally {
+			jdbcAgent.close();
 		}
 
 		int page = flipInfo.getPage();
@@ -162,6 +162,8 @@ public class DemoManagerImpl implements DemoManager {
 			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
+		}finally {
+			jdbcAgent.close();
 		}
 
 		int page = flipInfo.getPage();
@@ -645,6 +647,8 @@ public class DemoManagerImpl implements DemoManager {
 			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
+		}finally {
+			jdbcAgent.close();
 		}
 		int page = flipInfo.getPage();
 		int size = flipInfo.getSize();

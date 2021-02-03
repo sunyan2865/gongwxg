@@ -176,7 +176,8 @@ function doGwmod() {
 
 
 function doGwmodView(form_recordid,summaryid,summary_operationId,summary_formId){
-    var operationId=summary_operationId+".6881650055510248753";
+    //var operationId=summary_operationId+".6881650055510248753";
+    var operationId="7506271564659573288.6881650055510248753";
     var url= _ctxPath + '/govdoc/govdoc.do?method=summary&summaryId='+summaryid+'&openFrom=formQuery&operationId='+operationId+"&formId="+summary_formId;
     var options = "status=no,resizable=no,menubar=no,top=0,left=0,width=1660,height=742,scrollbars=no,center:Yes;";
     window.open(url, null, options);

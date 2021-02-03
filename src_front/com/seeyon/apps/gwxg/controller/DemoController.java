@@ -94,9 +94,9 @@ public class DemoController extends BaseController {
 			/*field0006：主报（送）
 			field0007：抄报（送）
 			field0018：下发*/
-			swdata.put("zbname",getDepartmentName(swdata.get("field0006"),jdbcAgent));	//主报（送）
-			swdata.put("cbname",getDepartmentName(swdata.get("field0007"),jdbcAgent));//抄报（送）
-			swdata.put("xfname",getDepartmentName(swdata.get("field0018"),jdbcAgent));//下发
+			swdata.put("zbname",getDepartmentName(swdata.get("field0006")));	//主报（送）
+			swdata.put("cbname",getDepartmentName(swdata.get("field0007")));//抄报（送）
+			swdata.put("xfname",getDepartmentName(swdata.get("field0018")));//下发
             swdata.put("summaryid",summaryid);
 			modelAndView.addObject("entity", swdata);
 
@@ -126,12 +126,12 @@ public class DemoController extends BaseController {
 			/*获得字典项*/
 			//文件类型
 			String wjlxsql="select id,showvalue from ctp_enum_item  t where REF_ENUMID='-7394917914078590178' and PARENT_ID='0' and state='1' order by t.sortnumber ";
-			modelAndView.addObject("wjlxoption",getOptionData(wjlxsql,jdbcAgent));
+			modelAndView.addObject("wjlxoption",getOptionData(wjlxsql));
 
 
 			//公开方式
 			String gkfsql="select id,showvalue from ctp_enum_item t where t.REF_ENUMID='-6716972179926924238' and PARENT_ID='0' and state='1' order by t.sortnumber ";
-			modelAndView.addObject("gkfsoption",getOptionData(gkfsql,jdbcAgent));
+			modelAndView.addObject("gkfsoption",getOptionData(gkfsql));
 
 
 			//拟办、批示、办理意见
@@ -209,6 +209,8 @@ public class DemoController extends BaseController {
 			fjList=jdbcAgent.resultSetToList();
 		}catch(Exception e){
 			e.printStackTrace();
+		}finally {
+			jdbcAgent.close();
 		}
 		return fjList;
 	}
@@ -371,7 +373,7 @@ public class DemoController extends BaseController {
 		try {
 			jdbcAgent.execute(sql);
 			swdata=jdbcAgent.resultSetToMap();
-			swdata.put("qsbmname",getDepartmentName(swdata.get("field0001"),jdbcAgent));	//请示部门
+			swdata.put("qsbmname",getDepartmentName(swdata.get("field0001")));	//请示部门
 
 			swdata.put("summaryid",summaryid);
 			modelAndView.addObject("entity", swdata);
@@ -463,7 +465,7 @@ public class DemoController extends BaseController {
 		try {
 			jdbcAgent.execute(sql);
 			swdata=jdbcAgent.resultSetToMap();
-			swdata.put("qsbmname",getDepartmentName(swdata.get("field0001"),jdbcAgent));	//请示部门
+			swdata.put("qsbmname",getDepartmentName(swdata.get("field0001")));	//请示部门
 
 			swdata.put("summaryid",summaryid);
 			modelAndView.addObject("entity", swdata);
@@ -678,7 +680,8 @@ public class DemoController extends BaseController {
 	}
 
 
-	private  String getDepartmentName(Object obj,JDBCAgent jdbcAgent){
+	private  String getDepartmentName(Object obj){
+		JDBCAgent jdbcAgent = new JDBCAgent(true, false);
 		String result="";
 		if(null==obj || obj.equals("")){
 			return result;
@@ -695,18 +698,23 @@ public class DemoController extends BaseController {
 				result=(String)jdbcAgent.resultSetToMap().get("zbname");
 			}catch (Exception e) {
 				e.printStackTrace();
+			}finally {
+				jdbcAgent.close();
 			}
 		}
 		return result;
 	}
 
-	private List<Map<String, Object>> getOptionData(String sql,JDBCAgent jdbcAgent){
+	private List<Map<String, Object>> getOptionData(String sql){
+		JDBCAgent jdbcAgent = new JDBCAgent(true, false);
 		List<Map<String, Object>> wjlxoption = null;
 		try{
 			jdbcAgent.execute(sql);
 			wjlxoption=jdbcAgent.resultSetToList();
 		}catch (Exception e){
 			e.printStackTrace();
+		}finally {
+			jdbcAgent.close();
 		}
 		return wjlxoption;
 	}
@@ -725,7 +733,7 @@ public class DemoController extends BaseController {
 			String parent_id = request.getParameter("parent_id");
 			String ref_enumid = request.getParameter("ref_enumid");
 			String jgdzsql = "select id,showvalue from ctp_enum_item  t where ref_enumid='"+ref_enumid+"' and parent_id='" + parent_id + "' and state='1' order by t.sortnumber ";
-			List<Map<String, Object>> jgdzOption = getOptionData(jgdzsql, jdbcAgent);
+			List<Map<String, Object>> jgdzOption = getOptionData(jgdzsql);
 			List<Map<String, Object>> revoler = new ArrayList<>();
 			for (int i = 0; i < jgdzOption.size(); i++) {
 				Map<String, Object> m = new HashMap<>();
@@ -1001,19 +1009,19 @@ public class DemoController extends BaseController {
 		try {
 			jdbcAgent.execute(sql);
 			swxxdata=jdbcAgent.resultSetToMap();
-			swxxdata.put("zrdwmc",getDepartmentName(swxxdata.get("field0018"),jdbcAgent));
+			swxxdata.put("zrdwmc",getDepartmentName(swxxdata.get("field0018")));
 			swxxdata.put("summaryid",summaryid);
 			modelAndView.addObject("entity", swxxdata);
 
 			//来文单位字典
 			String lwdwsql="select id,showvalue from ctp_enum_item  t where REF_ENUMID='-82570973940398271'   and state='1' order by t.sortnumber ";
-			modelAndView.addObject("lwdwoption",getOptionData(lwdwsql,jdbcAgent));
+			modelAndView.addObject("lwdwoption",getOptionData(lwdwsql));
 			//收文机构代字
 			String swjgdzsql="select id,showvalue from ctp_enum_item  t where REF_ENUMID='5765437337868452209' and parent_id='0' and state='1' order by t.sortnumber ";
-			modelAndView.addObject("swjgdzoption",getOptionData(swjgdzsql,jdbcAgent));
+			modelAndView.addObject("swjgdzoption",getOptionData(swjgdzsql));
 			//处理性质
 			String clxzsql="select id,showvalue from ctp_enum_item  t where REF_ENUMID='6534952330511468065' and state='1' order by t.sortnumber ";
-			modelAndView.addObject("clxzoption",getOptionData(clxzsql,jdbcAgent));
+			modelAndView.addObject("clxzoption",getOptionData(clxzsql));
 
 
 
@@ -1227,13 +1235,13 @@ public class DemoController extends BaseController {
 		try {
 			jdbcAgent.execute(sql);
 			swxxdata=jdbcAgent.resultSetToMap();
-			swxxdata.put("bqdwmc",getDepartmentName(swxxdata.get("field0002"),jdbcAgent));
+			swxxdata.put("bqdwmc",getDepartmentName(swxxdata.get("field0002")));
 			swxxdata.put("summaryid",summaryid);
 			modelAndView.addObject("entity", swxxdata);
 
 			//处理性质
 			String clxzsql="select id,showvalue from ctp_enum_item  t where REF_ENUMID='6534952330511468065' and state='1' order by t.sortnumber ";
-			modelAndView.addObject("clxzoption",getOptionData(clxzsql,jdbcAgent));
+			modelAndView.addObject("clxzoption",getOptionData(clxzsql));
 
 
 			//拟办、批示、办理意见
@@ -1319,13 +1327,13 @@ public class DemoController extends BaseController {
 		try {
 			jdbcAgent.execute(sql);
 			swxxdata=jdbcAgent.resultSetToMap();
-			swxxdata.put("bqdwmc",getDepartmentName(swxxdata.get("field0002"),jdbcAgent));
+			swxxdata.put("bqdwmc",getDepartmentName(swxxdata.get("field0002")));
 			swxxdata.put("summaryid",summaryid);
 			modelAndView.addObject("entity", swxxdata);
 
 			//处理性质
 			String clxzsql="select id,showvalue from ctp_enum_item  t where REF_ENUMID='6534952330511468065' and state='1' order by t.sortnumber ";
-			modelAndView.addObject("clxzoption",getOptionData(clxzsql,jdbcAgent));
+			modelAndView.addObject("clxzoption",getOptionData(clxzsql));
 
 
 			//拟办、批示、办理意见
@@ -1699,10 +1707,10 @@ public class DemoController extends BaseController {
 
 			//信访渠道
 			String xfqdsql="select id,showvalue from ctp_enum_item  t where REF_ENUMID='-8585790764919865105' and state='1' order by t.sortnumber ";
-			modelAndView.addObject("xfqdoption",getOptionData(xfqdsql,jdbcAgent));
+			modelAndView.addObject("xfqdoption",getOptionData(xfqdsql));
 			//信访类型
 			String xflxsql="select id,showvalue from ctp_enum_item  t where REF_ENUMID='-283407544673746591' and state='1' order by t.sortnumber ";
-			modelAndView.addObject("xflxdoption",getOptionData(xflxsql,jdbcAgent));
+			modelAndView.addObject("xflxdoption",getOptionData(xflxsql));
 
 			//附件 field0025
 			String fjmainId=(String)swxxdata.get("field0025");
@@ -2366,6 +2374,8 @@ public class DemoController extends BaseController {
 			modelAndView.addObject("formappid",formappid);
 		} catch (Exception e) {
 			e.printStackTrace();
+		}finally {
+			jdbcAgent.close();
 		}
 		return modelAndView;
 	}
