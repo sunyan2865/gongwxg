@@ -681,7 +681,6 @@ public class DemoController extends BaseController {
 
 
 	private  String getDepartmentName(Object obj){
-		JDBCAgent jdbcAgent = new JDBCAgent(true, false);
 		String result="";
 		if(null==obj || obj.equals("")){
 			return result;
@@ -693,13 +692,13 @@ public class DemoController extends BaseController {
 				idstr+="'"+arr[m].replace("Department|","")+"',";
 			}
 			String zbsql = "select group_concat(name) zbname from org_unit  where id  in(" + idstr.substring(0,idstr.length()-1) + ")";
-			try {
+			try (
+					JDBCAgent jdbcAgent = new JDBCAgent(true, false);
+			){
 				jdbcAgent.execute(zbsql);
 				result=(String)jdbcAgent.resultSetToMap().get("zbname");
 			}catch (Exception e) {
 				e.printStackTrace();
-			}finally {
-				jdbcAgent.close();
 			}
 		}
 		return result;
@@ -812,6 +811,7 @@ public class DemoController extends BaseController {
 				map.put("code", 0);
 			}
 		} catch (Exception e) {
+			jdbcAgent.close();
 			map.put("code", -1);
 			e.printStackTrace();
 		}finally {
@@ -1023,6 +1023,10 @@ public class DemoController extends BaseController {
 			String clxzsql="select id,showvalue from ctp_enum_item  t where REF_ENUMID='6534952330511468065' and state='1' order by t.sortnumber ";
 			modelAndView.addObject("clxzoption",getOptionData(clxzsql));
 
+			//公开方式
+			String gkfsql="select id,showvalue from ctp_enum_item t where t.REF_ENUMID='-6716972179926924238' and PARENT_ID='0' and state='1' order by t.sortnumber ";
+			modelAndView.addObject("gkfsoption",getOptionData(gkfsql));
+
 
 
 			//拟办、批示、办理意见
@@ -1151,6 +1155,9 @@ public class DemoController extends BaseController {
 			}
 			if(null!=formmain.getField0020() && !"".equals(formmain.getField0020())){
 				sql+=" field0020='" + formmain.getField0020()+"',";
+			}
+			if(null!=formmain.getField0028() && !"".equals(formmain.getField0028())){
+				sql+=" field0028='" + formmain.getField0028()+"',";
 			}
 
 			String executesql=sql.substring(0,sql.length()-1)+"  where id='"+formmain.getID()+"'";
@@ -2504,8 +2511,8 @@ public class DemoController extends BaseController {
 
 			String formain_sql="";
 			if(formappid.equals("4521264473872221727")){//文件处理笺
-				formain_sql="INSERT INTO `v5`.`formmain_0243`(`ID`, `state`, `start_member_id`, `start_date`, `approve_member_id`, `approve_date`, `finishedflag`, `ratifyflag`, `ratify_member_id`, `ratify_date`, `sort`, `modify_member_id`, `modify_date`, `field0001`, `field0002`, `field0003`, `field0004`, `field0005`, `field0006`, `field0007`, `field0008`, `field0009`, `field0010`, `field0011`, `field0012`, `field0013`, `field0014`, `field0015`, `field0016`, `field0017`, `field0018`, `field0019`, `field0020`, `field0021`, `field0022`, `field0023`, `field0024`, `field0025`, `field0026`, `field0027`,  `field0029`,    `field0031`,`field0030`) " +
-						"select '"+id+"',`state`, `start_member_id`,        now(), `approve_member_id`, `approve_date`, `finishedflag`, `ratifyflag`, `ratify_member_id`, `ratify_date`, `sort`, `modify_member_id`,         now(), `field0001`, `field0002`, `field0003`, `field0004`, `field0005`, `field0006`, `field0007`, `field0008`, `field0009`, `field0010`, `field0011`, `field0012`, `field0013`, `field0014`, `field0015`, `field0016`, `field0017`, `field0018`, `field0019`, `field0020`, `field0021`, `field0022`, `field0023`, `field0024`, `field0025`, `field0026`, `field0027`, '"+yformid+"','"+summaryid+"','"+zfrcontent+"' from formmain_0081 t where t.id='"+yformid+"'";
+				formain_sql="INSERT INTO `v5`.`formmain_0243`(`ID`, `state`, `start_member_id`, `start_date`, `approve_member_id`, `approve_date`, `finishedflag`, `ratifyflag`, `ratify_member_id`, `ratify_date`, `sort`, `modify_member_id`, `modify_date`, `field0001`, `field0002`, `field0003`, `field0004`, `field0005`, `field0006`, `field0007`, `field0008`, `field0009`, `field0010`, `field0011`, `field0012`, `field0013`, `field0014`, `field0015`, `field0016`, `field0017`, `field0018`, `field0019`, `field0020`, `field0021`, `field0022`, `field0023`, `field0024`, `field0025`, `field0026`, `field0027`,  `field0029`,    `field0031`,`field0030`,`field0032`) " +
+						"select '"+id+"',`state`, `start_member_id`,        now(), `approve_member_id`, `approve_date`, `finishedflag`, `ratifyflag`, `ratify_member_id`, `ratify_date`, `sort`, `modify_member_id`,         now(), `field0001`, `field0002`, `field0003`, `field0004`, `field0005`, `field0006`, `field0007`, `field0008`, `field0009`, `field0010`, `field0011`, `field0012`, `field0013`, `field0014`, `field0015`, `field0016`, `field0017`, `field0018`, `field0019`, `field0020`, `field0021`, `field0022`, `field0023`, `field0024`, `field0025`, `field0026`, `field0027`, '"+yformid+"','"+summaryid+"','"+zfrcontent+"',field0028 from formmain_0081 t where t.id='"+yformid+"'";
 			}else if(formappid.equals("-7104120039076376646")){//协同办公
 				formain_sql="INSERT INTO `v5`.`formmain_0248`(`ID`, `state`,   `start_member_id`,   `start_date`, `approve_member_id`, `approve_date`, `finishedflag`, `ratifyflag`, `ratify_member_id`, `ratify_date`, `sort`, `modify_member_id`, `modify_date`, `field0001`, `field0002`, `field0003`, `field0004`, `field0005`, `field0006`, `field0007`, `field0008`, `field0009`, `field0010`, `field0011`, `field0012`, `field0013`, `field0014`, `field0015`, `field0016`, `field0017`, `field0018`,`field0019`, `field0020`, `field0021`) " +
 						"select '"+id+"', `state`,  `start_member_id`,          now(), `approve_member_id`, `approve_date`, `finishedflag`, `ratifyflag`, `ratify_member_id`, `ratify_date`, `sort`, `modify_member_id`, `modify_date`, `field0001`, `field0002`, `field0003`, `field0004`, `field0005`, `field0006`, `field0007`, `field0008`, `field0009`, `field0010`, `field0011`, `field0012`, `field0013`, `field0014`, `field0015`, `field0016`, `field0017`, `field0018`,'"+zfrcontent+"', '"+yformid+"','"+summaryid+"' from formmain_0188 t where t.id='"+yformid+"'";
@@ -2815,6 +2822,187 @@ public class DemoController extends BaseController {
 		}
 		return modelAndView;
 	}
+
+
+	/**
+	 * 根据报送情况formson_0216的id查询summaryid
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ModelAndView getSummaryInfo(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		JDBCAgent jdbcAgent = new JDBCAgent(true, false);
+		List<Map<String, Object>> list = null;
+		try {
+			String formson_id = request.getParameter("formson_id");
+			String displayname=request.getParameter("displayname");
+			String formson_sql="";
+			if(displayname.equals("催办_bs")){//报送
+				formson_sql=" select * from formmain_0217  f where f.field0023=(select field0022 from  formson_0216  where id='"+formson_id+"')" ;
+			}else if(displayname.equals("催办_hy")){//会议
+				formson_sql="  select * from formmain_0233 t where field0026=(select field0024 from formson_0236 t  where t.id='"+formson_id+"')" ;
+			}else if(displayname.equals("催办_dw")){//党委常委
+				formson_sql="  select * from formmain_0269 where field0046= (select field0024 from formson_0278 t where t.id='"+formson_id+"')" ;
+			}
+			String sql = " select s.id summaryid,t.id formid from (" +formson_sql +" ) t" +
+					" join col_summary s on s.form_recordid=t.id  " ;
+			jdbcAgent.execute(sql);
+			list=jdbcAgent.resultSetToList();
+
+			List<Map<String, Object>> revoler = new ArrayList<>();
+			for (int i = 0; i < list.size(); i++) {
+				Map<String, Object> m = new HashMap<>();
+				for (Map.Entry<String, Object> entry : list.get(i).entrySet()) {
+					m.put(entry.getKey(), String.valueOf(entry.getValue()) + "");
+				}
+				revoler.add(m);
+			}
+
+			Map<String, Object> map = new HashMap<>();
+			map.put("code", 0);
+			map.put("data", revoler);
+			com.alibaba.fastjson.JSONObject json = new JSONObject(map);
+			render(response, json.toJSONString());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			jdbcAgent.close();
+		}
+		return null;
+	}
+
+
+
+	/***
+	 * 删除报送情况formson_0216的id
+	 * 删除会议formson0236
+	 */
+	@ResponseBody
+	public ModelAndView toDeleteFormson(HttpServletRequest request, HttpServletResponse response){
+		Map<String, Object> jsonMap = new HashMap();
+		JDBCAgent jdbcAgent = new JDBCAgent(true, false);
+		try {
+			String id = request.getParameter("formson_id");
+			String displayname=request.getParameter("displayname");
+			if(displayname.equals("删除_bs")){
+				List batchedSql=new ArrayList();
+				String field0022sql=" select field0022 from formson_0216 where id='"+id+"'";
+				jdbcAgent.execute(field0022sql);
+				Map<String, Object> data=jdbcAgent.resultSetToMap();
+				String field0022="";
+				if(null!=data && data.size()>0){
+					field0022=data.get("field0022").toString();
+					batchedSql.add("delete from ctp_affair a where a.object_id=(select b.id from formmain_0217 b where b.field0023='"+field0022+"')");
+					batchedSql.add("delete from col_summary c where c.form_recordid=(select d.id from formmain_0217 d where d.field0023='"+field0022+"')");
+					batchedSql.add("delete from formmain_0217 e where e.field0023='"+field0022+"'");
+					batchedSql.add("delete from formson_0216  where id='"+id+"'");
+					jdbcAgent.executeBatch(batchedSql);
+				}
+			}else if(displayname.equals("删除_hy")){
+				List batchedSql=new ArrayList();
+				String field0024sql=" select field0024 from formson_0236 t  where id='"+id+"'";
+				jdbcAgent.execute(field0024sql);
+				Map<String, Object> data=jdbcAgent.resultSetToMap();
+				String field0024="";
+				if(null!=data && data.size()>0){
+					field0024=data.get("field0024").toString();
+					// ctp_affair
+					batchedSql.add("delete from ctp_affair r where r.object_id in (" +
+							      "   select id from col_summary r where r.form_recordid in (" +
+							         "   select id from formmain_0233 t where field0026='"+field0024+"'" +
+							        	 "   union all "+
+									 "   select id from formmain_0231 t where field0026='"+field0024+"'" +
+									 	"   union all "+
+									 "   select id from formmain_0287 t where field0026='"+field0024+"'" +
+									 	"   union all "+
+									 "   select id from formmain_0205 t where field0026='"+field0024+"'" +
+							       "  ) )" );
+					// col_summary
+					batchedSql.add("delete from col_summary r where r.form_recordid in (" +
+									" select id from formmain_0233 t where field0026='"+field0024+"'" +
+									"   union all "+
+									" select id from formmain_0231 t where field0026='"+field0024+"'" +
+									"   union all "+
+									" select id from formmain_0287 t where field0026='"+field0024+"'" +
+									"   union all "+
+									" select id from formmain_0205 t where field0026='"+field0024+"'" +
+								  "')" );
+					// 会议回执 formmain_0231
+					batchedSql.add("delete from formmain_0231 t where t.field0026='"+field0024+"'");
+					// 指定人员会议回执 formmain_0287
+					batchedSql.add("delete from formmain_0287 t where t.field0026='"+field0024+"'");
+					//已办会议
+					batchedSql.add("delete from formmain_0205 t where t.field0026='"+field0024+"'");
+					//会议回执情况(明细表1)
+					batchedSql.add("delete from formson_0236 t  where t.id='"+id+"'");
+					jdbcAgent.executeBatch(batchedSql);
+				}
+
+			}
+
+			jsonMap.put("code", "0");
+			jsonMap.put("msg", "成功");
+		}catch(Exception e){
+			jsonMap.put("code", "1");
+			jsonMap.put("msg", "失败");
+		}finally {
+			jdbcAgent.close();
+		}
+		com.alibaba.fastjson.JSONObject json = new JSONObject(jsonMap);
+		render(response, json.toJSONString());
+		return null;
+	}
+
+
+
+
+	/**
+	 * 跳转到值班计划提交情况列表
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ModelAndView toZbtjqkList(HttpServletRequest request, HttpServletResponse response)throws Exception{
+		response.setContentType("text/html;charset=UTF-8");
+		ModelAndView view = new ModelAndView("zbgl/zbtjqk_list");
+		Map<String,String> query = new HashMap<String,String>();
+		FlipInfo fi = new FlipInfo();
+		if(demoManager == null) {
+			demoManager = (DemoManager) AppContext.getBean("demoManager");
+		}
+		FlipInfo swlist = demoManager.toZbtjqkList(fi,query);
+		request.setAttribute("fflistStudent",swlist);
+
+		return view;
+	}
+
+
+
+	/**
+	 * 值班计划提交情况-查看哪些部门提交哪些未提交
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ModelAndView toTjQkDetail(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		response.setContentType("text/html;charset=UTF-8");
+		ModelAndView view = new ModelAndView("zbgl/zbtjqk_detail");
+		String zbjh = request.getParameter("zbjh");
+		String type=request.getParameter("type");
+		Map<String,String> query = new HashMap<String,String>();
+		FlipInfo fi = new FlipInfo();
+		if(demoManager == null) {
+			demoManager = (DemoManager) AppContext.getBean("demoManager");
+		}
+		FlipInfo swlist = demoManager.toTjQkDetail(fi,query,zbjh,type);
+		request.setAttribute("fflistStudent",swlist);
+
+		return view;
+	}
+
 }
 
 

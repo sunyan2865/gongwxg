@@ -69,13 +69,15 @@ public class DemoManagerImpl implements DemoManager {
 	/*	sql.append(" order by t.start_time desc ");*/
 		sql.append(" order by start_date desc");
 		List<Map<String, Object>> swlist = null;
+		List<Map<String, Object>> revoler = new ArrayList<>();
 		JDBCAgent jdbcAgent = new JDBCAgent(true, false);
 		try {
 			jdbcAgent.execute(sql.toString());
 			swlist = jdbcAgent.resultSetToList();
 
-			for(int i=0;i<swlist.size();i++){
-				Map<String, Object> m = swlist.get(i);
+
+			for(int i=0;i<revoler.size();i++){
+				Map<String, Object> m = revoler.get(i);
 				String currentNodeIds= (String) m.get("currentid");
 
 				if(null!=currentNodeIds && !(currentNodeIds.equals(""))){
@@ -101,7 +103,7 @@ public class DemoManagerImpl implements DemoManager {
 		}
 
 		int page = flipInfo.getPage();
-		int size = flipInfo.getSize();
+		int size = 200;
 		flipInfo.setTotal(swlist.size());
 		List newList = new ArrayList();
 		int currIdx = page > 1 ? (page - 1) * size : 0;
@@ -110,6 +112,8 @@ public class DemoManagerImpl implements DemoManager {
 		}
 
 		flipInfo.setData(newList);
+
+
 		/*DBAgent.find(hql.toString(), pMap, fi);
 		convertVO1(fi);*/
 		return flipInfo;
@@ -167,7 +171,7 @@ public class DemoManagerImpl implements DemoManager {
 		}
 
 		int page = flipInfo.getPage();
-		int size = flipInfo.getSize();
+		int size = 200;
 		flipInfo.setTotal(swlist.size());
 		List newList = new ArrayList();
 		int currIdx = page > 1 ? (page - 1) * size : 0;
@@ -233,8 +237,19 @@ public class DemoManagerImpl implements DemoManager {
 			jdbcAgent.close();
 		}
 
-		flipInfo.setTotal(swxxlist.size());
-		flipInfo.setData(revoler);
+	/*	flipInfo.setTotal(swxxlist.size());
+		flipInfo.setData(revoler);*/
+
+		int page = flipInfo.getPage();
+		int size = 200;
+		flipInfo.setTotal(revoler.size());
+		List newList = new ArrayList();
+		int currIdx = page > 1 ? (page - 1) * size : 0;
+		for (int i = 0; i < size && i < (revoler).size() - currIdx; ++i) {
+			newList.add((revoler).get(currIdx + i));
+		}
+		flipInfo.setData(newList);
+
 		return flipInfo;
 	}
 
@@ -288,8 +303,17 @@ public class DemoManagerImpl implements DemoManager {
 			jdbcAgent.close();
 		}
 
-		flipInfo.setTotal(swxxlist.size());
-		flipInfo.setData(revoler);
+		/*flipInfo.setTotal(swxxlist.size());
+		flipInfo.setData(revoler);*/
+		int page = flipInfo.getPage();
+		int size = 200;
+		flipInfo.setTotal(revoler.size());
+		List newList = new ArrayList();
+		int currIdx = page > 1 ? (page - 1) * size : 0;
+		for (int i = 0; i < size && i < (revoler).size() - currIdx; ++i) {
+			newList.add((revoler).get(currIdx + i));
+		}
+		flipInfo.setData(newList);
 		return flipInfo;
 	}
 
@@ -346,8 +370,17 @@ public class DemoManagerImpl implements DemoManager {
 			jdbcAgent.close();
 		}
 
-		flipInfo.setTotal(swxxlist.size());
-		flipInfo.setData(revoler);
+		/*flipInfo.setTotal(swxxlist.size());
+		flipInfo.setData(revoler);*/
+		int page = flipInfo.getPage();
+		int size = 200;
+		flipInfo.setTotal(revoler.size());
+		List newList = new ArrayList();
+		int currIdx = page > 1 ? (page - 1) * size : 0;
+		for (int i = 0; i < size && i < (revoler).size() - currIdx; ++i) {
+			newList.add((revoler).get(currIdx + i));
+		}
+		flipInfo.setData(newList);
 		return flipInfo;
 	}
 
@@ -399,8 +432,17 @@ public class DemoManagerImpl implements DemoManager {
 			jdbcAgent.close();
 		}
 
-		flipInfo.setTotal(swxxlist.size());
-		flipInfo.setData(revoler);
+		/*flipInfo.setTotal(swxxlist.size());
+		flipInfo.setData(revoler);*/
+		int page = flipInfo.getPage();
+		int size = 200;
+		flipInfo.setTotal(revoler.size());
+		List newList = new ArrayList();
+		int currIdx = page > 1 ? (page - 1) * size : 0;
+		for (int i = 0; i < size && i < (revoler).size() - currIdx; ++i) {
+			newList.add((revoler).get(currIdx + i));
+		}
+		flipInfo.setData(newList);
 		return flipInfo;
 	}
 
@@ -455,8 +497,18 @@ public class DemoManagerImpl implements DemoManager {
 			jdbcAgent.close();
 		}
 
-		flipInfo.setTotal(swxxlist.size());
-		flipInfo.setData(revoler);
+	/*	flipInfo.setTotal(swxxlist.size());
+		flipInfo.setData(revoler);*/
+		int page = flipInfo.getPage();
+		int size = 200;
+		flipInfo.setTotal(revoler.size());
+		List newList = new ArrayList();
+		int currIdx = page > 1 ? (page - 1) * size : 0;
+		for (int i = 0; i < size && i < (revoler).size() - currIdx; ++i) {
+			newList.add((revoler).get(currIdx + i));
+		}
+		flipInfo.setData(newList);
+
 		return flipInfo;
 	}
 
@@ -560,9 +612,21 @@ public class DemoManagerImpl implements DemoManager {
 			jdbcAgent.close();
 		}
 
-		flipInfo.setTotal(revoler.size());
+		/*flipInfo.setTotal(revoler.size());
 		flipInfo.setSize(10);
-		flipInfo.setData(revoler);
+		flipInfo.setData(revoler);*/
+
+
+		int page = flipInfo.getPage();
+		int size = 200;
+		flipInfo.setTotal(revoler.size());
+		List newList = new ArrayList();
+		int currIdx = page > 1 ? (page - 1) * size : 0;
+		for (int i = 0; i < size && i < (revoler).size() - currIdx; ++i) {
+			newList.add((revoler).get(currIdx + i));
+		}
+		flipInfo.setData(newList);
+
 		return flipInfo;
 	}
 
@@ -781,4 +845,98 @@ public class DemoManagerImpl implements DemoManager {
 		return flipInfo;
 	}
 
+
+
+
+	/******************* 值班计划提交情况******************************/
+	@Override
+	@AjaxAccess
+	@SuppressWarnings("toZbtjqkList")
+	public FlipInfo toZbtjqkList(FlipInfo flipInfo, Map<String,String> query) throws SQLException, BusinessException {
+
+		StringBuffer sql=new StringBuffer("  select * from (" +
+					" select zbjh,t.zscnt, ifnull(f1.ydcnt,0) ydcnt, (t.zscnt-ifnull(f1.ydcnt,0)) wdcnt,f.start_date from ( select field0001 zbjh,1 cnt,start_date from formmain_0180 )   f " +
+					" left join (" +
+					"     select count(name) zscnt,1 cnt from org_unit  t  where name!='空缺' and is_enable=1 and is_deleted=0 and length(path)>12  " +
+					"   )t on f.cnt=t.cnt" +
+					" left join " +
+					" (select field0011,count(distinct field0001) ydcnt from formmain_0129 group by field0011) f1 on f1.field0011=f.zbjh " +
+					" ) t  where 1=1 " );
+
+		if(null != query.get("zbjh")) {
+			sql.append(" and zbjh like  '%"+query.get("zbjh") +"%'");
+		}
+
+		sql.append(" order by start_date desc  ");
+		List<Map<String, Object>> swxxlist = null;
+		List<Map<String, Object>> revoler = new ArrayList<>();
+		JDBCAgent jdbcAgent = new JDBCAgent(true, false);
+		try {
+			jdbcAgent.execute(sql.toString());
+			swxxlist = jdbcAgent.resultSetToList();
+
+			for (int i = 0; i < swxxlist.size(); i++) {
+				Map<String, Object> m = new HashMap<>();
+				for (Map.Entry<String, Object> entry : swxxlist.get(i).entrySet()) {
+					m.put(entry.getKey(), String.valueOf(entry.getValue()) + "");
+				}
+				revoler.add(m);
+			}
+
+		} catch (BusinessException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			jdbcAgent.close();
+		}
+
+		flipInfo.setTotal(swxxlist.size());
+		flipInfo.setData(revoler);
+		return flipInfo;
+	}
+
+
+
+	@Override
+	@AjaxAccess
+	@SuppressWarnings("toTjQkDetail")
+	public FlipInfo toTjQkDetail(FlipInfo flipInfo, Map<String,String> query,String zbjh,String type) throws SQLException, BusinessException {
+		StringBuffer sql=new StringBuffer("");
+		if(type.equals("1")){
+			sql=new StringBuffer("  select u.name from (" +
+					" select distinct field0001 from formmain_0129 f where f.field0011='"+zbjh+"') t" +
+					" left join org_unit u on name!='空缺' and is_enable=1 and is_deleted=0 and  length(path)>12 and u.id=t.field0001 " +
+					" order by sort_id " );
+		}else if(type.equals("2")){
+			sql=new StringBuffer("  select u.name from org_unit u  where name!='空缺' and is_enable=1 and is_deleted=0 and  length(path)>12 and u.id not in (select distinct field0001 from formmain_0129 f where f.field0011='"+zbjh+"') order by sort_id" );
+		}
+
+		List<Map<String, Object>> swxxlist = null;
+		List<Map<String, Object>> revoler = new ArrayList<>();
+		JDBCAgent jdbcAgent = new JDBCAgent(true, false);
+		try {
+			jdbcAgent.execute(sql.toString());
+			swxxlist = jdbcAgent.resultSetToList();
+
+			for (int i = 0; i < swxxlist.size(); i++) {
+				Map<String, Object> m = new HashMap<>();
+				for (Map.Entry<String, Object> entry : swxxlist.get(i).entrySet()) {
+					m.put(entry.getKey(), String.valueOf(entry.getValue()) + "");
+				}
+				revoler.add(m);
+			}
+
+		} catch (BusinessException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			jdbcAgent.close();
+		}
+
+		flipInfo.setTotal(swxxlist.size());
+		flipInfo.setData(revoler);
+		return flipInfo;
+	}
 }

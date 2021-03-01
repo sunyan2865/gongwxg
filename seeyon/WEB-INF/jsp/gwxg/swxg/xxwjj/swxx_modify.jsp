@@ -290,9 +290,37 @@
                                       </font>
                                     </div>
                                 </td>
-                                <td style="BORDER-TOP: #ff0000 1pt solid; BORDER-RIGHT: #ff0000 1pt solid; VERTICAL-ALIGN: middle; BORDER-BOTTOM: #ff0000 1pt solid; PADDING-BOTTOM: 1px; PADDING-TOP: 1px; PADDING-LEFT: 1px; BORDER-LEFT: #ff0000 1pt; PADDING-RIGHT: 1px"
+                               <%-- <td style="BORDER-TOP: #ff0000 1pt solid; BORDER-RIGHT: #ff0000 1pt solid; VERTICAL-ALIGN: middle; BORDER-BOTTOM: #ff0000 1pt solid; PADDING-BOTTOM: 1px; PADDING-TOP: 1px; PADDING-LEFT: 1px; BORDER-LEFT: #ff0000 1pt; PADDING-RIGHT: 1px"
                                     colspan="2">
                                     <div align="center">&nbsp;</div>
+                                </td>--%>
+                             <%--   <td style="BORDER-TOP: #ff0000 1.5pt solid; BORDER-RIGHT: #ff0000 1.5pt solid; VERTICAL-ALIGN: middle; BORDER-BOTTOM: #ff0000 1.5pt solid; PADDING-BOTTOM: 1px; PADDING-TOP: 1px; PADDING-LEFT: 1px; BORDER-LEFT: #ff0000 1.5pt solid; PADDING-RIGHT: 1px">
+                                    <div align="center"><font face="宋体" size="3" color="#ff0000">公开方式</font></div>
+                                </td>--%>
+                                <td style="BORDER-TOP: #ff0000 1pt solid; BORDER-RIGHT: #ff0000 1pt solid; VERTICAL-ALIGN: middle; BORDER-BOTTOM: #ff0000 1pt solid; PADDING-BOTTOM: 1px; PADDING-TOP: 1px; PADDING-LEFT: 1px; BORDER-LEFT: #ff0000 1pt solid; PADDING-RIGHT: 1px; BACKGROUND-COLOR: transparent">
+                                    <div align="center"><font face="宋体" size="4"
+                                                              color="#ff0000"><strong>公开方式</strong></font></div>
+                                </td>
+                                <td style="BORDER-TOP: #ff0000 1.5pt solid; BORDER-RIGHT: #ff0000 1.5pt solid; VERTICAL-ALIGN: middle; BORDER-BOTTOM: #ff0000 1.5pt solid; PADDING-BOTTOM: 1px; PADDING-TOP: 1px; PADDING-LEFT: 1px; BORDER-LEFT: #ff0000 1.5pt solid; PADDING-RIGHT: 1px">
+                                    <font face="宋体">
+                                        <div align="left">
+                                            <%--     <input id="field0014" style="width:100%;height:100%;border:none" value="${entity.field0014}"/>
+                                            --%>
+                                            <%--  <select level="0" id="field0014" name="field0014" style="width:100%" >
+                                                  <option val4cal="0" value="" selected=""></option>
+                                                  <option val4cal="0" value="-7932555032561041306">主动公开</option>
+                                                  <option val4cal="1" value="-6555425946729429389">依申请公开</option>
+                                                  <option val4cal="2" value="-3786602079642825131">不公开</option>
+                                              </select>--%>
+
+                                            <select name="field0028" id="field0028" style="width:100%"  >
+                                                <option val4cal="0" value="" selected=""></option>
+                                                <c:forEach items="${gkfsoption}" var="t">
+                                                    <option value="${t.id}" title="${t.showvalue}">${t.showvalue}</option>
+                                                </c:forEach>
+                                            </select>
+                                        </div>
+                                    </font>
                                 </td>
                             </tr>
                             <tr style="min-height: 40px; height: 40px;">
@@ -424,7 +452,7 @@
                                                     </div>
                                                     <div style="width: 490px;">
                                                         <div style="float:right;padding-right:30px;padding-top:5px;padding-bottom:5px;" class="font-s">
-                                                            <input readonly="readonly" class="opinionclass" value="${op.username} ${op.createTime}"></input>
+                                                           <input readonly="readonly" class="opinionclass" value="${op.username} ${op.createTime}"></input>
                                                             <button type="button" style="background-color: lightskyblue;font-weight:bold" class="common_button" id="${op.id}_field0008_mod" onclick="buttonClick(this)" >修改保存</button>
                                                             <button type="button" style="background-color:#ea9191;font-weight:bold"  class="common_button" id="${op.id}_field0008_del" onclick="buttonClick(this)">删除</button>
                                                         </div>
@@ -481,6 +509,7 @@
         initOption("field0021",${entity.field0021});//收文机构代字编码
         initOption("field0011",${entity.field0011});//处理性质
         initOption("field0012",${entity.field0012});//缓急
+        initOption("field0028",${entity.field0028});//公开方式默认值
 
         $.ajax({
             url: _ctxPath + '/demo.do?method=getJgdzData',
@@ -528,7 +557,7 @@
             field0018:formatdata($('#field0018').val()), //责任单位
             field0020:$('#field0020').val(),//备注
             field0019:$('#fields0019').val(), //field0019  关联attachment中的sub_reference
-
+            field0028:$('#field0028').val() //公开方式
         };
         $.ajax({
             url: _ctxPath + '/demo.do?method=toUpdateFormmain0081',

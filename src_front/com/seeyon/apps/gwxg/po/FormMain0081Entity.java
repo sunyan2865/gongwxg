@@ -48,6 +48,16 @@ public class FormMain0081Entity  {
     private String field0022;
     private String field0023;
     private String field0024;
+    private String field0028;
+    public String getField0028() {
+        return field0028;
+    }
+
+    public void setField0028(String field0028) {
+        this.field0028 = field0028;
+    }
+
+
     public String getID() {
         return ID;
     }

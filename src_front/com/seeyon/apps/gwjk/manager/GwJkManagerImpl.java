@@ -63,8 +63,17 @@ public class GwJkManagerImpl implements  GwJkManager {
             jdbcAgent.close();
         }
 
-        flipInfo.setTotal(swlist.size());
-        flipInfo.setData(revoler);
+       /* flipInfo.setTotal(swlist.size());
+        flipInfo.setData(revoler);*/
+        int page = flipInfo.getPage();
+        int size = 200;
+        flipInfo.setTotal(revoler.size());
+        List newList = new ArrayList();
+        int currIdx = page > 1 ? (page - 1) * size : 0;
+        for (int i = 0; i < size && i < (revoler).size() - currIdx; ++i) {
+            newList.add((revoler).get(currIdx + i));
+        }
+        flipInfo.setData(newList);
         return flipInfo;
     }
 
@@ -80,7 +89,7 @@ public class GwJkManagerImpl implements  GwJkManager {
                 "  left join (SELECT * FROM edoc_summary t WHERE t.EDOC_TYPE = '1') t on  t.FORM_RECORDId=f.id " +
                 "   join edoc_opinion o on o.edoc_id=t.id" +
                 "  left join org_member r on r.id=o.create_user_id" +
-                "  left join edoc_opinion_define_state s on s.opinionid=o.id"+
+                "   join edoc_opinion_define_state s on s.opinionid=o.id"+
                 "  ) t where 1=1  ");
 
         if(null != query.get("wjbt")) {
@@ -114,8 +123,23 @@ public class GwJkManagerImpl implements  GwJkManager {
             jdbcAgent.close();
         }
 
+
+/*
+
         flipInfo.setTotal(swfkxxlist.size());
-        flipInfo.setData(revoler);
+        flipInfo.setData(revoler);*/
+
+
+        int page = flipInfo.getPage();
+        int size = 200;
+        flipInfo.setTotal(revoler.size());
+        List newList = new ArrayList();
+        int currIdx = page > 1 ? (page - 1) * size : 0;
+        for (int i = 0; i < size && i < (revoler).size() - currIdx; ++i) {
+            newList.add((revoler).get(currIdx + i));
+        }
+        flipInfo.setData(newList);
+
         return flipInfo;
     }
 
@@ -172,8 +196,17 @@ public class GwJkManagerImpl implements  GwJkManager {
         }finally {
             jdbcAgent.close();
         }
-        flipInfo.setTotal(swlist.size());
-        flipInfo.setData(revoler);
+      /*  flipInfo.setTotal(swlist.size());
+        flipInfo.setData(revoler);*/
+        int page = flipInfo.getPage();
+        int size = 200;
+        flipInfo.setTotal(revoler.size());
+        List newList = new ArrayList();
+        int currIdx = page > 1 ? (page - 1) * size : 0;
+        for (int i = 0; i < size && i < (revoler).size() - currIdx; ++i) {
+            newList.add((revoler).get(currIdx + i));
+        }
+        flipInfo.setData(newList);
         return flipInfo;
     }
 

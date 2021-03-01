@@ -232,7 +232,6 @@ public class GwjkController  extends BaseController {
     }
 
     private  String getDepartmentName(Object obj){
-        JDBCAgent jdbcAgent = new JDBCAgent(true, false);
         String result="";
         if(null==obj || obj.equals("")){
             return result;
@@ -244,13 +243,13 @@ public class GwjkController  extends BaseController {
                 idstr+="'"+arr[m].replace("Department|","")+"',";
             }
             String zbsql = "select group_concat(name) zbname from org_unit  where id  in(" + idstr.substring(0,idstr.length()-1) + ")";
-            try {
+            try (
+                    JDBCAgent jdbcAgent = new JDBCAgent(true, false);
+            ){
                 jdbcAgent.execute(zbsql);
                 result=(String)jdbcAgent.resultSetToMap().get("zbname");
             }catch (Exception e) {
                 e.printStackTrace();
-            }finally {
-                jdbcAgent.close();
             }
         }
         return result;
