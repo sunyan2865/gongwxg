@@ -42,12 +42,13 @@ public class DemoManagerImpl implements DemoManager {
 				"  left join ctp_affair r on r.OBJECT_ID=t.id and r.state in ('1','2')) t   where 1=1 " );
 		*/
 
-		StringBuffer sql=new StringBuffer("select * from ( " +
-				                                " select t.id summaryId,t.FORM_RECORDID,t.case_id,t.process_id,t.org_department_id,t.form_app_id,f.field0005 as sex ,DATE_FORMAT(f.field0016 ,'%Y-%m-%d')  as age,f.field0026 as subject,f.start_date, t.start_time ,t.edoc_type,r.CURRENT_NODES_INFO as currentId " +
-												"  from formmain_0086 f " +
-											    "  left join  (SELECT * FROM edoc_summary t WHERE t.EDOC_TYPE = '0') t on  t.FORM_RECORDId=f.id " +
-											    "  left join (select object_id,group_concat(distinct member_id) as CURRENT_NODES_INFO from ctp_affair r where    state='3'  group by object_id) r on r.OBJECT_ID=t.id " +
-											    " )t where 1=1 ");
+		StringBuffer sql=new StringBuffer("select * from (  select t.id summaryId,t.FORM_RECORDID,t.case_id,t.process_id,t.org_department_id,t.form_app_id,f.field0005 as sex ,DATE_FORMAT(f.field0016 ,'%Y-%m-%d')  as age,f.field0026 as subject,f.start_date, t.start_time ,t.edoc_type,GROUP_CONCAT(u.name) name" +
+				"  from formmain_0086 f " +
+				"     left join  (SELECT * FROM edoc_summary t WHERE t.EDOC_TYPE = '0') t on  t.FORM_RECORDId=f.id" +
+				"   left join (select * from ctp_affair r where r.state='3' ) r on r.OBJECT_ID=t.id" +
+				"  left join ORG_MEMBER u on u.id=r.MEMBER_ID" +
+				"  group by t.id,t.FORM_RECORDID,t.case_id,t.process_id,t.org_department_id,t.form_app_id,f.field0005,DATE_FORMAT(f.field0016 ,'%Y-%m-%d'),f.field0026,f.start_date, t.start_time ,t.edoc_type" +
+				" )t where 1=1  ");
 
 		if(null != query.get("subject")) {
 			sql.append(" and subject like  '%"+query.get("subject") +"%'");
