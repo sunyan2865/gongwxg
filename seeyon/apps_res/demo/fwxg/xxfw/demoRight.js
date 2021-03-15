@@ -328,7 +328,7 @@ function doNodeManager(){
             $.alert("流程已结束！");
             return;
         }else{
-            showSuperviseDigram(obj.case_id,obj.process_id,'true','govdocSend','670869647114347','部门承办','部门承办','节点管理','','',obj.form_app_id,obj.formid);
+            showSuperviseDigram(obj.case_id,obj.process_id,'true','govdocSend','670869647114347','党政办拟办','党政办拟办','节点管理','','',obj.form_app_id,obj.formid);
          }
     }
 

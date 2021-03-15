@@ -181,7 +181,7 @@ function rend(txt, data, r, c) {
             if(null!=definestate && definestate!='' && definestate!='null'){
                 definestrArr=definestate.split(",");
                 for(var k=0;k<definestrArr.length;k++){
-                    if(k!=0 && k%7==0){
+                    if(k!=0 && k%6==0){
                         rendertxt+="</br>"
                     }
                     var splitdefinestrArr=definestrArr[k].split(';');//0姓名，1姓名id,2状态，3 affairId
@@ -198,7 +198,7 @@ function rend(txt, data, r, c) {
 
             var strArr=txt.split(',');//每个里面包括姓名，姓名id，个人事项中的state，个人事项id
             for(var i=0;i<strArr.length;i++){
-                if((p+i)!=0 && (p+i)%7==0){  rendertxt+="</br>" }
+                if((p+i)!=0 && (p+i)%6==0){  rendertxt+="</br>" }
                 var splitstrArr=strArr[i].split(';');//0姓名，1姓名id,2状态，3 affairId
                 if(null!=splitstrArr[0]){
                    if(splitstrArr[2]=='3'){//待办

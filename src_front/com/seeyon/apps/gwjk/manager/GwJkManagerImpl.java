@@ -26,7 +26,7 @@ public class GwJkManagerImpl implements  GwJkManager {
                 " group by t.id,f.id,f.field0006,f.field0016,f.field0014, f.start_date " +
                 " )t  " +
                 " left join ctp_affair_define_state s on s.summaryid=t.summaryid and s.node_policy not in ('秘书调度','党政办拟办') " +
-                " where 1=1  ");
+                " where 1=1  ");    
 
         if(null != query.get("wjbt")) {
             sql.append(" and wjbt like  '%"+query.get("wjbt") +"%'");
@@ -44,6 +44,7 @@ public class GwJkManagerImpl implements  GwJkManager {
         List<Map<String, Object>> revoler = new ArrayList<>();
         JDBCAgent jdbcAgent = new JDBCAgent(true, false);
         try {
+            jdbcAgent.execute("SET SESSION group_concat_max_len = 204800");
             jdbcAgent.execute(sql.toString());
             swlist = jdbcAgent.resultSetToList();
 
@@ -178,6 +179,7 @@ public class GwJkManagerImpl implements  GwJkManager {
         List<Map<String, Object>> revoler = new ArrayList<>();
         JDBCAgent jdbcAgent = new JDBCAgent(true, false);
         try {
+            jdbcAgent.execute("SET SESSION group_concat_max_len = 204800");
             jdbcAgent.execute(sql.toString());
             swlist = jdbcAgent.resultSetToList();
 
