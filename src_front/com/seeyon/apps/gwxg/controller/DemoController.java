@@ -607,8 +607,9 @@ public class DemoController extends BaseController {
 		JDBCAgent jdbcAgent = new JDBCAgent(true, false);
 		try {
 			String file_url = request.getParameter("file_url");//file_url
+			String summaryid=request.getParameter("summaryid");
 			String sql="";
-			sql="delete from CTP_ATTACHMENT  where file_url='"+file_url+"'";
+			sql="delete from CTP_ATTACHMENT  where file_url='"+file_url+"' and att_reference='"+summaryid+"'";
 			jdbcAgent.execute(sql);
 			jsonMap.put("code", "0");
 			jsonMap.put("msg", "成功");

@@ -715,7 +715,7 @@ public class DemoManagerImpl implements DemoManager {
 		}finally {
 			jdbcAgent.close();
 		}
-		int page = flipInfo.getPage();
+		/*int page = flipInfo.getPage();
 		int size = flipInfo.getSize();
 		flipInfo.setTotal(swlist.size());
 		List newList = new ArrayList();
@@ -724,6 +724,15 @@ public class DemoManagerImpl implements DemoManager {
 			newList.add((swlist).get(currIdx + i));
 		}
 
+		flipInfo.setData(newList);*/
+		int page = flipInfo.getPage();
+		int size = 200;
+		flipInfo.setTotal(swlist.size());
+		List newList = new ArrayList();
+		int currIdx = page > 1 ? (page - 1) * size : 0;
+		for (int i = 0; i < size && i < (swlist).size() - currIdx; ++i) {
+			newList.add((swlist).get(currIdx + i));
+		}
 		flipInfo.setData(newList);
 		return flipInfo;
 	}
@@ -789,8 +798,18 @@ public class DemoManagerImpl implements DemoManager {
 			jdbcAgent.close();
 		}
 
-		flipInfo.setTotal(swxxlist.size());
-		flipInfo.setData(revoler);
+		/*flipInfo.setTotal(swxxlist.size());
+		flipInfo.setData(revoler);*/
+
+		int page = flipInfo.getPage();
+		int size = 200;
+		flipInfo.setTotal(revoler.size());
+		List newList = new ArrayList();
+		int currIdx = page > 1 ? (page - 1) * size : 0;
+		for (int i = 0; i < size && i < (revoler).size() - currIdx; ++i) {
+			newList.add((revoler).get(currIdx + i));
+		}
+		flipInfo.setData(newList);
 		return flipInfo;
 	}
 

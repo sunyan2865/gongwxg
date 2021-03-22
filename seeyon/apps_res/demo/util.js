@@ -2,7 +2,7 @@
  * 删除附件
  */
 function deletefj(fileurl){
-    var summaryid=document.getElementById("summaryid").val();
+    var summaryid=document.getElementById("summaryid").value;
     $.ajax({
         url: _ctxPath + '/demo.do?method=toDeleteFj',
         type:'POST',
