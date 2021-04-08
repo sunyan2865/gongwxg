@@ -959,4 +959,203 @@ public class DemoManagerImpl implements DemoManager {
 		flipInfo.setData(revoler);
 		return flipInfo;
 	}
+
+
+
+
+	/*******************收文-校内信息 *******************************/
+	@Override
+	@AjaxAccess
+	@SuppressWarnings("toXnxxList")
+	public FlipInfo toXnxxList(FlipInfo flipInfo, Map<String,String> query) throws SQLException, BusinessException {
+
+		StringBuffer sql=new StringBuffer("  select t.*,e.showvalue clxzmc from (" +
+				"     select t.id summaryid,f.id formid, t.case_id,t.process_id,t.org_department_id,t.form_app_id,f.field0001 wjbt,f.field0005 blqx ,f.field0002 as clxz,f.field0003 swrq,f.start_date,GROUP_CONCAT(u.name) current_node_name from formmain_0301 f " +
+				"                 left join  (SELECT * FROM edoc_summary t WHERE t.EDOC_TYPE = '1') t on  t.FORM_RECORDId=f.id " +
+				"                 left join ctp_affair r on r.OBJECT_ID=t.id and r.state ='3'" +
+				"                 left join ORG_MEMBER u on u.id=r.MEMBER_ID " +
+				"                 group by t.id,f.id,t.case_id,t.process_id,t.org_department_id,t.form_app_id,f.field0001,f.field0005,f.field0002,f.field0003,f.start_date " +
+				" )t  " +
+				" left join (select id,showvalue from ctp_enum_item i where i.REF_ENUMID='6534952330511468065') e on e.id=t.clxz "+
+				" where 1=1  "
+		);
+
+		if(null != query.get("wjbt")) {
+			sql.append(" and wjbt like  '%"+query.get("wjbt") +"%'");
+		}
+
+		if(null != query.get("startime")) {
+			sql.append(" and blqx >= '"+query.get("startime")+"'");
+		}
+
+		if(null != query.get("endtime")) {
+			sql.append(" and blqx <= '"+query.get("endtime")+"'");
+		}
+
+		sql.append(" order by start_date desc  ");
+		List<Map<String, Object>> swxxlist = null;
+		List<Map<String, Object>> revoler = new ArrayList<>();
+		JDBCAgent jdbcAgent = new JDBCAgent(true, false);
+		try {
+			jdbcAgent.execute(sql.toString());
+			swxxlist = jdbcAgent.resultSetToList();
+
+			for (int i = 0; i < swxxlist.size(); i++) {
+				Map<String, Object> m = new HashMap<>();
+				for (Map.Entry<String, Object> entry : swxxlist.get(i).entrySet()) {
+					m.put(entry.getKey(), String.valueOf(entry.getValue()) + "");
+				}
+				revoler.add(m);
+			}
+
+		} catch (BusinessException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			jdbcAgent.close();
+		}
+
+	/*	flipInfo.setTotal(swxxlist.size());
+		flipInfo.setData(revoler);*/
+
+		int page = flipInfo.getPage();
+		int size = 200;
+		flipInfo.setTotal(revoler.size());
+		List newList = new ArrayList();
+		int currIdx = page > 1 ? (page - 1) * size : 0;
+		for (int i = 0; i < size && i < (revoler).size() - currIdx; ++i) {
+			newList.add((revoler).get(currIdx + i));
+		}
+		flipInfo.setData(newList);
+
+		return flipInfo;
+	}
+
+
+
+
+	/******************* 党委常委会议题申报******************************/
+	@Override
+	@AjaxAccess
+	@SuppressWarnings("toDwcwSbxx")
+	public FlipInfo toDwcwSbxx(FlipInfo flipInfo, Map<String,String> query) throws SQLException, BusinessException {
+
+		StringBuffer sql=new StringBuffer("  select t.*,(select name from org_member where id=t.field0028) djr,(select name from org_unit where id=t.field0027) djdw  from ( " +
+				" select f.id formid,t.id summaryid,t.case_id,t.process_id,t.form_appid form_app_id,f.start_member_id currentuserid,field0001 bt,field0027,f.field0032 sbsj,f.start_date,f.field0028,group_concat(m.name) dqblr " +
+				" from formmain_0264 f " +
+				" left join  col_summary t on  t.FORM_RECORDId=f.id " +
+				" left join ctp_affair r on r.OBJECT_ID=t.id and r.state='3' " +
+				" left join org_member m on m.id=r.member_id " +
+				" group by f.id,t.id,field0001,field0027,f.field0032,f.start_date ,f.field0028 " +
+				" )t where 1=1 " );
+
+		if(null != query.get("bt")) {
+			sql.append(" and bt like  '%"+query.get("bt") +"%'");
+		}
+		if(null != query.get("djr")) {
+			sql.append(" and djr like  '%"+query.get("djr") +"%'");
+		}
+
+		sql.append("   order by start_date desc    ");
+		List<Map<String, Object>> swxxlist = null;
+		List<Map<String, Object>> revoler = new ArrayList<>();
+		JDBCAgent jdbcAgent = new JDBCAgent(true, false);
+		try {
+			jdbcAgent.execute(sql.toString());
+			swxxlist = jdbcAgent.resultSetToList();
+
+			for (int i = 0; i < swxxlist.size(); i++) {
+				Map<String, Object> m = new HashMap<>();
+				for (Map.Entry<String, Object> entry : swxxlist.get(i).entrySet()) {
+					m.put(entry.getKey(), String.valueOf(entry.getValue()) + "");
+				}
+				revoler.add(m);
+			}
+
+		} catch (BusinessException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			jdbcAgent.close();
+		}
+
+		/*flipInfo.setTotal(swxxlist.size());
+		flipInfo.setData(revoler);*/
+		int page = flipInfo.getPage();
+		int size = 200;
+		flipInfo.setTotal(revoler.size());
+		List newList = new ArrayList();
+		int currIdx = page > 1 ? (page - 1) * size : 0;
+		for (int i = 0; i < size && i < (revoler).size() - currIdx; ++i) {
+			newList.add((revoler).get(currIdx + i));
+		}
+		flipInfo.setData(newList);
+		return flipInfo;
+	}
+
+
+
+	/******************* 校长办公会议题申报*****************************/
+	@Override
+	@AjaxAccess
+	@SuppressWarnings("toXzbgSbxx")
+	public FlipInfo toXzbgSbxx(FlipInfo flipInfo, Map<String,String> query) throws SQLException, BusinessException {
+
+		StringBuffer sql=new StringBuffer("  select t.*,(select name from org_member where id=t.field0028) djr,(select name from org_unit where id=t.field0027) djdw  from ( " +
+				" select f.id formid,t.id summaryid,t.case_id,t.process_id,t.form_appid form_app_id,field0001 bt,field0027,f.field0032 sbsj,f.start_date,f.field0028,group_concat(m.name) dqblr " +
+				" from formmain_0285 f " +
+				" left join  col_summary t on  t.FORM_RECORDId=f.id " +
+				" left join ctp_affair r on r.OBJECT_ID=t.id and r.state='3' " +
+				" left join org_member m on m.id=r.member_id " +
+				" group by f.id,t.id,field0001,field0027,f.field0032,f.start_date ,f.field0028 " +
+				" )t where 1=1 " );
+
+		if(null != query.get("bt")) {
+			sql.append(" and bt like  '%"+query.get("bt") +"%'");
+		}
+		if(null != query.get("djr")) {
+			sql.append(" and djr like  '%"+query.get("djr") +"%'");
+		}
+
+		sql.append("   order by start_date desc    ");
+		List<Map<String, Object>> swxxlist = null;
+		List<Map<String, Object>> revoler = new ArrayList<>();
+		JDBCAgent jdbcAgent = new JDBCAgent(true, false);
+		try {
+			jdbcAgent.execute(sql.toString());
+			swxxlist = jdbcAgent.resultSetToList();
+
+			for (int i = 0; i < swxxlist.size(); i++) {
+				Map<String, Object> m = new HashMap<>();
+				for (Map.Entry<String, Object> entry : swxxlist.get(i).entrySet()) {
+					m.put(entry.getKey(), String.valueOf(entry.getValue()) + "");
+				}
+				revoler.add(m);
+			}
+
+		} catch (BusinessException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			jdbcAgent.close();
+		}
+
+		/*flipInfo.setTotal(swxxlist.size());
+		flipInfo.setData(revoler);*/
+		int page = flipInfo.getPage();
+		int size = 200;
+		flipInfo.setTotal(revoler.size());
+		List newList = new ArrayList();
+		int currIdx = page > 1 ? (page - 1) * size : 0;
+		for (int i = 0; i < size && i < (revoler).size() - currIdx; ++i) {
+			newList.add((revoler).get(currIdx + i));
+		}
+		flipInfo.setData(newList);
+		return flipInfo;
+	}
+
+
 }

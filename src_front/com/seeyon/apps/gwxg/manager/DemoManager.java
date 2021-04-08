@@ -25,4 +25,9 @@ public interface DemoManager {
 	FlipInfo toCbryQuery(FlipInfo fi, Map<String, String> query,String formson0216_id) throws BusinessException, SQLException;
 	FlipInfo toZbtjqkList(FlipInfo fi, Map<String, String> query) throws BusinessException, SQLException;
 	FlipInfo toTjQkDetail(FlipInfo fi, Map<String, String> query,String zbjh,String type) throws BusinessException, SQLException;
+	FlipInfo toXnxxList(FlipInfo fi, Map<String, String> query) throws BusinessException, SQLException;
+	FlipInfo toDwcwSbxx(FlipInfo fi, Map<String, String> query) throws BusinessException, SQLException;
+	FlipInfo toXzbgSbxx(FlipInfo fi, Map<String, String> query) throws BusinessException, SQLException;
+
+
 }

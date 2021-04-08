@@ -234,7 +234,7 @@
                                  style="font-family: &quot;Microsoft YaHei&quot;; font-size: 14px; font-weight: normal; font-style: normal; text-decoration: none; text-align: left; color: rgb(51, 51, 51);">
                                 <section class="cap4-datetime is-none  ">
                                     <div class="cap4-datetime__right field-content-wrapper">
-                                        <input  id="field0012" name="field0012"  type="text" value="${entity.jfsj}" comp="type:&quot;calendar&quot;,cache:false,isOutShow:true,ifFormat:&quot;%Y-%m-%d&quot;" class="validate xdRichTextBox comp" incalculate="false" comptype="calendar"  style="width: 195px;" finalwidth="165">
+                                        <input  id="field0012" name="field0012"  type="text" value="${entity.jfsj}" comp="type:&quot;calendar&quot;,cache:false,isOutShow:true,ifFormat:&quot;%Y-%m-%d %H:%M&quot;" class="validate xdRichTextBox comp" incalculate="false" comptype="calendar"  style="width: 195px;" finalwidth="165">
                                     </div>
                                 </section>
                             </div>

@@ -271,4 +271,78 @@ public class GwJkManagerImpl implements  GwJkManager {
     }
 
 
+    /***
+     * 收文监控-校内信息监控
+     * @param flipInfo
+     * @param query
+     * @return
+     * @throws SQLException
+     * @throws BusinessException
+     */
+    @Override
+    @AjaxAccess
+    @SuppressWarnings("unchecked")
+    public FlipInfo toXnxxjk(FlipInfo flipInfo, Map<String,String> query) throws SQLException, BusinessException {
+
+        StringBuffer sql=new StringBuffer(" select t.*,group_concat(CONCAT(s.name,';',s.memberid,';',s.state,';',s.affairid)) definestate from ( " +
+                " select t.id summaryid,f.id formid, f.field0001 wjbt,f.field0005 blqx ,f.field0003 swrq,GROUP_CONCAT(CONCAT(u.name,';',u.id,';',r.state,';',r.id)) name ,f.start_date from formmain_0301 f " +
+                "  join  (SELECT * FROM edoc_summary t WHERE t.EDOC_TYPE = '1' and state=0) t on  t.FORM_RECORDId=f.id " +
+                " left join ctp_affair r on r.OBJECT_ID=t.id and r.state ='3' and r.node_policy not in ('秘书调度','党政办拟办') " +
+                " left join ORG_MEMBER u on u.id=r.MEMBER_ID " +
+                " group by t.id,f.id,f.field0001,f.field0005,f.field0003, f.start_date " +
+                " )t  " +
+                " left join ctp_affair_define_state s on s.summaryid=t.summaryid and s.node_policy not in ('秘书调度','党政办拟办') " +
+                " where 1=1  ");
+
+        if(null != query.get("wjbt")) {
+            sql.append(" and wjbt like  '%"+query.get("wjbt") +"%'");
+        }
+
+        if(null != query.get("startime")) {
+            sql.append(" and swrq >= '"+query.get("startime")+"'");
+        }
+
+        if(null != query.get("endtime")) {
+            sql.append(" and swrq <= '"+query.get("endtime")+"'");
+        }
+        sql.append(" group by summaryid,formid,wjbt,blqx,swrq,name,start_date order by start_date desc");
+        List<Map<String, Object>> swlist = null;
+        List<Map<String, Object>> revoler = new ArrayList<>();
+        JDBCAgent jdbcAgent = new JDBCAgent(true, false);
+        try {
+            jdbcAgent.execute("SET SESSION group_concat_max_len = 204800");
+            jdbcAgent.execute(sql.toString());
+            swlist = jdbcAgent.resultSetToList();
+
+            for (int i = 0; i < swlist.size(); i++) {
+                Map<String, Object> m = new HashMap<>();
+                for (Map.Entry<String, Object> entry : swlist.get(i).entrySet()) {
+                    m.put(entry.getKey(), String.valueOf(entry.getValue()) + "");
+                }
+                revoler.add(m);
+            }
+
+        } catch (BusinessException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            jdbcAgent.close();
+        }
+
+       /* flipInfo.setTotal(swlist.size());
+        flipInfo.setData(revoler);*/
+        int page = flipInfo.getPage();
+        int size = 200;
+        flipInfo.setTotal(revoler.size());
+        List newList = new ArrayList();
+        int currIdx = page > 1 ? (page - 1) * size : 0;
+        for (int i = 0; i < size && i < (revoler).size() - currIdx; ++i) {
+            newList.add((revoler).get(currIdx + i));
+        }
+        flipInfo.setData(newList);
+        return flipInfo;
+    }
+
+
 }

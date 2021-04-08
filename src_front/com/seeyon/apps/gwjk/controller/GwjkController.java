@@ -412,4 +412,31 @@ public class GwjkController  extends BaseController {
         }
         return null;
     }
+
+
+
+    /**
+     * 跳转到校内信息监控查询界面
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception
+     */
+    public ModelAndView toXnxxjk(HttpServletRequest request, HttpServletResponse response)throws Exception{
+        response.setContentType("text/html;charset=UTF-8");
+        ModelAndView view = new ModelAndView("gwjk/xnxx/xnxx_jk_list");
+        Map<String,String> query = new HashMap<String,String>();
+        FlipInfo fi = new FlipInfo();
+        if(gwJkManager == null) {
+            gwJkManager = (GwJkManager) AppContext.getBean("gwJkManager");
+        }
+        FlipInfo swlist = gwJkManager.toXnxxjk(fi,query);
+        request.setAttribute("fflistStudent",swlist);
+
+        return view;
+    }
+
+
+
+
 }
