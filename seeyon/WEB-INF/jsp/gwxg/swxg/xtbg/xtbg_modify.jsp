@@ -395,6 +395,9 @@
     $(document).ready(function(){
         initOption("field0009",${entity.field0009});//处理性质
         initOption("field0010",${entity.field0010});//缓急
+
+        var text = document.getElementById("field0016");
+        makeExpandingArea(text);
     });
 
 
@@ -439,6 +442,10 @@
             }
         });
     }
+
+
+
+
 
 </script>
 

@@ -511,6 +511,9 @@
         initOption("field0012",${entity.field0012});//缓急
         initOption("field0028",${entity.field0028});//公开方式默认值
 
+        var text = document.getElementById("field0020");
+        makeExpandingArea(text);
+
         $.ajax({
             url: _ctxPath + '/demo.do?method=getJgdzData',
             type:'POST',

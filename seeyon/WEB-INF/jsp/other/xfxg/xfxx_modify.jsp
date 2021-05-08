@@ -599,6 +599,9 @@
         initOption("field0022",${entity.field0022});//信访类型
         initOption("field0023",${entity.field0023});//信访渠道
 
+        var text = document.getElementById("field0007");
+        makeExpandingArea(text);
+
         var field0005str=$("#field0005_yj").val();
         if(field0005str!=''){
             var field0005text = document.getElementById("field0005");

@@ -21,6 +21,8 @@ import com.seeyon.ctp.common.authenticate.domain.User;
 import com.seeyon.ctp.services.ServiceResponse;
 import com.seeyon.ctp.services.UserToken;
 import com.seeyon.ctp.util.JDBCAgent;
+import com.seeyon.v3x.mobile.adapter.sms.AdaptMobileImpl;
+import com.seeyon.v3x.mobile.adapter.sms.HyclMobileImpl;
 import com.seeyon.v3x.services.AuthorityService;
 import com.seeyon.v3x.services.impl.AuthorityServiceImpl;
 import com.seeyon.v3x.services.message.MessageService;
@@ -272,14 +274,16 @@ public class DemoController extends BaseController {
 			if(null!=formmain.getField0012() && !"".equals(formmain.getField0012())){
 				sql+=" field0012='" + formmain.getField0012()+"',";
 			}
-			if(null!=formmain.getField0014() && !"".equals(formmain.getField0014())){
-				sql+=" field0014='" + formmain.getField0014()+"',";
-			}
+
 			if(null!=formmain.getField0025() && !"".equals(formmain.getField0025())){
 				sql+=" field0025='" + formmain.getField0025()+"',";
 			}
 			if(null!=formmain.getField0013() && !"".equals(formmain.getField0013())){
 				sql+=" field0013='" + formmain.getField0013()+"',";
+			}
+
+			if(null!=formmain.getField0014() && !"".equals(formmain.getField0014())){
+				sql+=" field0014='" + formmain.getField0014()+"',";
 			}
 
 			String executesql=sql.substring(0,sql.length()-1)+"  where id='"+formmain.getID()+"'";
@@ -1182,9 +1186,8 @@ public class DemoController extends BaseController {
 			if(null!=formmain.getField0020() && !"".equals(formmain.getField0020())){
 				sql+=" field0020='" + formmain.getField0020()+"',";
 			}
-			if(null!=formmain.getField0028() && !"".equals(formmain.getField0028())){
 				sql+=" field0028='" + formmain.getField0028()+"',";
-			}
+
 
 			String executesql=sql.substring(0,sql.length()-1)+"  where id='"+formmain.getID()+"'";
 			jdbcAgent.execute(executesql);
@@ -2379,6 +2382,8 @@ public class DemoController extends BaseController {
 	}
 
 
+
+
 	/**
 	 * 跳转到内部转阅界面
 	 * @param request
@@ -3254,10 +3259,11 @@ public class DemoController extends BaseController {
 		ModelAndView modelAndView = new ModelAndView("gwxg/swxg/xnxx/xnxx_detail");
 		String formid = request.getParameter("id");
 		String summaryid = request.getParameter("summaryid");
-		String sql=" select e3.showvalue clxz,e4.showvalue hj,u.name,u.org_department_id,t.*  from formmain_0301 t " +
+		String sql=" select e3.showvalue clxz,e4.showvalue hj,e5.showvalue gkfs,u.name,u.org_department_id,t.*  from formmain_0301 t " +
 				" left join (select id,showvalue from ctp_enum_item where ref_enumid='6534952330511468065' and state='1') e3 on e3.id=t.field0002 " +
 				" left join (select id,showvalue from ctp_enum_item where ref_enumid='404' and state='1') e4 on e4.id=t.field0008 " +
-				" left join org_member u on u.id=t.field0004  where  t.id='"+formid+"'";
+				" left join (select id,showvalue from ctp_enum_item where ref_enumid='-6716972179926924238' and state='1') e5 on e5.id=t.field0009 "+
+		        " left join org_member u on u.id=t.field0004  where  t.id='"+formid+"'";
 		Map<String, Object> swxxdata = null;
 		JDBCAgent jdbcAgent = new JDBCAgent(true, false);
 		try {
@@ -3612,7 +3618,153 @@ public class DemoController extends BaseController {
 	}
 
 
+	/**
+	 * 会议材料-发送短信（手机）
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	public ModelAndView toSendModileMessage(HttpServletRequest request, HttpServletResponse response) throws  Exception{
+		Map<String, Object> jsonMap = new HashMap();
+		String formson0267_id =request.getParameter("formson_id");
+		Map<String, Object> userdata = null;
+		List<Map<String, Object>> phonelist=null;
+		JDBCAgent jdbcAgent = new JDBCAgent(true, false);
+		try {
+			//获得当前登陆人信息
+			User user=AppContext.getCurrentUser();
+			String userid=user.getId().toString();
+			String usersql="select ext_attr_1 lxdh from org_member r where r.id='"+userid+"'";
+			jdbcAgent.execute(usersql);
+			userdata=jdbcAgent.resultSetToMap();
+			String srcphone=(String)userdata.get("lxdh");
 
+			String sql="select r.name,t.field0043 ryid,r.ext_attr_1 lxdh,t.hytz_bt,hytz_id,hyhz_id,t.yt_bt,hys,yt_id from (" +
+					"     select field0001 hytz_bt,field0055 yt_bt,field0043 ,field0045 hytz_id,field0046 hyhz_id,field0003 hys,field0061 yt_id from formmain_0282 t where   field0061=(select field0046 from formson_0267 t where t.id='"+formson0267_id+"')" +
+					"     )t  " +
+					"   left join org_member r on r.id=t.field0043";
+
+			jdbcAgent.execute(sql);
+			phonelist=jdbcAgent.resultSetToList();
+
+			HyclMobileImpl hyclMobile=new HyclMobileImpl();
+			for(int i=0;i<phonelist.size();i++){
+				String destphone=(String)phonelist.get(i).get("lxdh");
+				String content=(String)phonelist.get(i).get("hys");
+				hyclMobile.sendMessage(Long.parseLong(CommonUtil.generateID()),srcphone,destphone,content);
+			}
+			jsonMap.put("code", "0");
+			jsonMap.put("msg", "成功");
+		}catch(Exception e){
+			jsonMap.put("code", "1");
+			jsonMap.put("msg", "失败");
+			e.printStackTrace();
+		}finally {
+			jdbcAgent.close();
+		}
+		com.alibaba.fastjson.JSONObject json = new JSONObject(jsonMap);
+		render(response, json.toJSONString());
+		return null;
+	}
+
+
+
+	/**
+	 * 会议材料-获得已通知正职人员名单
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ModelAndView getDisplayName(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		JDBCAgent jdbcAgent = new JDBCAgent(true, false);
+		Map<String, Object> data = null;
+		try {
+			String formson0267_id =request.getParameter("formson_id");
+			String displayname =request.getParameter("dislayname");
+            String sql="";
+            if(displayname.equals("显示")){
+				sql="select group_concat(r.name) names from (" +
+						"     select field0043 from formmain_0282 t where   field0061=(select field0046 from formson_0267 t where t.id='"+formson0267_id+"')" +
+						"     )t  " +
+						"   left join org_member r on r.id=t.field0043";
+			}else if(displayname.equals("分管领导")){
+            	sql="select group_concat(distinct r.name) names" +
+						" from (" +
+						"  select * from ctp_affair  where object_id in (" +
+						"    select id from col_summary r where r.form_recordid in (" +
+						"      select id from  formmain_0285 t where t.field0030=(" +
+						"       select  field0046 from formson_0267  where id='"+formson0267_id+"'" +
+						"       )" +
+						"      union all" +
+						"      select id from  formmain_0264 t where t.field0030=(" +
+						"        select  field0046 from formson_0267  where id='"+formson0267_id+"'" +
+						"     )" +
+						"  )" +
+						"  )  and node_name='牵头部门分管校领导' and state=4" +
+						" )t" +
+						" left join org_member r on r.id=t.member_id";
+			}
+
+
+			jdbcAgent.execute(sql);
+			data=jdbcAgent.resultSetToMap();
+
+			Map<String, Object> map = new HashMap<>();
+			map.put("code", 0);
+			map.put("data", (String)data.get("names"));
+			com.alibaba.fastjson.JSONObject json = new JSONObject(map);
+			render(response, json.toJSONString());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			jdbcAgent.close();
+		}
+		return null;
+	}
+
+
+
+	/**
+	 *当前会签获得选择人的department
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ModelAndView getUserDepartInfo(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		JDBCAgent jdbcAgent = new JDBCAgent(true, false);
+		List<Map<String, Object>> list = new ArrayList<>();
+		List<Map<String, Object>> revoler = new ArrayList<>();
+		Map<String, Object> map= new HashMap();
+		try {
+			String userIdstr = request.getParameter("userids").toString();
+			String depart_sql="select r.id,r.name,r.org_department_id  from org_member  r where r.id in ("+userIdstr+") and is_deleted=0 ";
+			jdbcAgent.execute(depart_sql);
+			list=jdbcAgent.resultSetToList();
+
+
+			for (int i = 0; i < list.size(); i++) {
+					Map<String, Object> m = new HashMap<>();
+					for (Map.Entry<String, Object> entry : list.get(i).entrySet()) {
+						m.put(entry.getKey(), String.valueOf(entry.getValue()) + "");
+					}
+					revoler.add(m);
+			}
+
+
+				map.put("data", revoler);
+			com.alibaba.fastjson.JSONObject json = new JSONObject(map);
+			render(response, json.toJSONString());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			jdbcAgent.close();
+		}
+		return null;
+	}
 
 }
 

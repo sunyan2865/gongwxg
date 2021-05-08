@@ -393,6 +393,9 @@
         initOption("field0002",${entity.field0002});//处理性质
         initOption("field0008",${entity.field0008});//缓急
         initOption("field0009",${entity.field0009});//公开方式默认值
+
+        var text = document.getElementById("field0012");
+        makeExpandingArea(text);
     });
 
 

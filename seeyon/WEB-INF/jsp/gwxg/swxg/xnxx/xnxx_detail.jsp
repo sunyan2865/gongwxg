@@ -65,9 +65,7 @@
                                     colspan="4">
                                     <div>
                                         <font face="宋体">
-                                            <div>
-                                                <input   id="field0001" style="width:99%;height:30px;border:1px solid #D4D4D4" value="${entity.field0001}"/>
-                                            </div>
+                                                <span>${entity.field0001}</span>
                                         </font>
                                     </div>
                                 </td>
@@ -78,17 +76,12 @@
                                     <div align="center"><font face="宋体" size="4"
                                                               color="#ff0000"><strong>处理性质</strong></font></div>
                                 </td>
-                                <td style="BORDER-TOP: #ff0000 1pt solid; BORDER-RIGHT: #ff0000 1pt solid; VERTICAL-ALIGN: middle; BORDER-BOTTOM: #ff0000 1pt solid; PADDING-BOTTOM: 1px; PADDING-TOP: 1px; PADDING-LEFT: 1px; BORDER-LEFT: #ff0000 1pt solid; PADDING-RIGHT: 1px"
-                                    colspan="2">
+                                <td style="BORDER-TOP: #ff0000 1pt solid; BORDER-RIGHT: #ff0000 1pt solid; VERTICAL-ALIGN: middle; BORDER-BOTTOM: #ff0000 1pt solid; PADDING-BOTTOM: 1px; PADDING-TOP: 1px; PADDING-LEFT: 1px; BORDER-LEFT: #ff0000 1pt solid; PADDING-RIGHT: 1px" colspan="2">
                                     <div >
-                                        <span id="field0002_span" class="edit_class" fieldval="{name:&quot;field0002&quot;,isMasterFiled:&quot;true&quot;,displayName:&quot;list2&quot;,fieldType:&quot;VARCHAR&quot;,inputType:&quot;select&quot;,formatType:&quot;&quot;,value:&quot;&quot;}">
-                                            <select name="field0002" id="field0002" style="width:100%" >
-                                                    <option val4cal="0" value="" selected=""></option>
-                                                    <c:forEach items="${clxzoption}" var="t">
-                                                        <option value="${t.id}" title="${t.showvalue}">${t.showvalue}</option>
-                                                    </c:forEach>
-                                                </select>
-                                        </span>
+                                        <font face="宋体">
+                                            <span>${entity.clxz}</span>
+                                        </font>
+
                                     </div>
                                 </td>
                                 <td style="BORDER-TOP: #ff0000 1pt solid; BORDER-RIGHT: #ff0000 1pt solid; VERTICAL-ALIGN: middle; BORDER-BOTTOM: #ff0000 1pt solid; PADDING-BOTTOM: 1px; PADDING-TOP: 1px; PADDING-LEFT: 1px; BORDER-LEFT: #ff0000 1pt solid; PADDING-RIGHT: 1px">
@@ -98,7 +91,7 @@
                                 <td style="BORDER-TOP: #ff0000 1pt solid; BORDER-RIGHT: #ff0000 1pt solid; VERTICAL-ALIGN: middle; BORDER-BOTTOM: #ff0000 1pt solid; PADDING-BOTTOM: 1px; PADDING-TOP: 1px; PADDING-LEFT: 1px; BORDER-LEFT: #ff0000 1pt solid; PADDING-RIGHT: 1px">
                                     <div >
                                         <font face="宋体">
-                                            <input  id="field0003" name="field0003"  type="text" value="${entity.field0003}" comp="type:&quot;calendar&quot;,cache:false,isOutShow:true,ifFormat:&quot;%Y-%m-%d&quot;" class="validate xdRichTextBox comp" incalculate="false" comptype="calendar"  style="width: 165px;" finalwidth="165">
+                                            <span>${entity.field0003}</span>
                                         </font>
                                     </div>
                                 </td>
@@ -111,14 +104,9 @@
                                 <td style="BORDER-TOP: #ff0000 1pt solid; BORDER-RIGHT: #ff0000 1pt solid; VERTICAL-ALIGN: middle; BORDER-BOTTOM: #ff0000 1pt solid; PADDING-BOTTOM: 1px; PADDING-TOP: 1px; PADDING-LEFT: 1px; BORDER-LEFT: #ff0000 1pt solid; PADDING-RIGHT: 1px"
                                     colspan="2">
                                     <div >
-                                        <font face="宋体" size="4" color="#ff0000">
-                                            <span id="field0004_span" class="edit_class" fieldval="{name:&quot;field0004&quot;,isMasterFiled:&quot;true&quot;,displayName:&quot;create_person&quot;,fieldType:&quot;VARCHAR&quot;,inputType:&quot;member&quot;,formatType:&quot;1&quot;,value:&quot;-4120520206381135530&quot;}">
-                                                    <input type="text" onblur="calc(this);" class="xdTextBox validate comp" incondition="false" comp="type:&quot;selectPeople&quot;,showOriginalElement:false,isNeedCheckLevelScope:false,showAccountShortname:&quot;no&quot;,showAllOuterDepartment:true,showBtn:true,extendWidth:true,panels:&quot;Department,Team,Post,Level,Outworker,RelatePeople,JoinOrganization&quot;,selectType:&quot;Member&quot;
-                                                    ,value:&quot;Member|${entity.field0004}&quot;,text:&quot;${entity.name}&quot;,minSize:0,maxSize:1,preCallback:selectOrgPreCallBack,callback:selectOrgCallBack,valueChange:orgFieldOnChange,hasRelationField:false,departmentId:${entity.org_department_id},isMasterField:true,fieldName:&quot;field0004&quot;" unique="false" name="field0004txt" mappingfield="create_person" incalculate="false" id="field0004_txt" data-role="none" validate="name:&quot;create_person&quot;,type:&quot;string&quot;,china3char:true,notNull:false" readonly="readonly" comptype="selectPeople" _inited="1"  style="width: 178px; text-overflow: clip;" oldval=${entity.name}>
+                                        <font face="宋体" >
+                                            <span>${entity.name}</span>
 
-                                                     <input type="hidden" id="field0004" name="field0004"  style="display: none;">
-                                                  <span _isrel="1" class="ico16 radio_people_16 _autoBtn"></span>
-                                              </span>
                                         </font>
                                     </div>
                                 </td>
@@ -129,7 +117,7 @@
                                 <td style="BORDER-TOP: #ff0000 1pt solid; BORDER-RIGHT: #ff0000 1pt solid; VERTICAL-ALIGN: middle; BORDER-BOTTOM: #ff0000 1pt solid; PADDING-BOTTOM: 1px; PADDING-TOP: 1px; PADDING-LEFT: 1px; BORDER-LEFT: #ff0000 1pt solid; PADDING-RIGHT: 1px">
                                     <div>
                                         <font face="宋体">
-                                            <input  id="field0005" name="field0005"  type="text" value="${entity.field0005}" comp="type:&quot;calendar&quot;,cache:false,isOutShow:true,ifFormat:&quot;%Y-%m-%d&quot;" class="validate xdRichTextBox comp" incalculate="false" comptype="calendar"  style="width: 165px;" finalwidth="165">
+                                            <span>${entity.field0005}</span>
                                         </font>
                                     </div>
                                 </td>
@@ -142,7 +130,7 @@
                                 <td style="BORDER-TOP: #ff0000 1pt solid; BORDER-RIGHT: #ff0000 1pt solid; VERTICAL-ALIGN: middle; BORDER-BOTTOM: #ff0000 1pt solid; PADDING-BOTTOM: 1px; PADDING-TOP: 1px; PADDING-LEFT: 1px; BORDER-LEFT: #ff0000 1pt solid; PADDING-RIGHT: 1px"
                                     colspan="2">
                                     <div ><font face="宋体">
-                                        <input id="field0006" style="width:98%;height:30px;border:1px solid #D4D4D4"  value="${entity.field0006}"/>
+                                        <span>${entity.field0006}</span>
                                     </font>
                                     </div>
                                 </td>
@@ -152,7 +140,7 @@
                                 </td>
                                 <td style="BORDER-TOP: #ff0000 1pt solid; BORDER-RIGHT: #ff0000 1pt solid; VERTICAL-ALIGN: middle; BORDER-BOTTOM: #ff0000 1pt solid; PADDING-BOTTOM: 1px; PADDING-TOP: 1px; PADDING-LEFT: 1px; BORDER-LEFT: #ff0000 1pt solid; PADDING-RIGHT: 1px">
                                     <div ><font face="宋体">
-                                        <input id="field0007" style="width:98%;height:30px;border:1px solid #D4D4D4"  value="${entity.field0007}"/>
+                                        <span>${entity.field0007}</span>
                                     </font>
                                     </div>
                                 </td>
@@ -166,13 +154,9 @@
                                     colspan="2">
                                     <div >
                                         <font face="宋体">
-                                            <select level="0" id="field0008" name="field0008" style="width:100%" >
-                                                <option val4cal="0" value="" selected=""></option>
-                                                <option val4cal="6" value="3586464229258313866">一般</option>
-                                                <option val4cal="2" value="426">紧急</option>
-                                                <option val4cal="3" value="427">加急</option>
-                                            </select>
+                                            <span>${entity.hj}</span>
                                         </font>
+
                                     </div>
                                 </td>
                                 <%-- <td style="BORDER-TOP: #ff0000 1pt solid; BORDER-RIGHT: #ff0000 1pt solid; VERTICAL-ALIGN: middle; BORDER-BOTTOM: #ff0000 1pt solid; PADDING-BOTTOM: 1px; PADDING-TOP: 1px; PADDING-LEFT: 1px; BORDER-LEFT: #ff0000 1pt; PADDING-RIGHT: 1px"
@@ -186,26 +170,14 @@
                                     <div align="center"><font face="宋体" size="4"
                                                               color="#ff0000"><strong>公开方式</strong></font></div>
                                 </td>
-                                <td style="BORDER-TOP: #ff0000 1.5pt solid; BORDER-RIGHT: #ff0000 1.5pt solid; VERTICAL-ALIGN: middle; BORDER-BOTTOM: #ff0000 1.5pt solid; PADDING-BOTTOM: 1px; PADDING-TOP: 1px; PADDING-LEFT: 1px; BORDER-LEFT: #ff0000 1.5pt solid; PADDING-RIGHT: 1px">
-                                    <font face="宋体">
-                                        <div align="left">
-                                            <%--     <input id="field0014" style="width:100%;height:100%;border:none" value="${entity.field0014}"/>
-                                            --%>
-                                            <%--  <select level="0" id="field0014" name="field0014" style="width:100%" >
-                                                  <option val4cal="0" value="" selected=""></option>
-                                                  <option val4cal="0" value="-7932555032561041306">主动公开</option>
-                                                  <option val4cal="1" value="-6555425946729429389">依申请公开</option>
-                                                  <option val4cal="2" value="-3786602079642825131">不公开</option>
-                                              </select>--%>
+                                <td style="BORDER-TOP: #ff0000 1pt solid; BORDER-RIGHT: #ff0000 1pt solid; VERTICAL-ALIGN: middle; BORDER-BOTTOM: #ff0000 1pt solid; PADDING-BOTTOM: 1px; PADDING-TOP: 1px; PADDING-LEFT: 1px; BORDER-LEFT: #ff0000 1pt solid; PADDING-RIGHT: 1px">
 
-                                            <select name="field0009" id="field0009" style="width:100%"  >
-                                                <option val4cal="0" value="" selected=""></option>
-                                                <c:forEach items="${gkfsoption}" var="t">
-                                                    <option value="${t.id}" title="${t.showvalue}">${t.showvalue}</option>
-                                                </c:forEach>
-                                            </select>
+                                        <div align="left">
+                                            <font face="宋体">
+                                                <span>${entity.gkfs}</span>
+                                            </font>
                                         </div>
-                                    </font>
+
                                 </td>
                             </tr>
                             <tr style="min-height: 40px; height: 40px;">
@@ -216,16 +188,7 @@
                                 <td style="BORDER-TOP: #ff0000 1pt solid; BORDER-RIGHT: #ff0000 1pt solid; VERTICAL-ALIGN: middle; BORDER-BOTTOM: #ff0000 1pt solid; PADDING-BOTTOM: 1px; PADDING-TOP: 1px; PADDING-LEFT: 1px; BORDER-LEFT: #ff0000 1pt solid; PADDING-RIGHT: 1px"
                                     colspan="4">
                                     <div ><font face="宋体">
-                                        <input readonly="readonly" id="field0010s" style="width:98%;height:30px;border:1px solid #D4D4D4"  value="${entity.zrdwmc}"></input>
-                                        <input type="hidden" id="field0010" name="field0010" style="display: none;" value="${entity.field0010}">
-                                        <%-- <span id="field0010_span" class="edit_class" fieldval="{name:&quot;field0010&quot;,isMasterFiled:&quot;true&quot;,displayName:&quot;undertakenoffice&quot;,fieldType:&quot;VARCHAR&quot;,inputType:&quot;accountAndDepartment&quot;,formatType:&quot;&quot;,value:&quot;&quot;}">
-                                             <textarea readonly="readonly" onpropertychange="this.style.posHeight=this.scrollHeight" onblur="calc(this);" class="comp validate" incondition="false"
-                                                       comp="isDuo:true,type:&quot;selectPeople&quot;,valueChange:orgFieldOnChange,showBtn:true,dan:1,showAllAccount:true,extendWidth:true,mode:&quot;open&quot;,panels:&quot;Account,Department,OrgTeam,ExchangeAccount&quot;,minSize:0,isCheckInclusionRelations:false,maxSize:0,selectType:&quot;Department,Account,OrgTeam,ExchangeAccount&quot;,preCallback:selectOrgPreCallBack,callback:selectOrgCallBack,hasRelationField:false,isMasterField:true,fieldName:&quot;field0010&quot;,isMultipleAccountAndDepartment: true,isCanEdit:true
-                                                       ,&quot;value&quot;:&quot;${entity.field0010}&quot;,&quot;text&quot;:&quot;${entity.zrdwmc}&quot;" unique="false" name="field0010_txt" mappingfield="undertakenoffice" incalculate="false" id="field0010_txt" data-role="none" validate="name:&quot;undertakenoffice&quot;,type:&quot;string&quot;,china3char:true,maxLength:4000,notNull:false" comptype="selectPeople" _inited="1" style="width: 487px;" title=&quot;${entity.zrdwmc}&quot; oldval=&quot;${entity.zrdwmc}&quot;>
-                                             </textarea>
-                                             <input type="hidden" id="field0010" name="field0010" style="display: none;">
-                                             <span _isrel="1" class="ico16 check_dept_16 _autoBtn"></span>
-                                         </span>--%>
+                                        <span>${entity.zrdwmc}</span>
                                     </font>
                                     </div>
                                 </td>
@@ -259,12 +222,6 @@
                                                         </c:forEach>
                                                   </div>
 
-                                                   <div style="display:none;">
-                                                        <iframe name="downloadFileFrame" id="downloadFileFrame" frameborder="0" width="0" height="0"></iframe>
-                                                    </div>
-                                                    <span class="ico16 affix_16" onclick="insertAttachmentPoi('1209558887199034033')">
-                                                        <input type="hidden" id="field0011_0_editAtt" value="true">
-                                                    </span>
                                                 </span>
                                             </div>
 
@@ -281,7 +238,7 @@
                                     colspan="4">
                                     <div><font face="宋体"><strong>
                                         <span id="field0012_span" class="edit_class" fieldval="{name:&quot;field0012&quot;,isMasterFiled:&quot;true&quot;,displayName:&quot;text1&quot;,fieldType:&quot;VARCHAR&quot;,inputType:&quot;textarea&quot;,formatType:&quot;&quot;,value:&quot;&quot;}">
-                                            <textarea  class="xdRichTextBox" id="field0012" style="width: 503px;">${entity.field0012}</textarea>
+                                            <textarea readonly="readonly"  class="xdRichTextBox" id="field0012" style="border:none;width: 503px;">${entity.field0012}</textarea>
                                         </span>
                                     </strong></font>
                                     </div>
@@ -300,7 +257,7 @@
                                             <div id="div_${op.id}">
                                                 <input type="hidden" value="${op.id}"/>
                                                 <div style="float: left;width: 100%;" class="font-s">
-                                                    <input id="${op.id}" style="width:98%;height:28px;;border:1px solid #D4D4D4" value="${op.content}"/>
+                                                    <input id="${op.id}" style="width:98%;height:28px;border:none" value="${op.content}"/>
                                                 </div>
                                                 <div style="width: 490px;">
                                                     <div style="float:right;padding-right:30px;padding-top:5px;padding-bottom:5px;" class="font-s">
@@ -326,7 +283,7 @@
                                                 <div id="div_${op.id}">
                                                     <input type="hidden" value="${op.id}"/>
                                                     <div style="float: left;width: 100%;" class="font-s">
-                                                        <input id="${op.id}" style="width:98%;height:28px;;border:1px solid #D4D4D4" value="${op.content}"/>
+                                                        <input id="${op.id}" style="width:98%;height:28px;border:none" value="${op.content}"/>
                                                     </div>
                                                     <div style="width: 490px;">
                                                         <div style="float:right;padding-right:30px;padding-top:5px;padding-bottom:5px;" class="font-s">
@@ -352,7 +309,7 @@
                                             <div id="div_${op.id}">
                                                 <input type="hidden" value="${op.id}"/>
                                                 <div style="float: left;width: 100%;" class="font-s">
-                                                    <input id="${op.id}" style="width:98%;height:28px;;border:1px solid #D4D4D4" value="${op.content}"/>
+                                                    <input id="${op.id}" style="width:98%;height:28px;border:none" value="${op.content}"/>
                                                 </div>
                                                 <div style="width: 490px;">
                                                     <div style="float:right;padding-right:30px;padding-top:5px;padding-bottom:5px;" class="font-s">
@@ -379,9 +336,8 @@
 </div>
 <script type="text/javascript">
     $(document).ready(function(){
-        initOption("field0002",${entity.field0002});//处理性质
-        initOption("field0008",${entity.field0008});//缓急
-        initOption("field0009",${entity.field0009});//公开方式默认值
+        var text = document.getElementById("field0012");
+        makeExpandingArea(text);
     });
 
 

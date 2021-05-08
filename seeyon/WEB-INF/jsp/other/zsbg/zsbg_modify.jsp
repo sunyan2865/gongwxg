@@ -496,7 +496,7 @@
                                     <div class="cap4-flow__right field-content-wrapper">
                                         <div class="cap4-flow__browse" style="border: 1px solid transparent;">
                                             <c:if test="${entity.field0014 !=''  && entity.field0014!=null  }">
-                                                <textarea  class="xdRichTextBox" id="field0013" style="width: 613px;height:80px">${entity.field0014}</textarea>
+                                                <textarea  class="xdRichTextBox" id="field0014" style="width: 613px;height:80px">${entity.field0014}</textarea>
                                             </c:if>
                                             <c:if test="${entity.field0014 ==''  || entity.field0014==null }">
                                                 <pre>${entity.field0014}</pre>
@@ -530,7 +530,7 @@
                                     <div class="cap4-flow__right field-content-wrapper">
                                         <div class="cap4-flow__browse" style="border: 1px solid transparent;">
                                             <c:if test="${entity.field0015 !=''  && entity.field0015!=null  }">
-                                                <textarea  class="xdRichTextBox" id="field0013" style="width: 613px;height:80px">${entity.field0015}</textarea>
+                                                <textarea  class="xdRichTextBox" id="field0015" style="width: 613px;height:80px">${entity.field0015}</textarea>
                                             </c:if>
                                             <c:if test="${entity.field0015 =='' || entity.field0015==null  }">
                                                 <pre>${entity.field0015}</pre>
@@ -593,6 +593,13 @@
 </div>
 <script type="text/javascript">
     $(document).ready(function(){
+
+        var field0009text = document.getElementById("field0009");
+        makeExpandingArea(field0009text);
+
+        var field0010text = document.getElementById("field0010");
+        makeExpandingArea(field0010text);
+
         var field0012_yj=$("#field0012_yj").val();
         if(field0012_yj!=''){
             var field0012text = document.getElementById("field0012");//申请单位审批意见

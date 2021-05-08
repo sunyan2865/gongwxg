@@ -33,6 +33,7 @@ public class FileController  extends BaseController {
             String fileurl = request.getParameter("fileurl");//服务器中的文件名
             String createDate = request.getParameter("createDate");
             String[] datearr = createDate.split("-");
+
             String pathstr = datearr[0] + "/" + datearr[1] + "/" + datearr[2] + "/";
 
             //1.设置文件ContentType类型，这样设置，会自动判断下载文件类型

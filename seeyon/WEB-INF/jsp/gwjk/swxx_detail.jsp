@@ -7,6 +7,7 @@
     <title>收文详情</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <script type="text/javascript" charset="UTF-8" src="${path}/common/content/form.js${ctp:resSuffix()}"></script>
+    <script type="text/javascript" charset="UTF-8" src="${path}/apps_res/demo/util.js${ctp:resSuffix()}"></script>
  </head>
 <style type="text/css">
     .opinionclass{
@@ -285,7 +286,9 @@
                                     colspan="4">
                                     <div align="center">
                                         <font face="宋体">
-                                            <span id="field0020"  >${entity.field0020}</span>
+                                    <%--        <span id="field0020"  >${entity.field0020}</span>--%>
+                                            <textarea  class="xdRichTextBox" id="field0020" style="border:none;width: 503px;" readonly="readonly">${entity.field0020}</textarea>
+
                                         </font>
                                     </div>
                                 </td>
@@ -377,6 +380,17 @@
         alert(JSON.stringify(items[i]));
     }
 </script>--%>
+
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        var text = document.getElementById("field0020");
+        makeExpandingArea(text);
+    });
+
+
+
+</script>
 
 </body>
 </html>

@@ -539,7 +539,7 @@
                                         <div class="cap4-flow__right field-content-wrapper">
                                             <div class="cap4-flow__browse" style="border: 1px solid transparent;">
                                                 <c:if test="${entity.field0022 !=''  && entity.field0022!=null  }">
-                                                    <textarea  class="xdRichTextBox" id="field0005" style="width: 613px;height:80px">${entity.field0022}</textarea>
+                                                    <textarea  class="xdRichTextBox" id="field0022" style="width: 613px;height:80px">${entity.field0022}</textarea>
                                                 </c:if>
                                                 <c:if test="${entity.field0022 =='' || entity.field0022==null }">
                                                     <pre>${entity.field0022}</pre>
@@ -733,7 +733,7 @@
                             <div class="cap4-formmain__td">
                                 <div id="auxiliary0.32484686323184_id"
                                      class="cap-field formmain_0264|auxiliary0.32484686323184">
-                                    <section><pre>秘书组意见</pre>
+                                    <section><pre>审批意见</pre>
                                     </section>
                                 </div>
                             </div>
@@ -767,6 +767,12 @@
     <input id="summaryid" type="hidden" value="${entity.summaryid}" /><%--公文主表edoc_summary的id--%>
     <input id="fields0019" type="hidden" value="${entity.field0011}" />
 
+    <input id="field0022_yj" type="hidden" value="${entity.field0022}"/>
+    <input id="field0023_yj" type="hidden" value="${entity.field0023}"/>
+    <input id="field0024_yj" type="hidden" value="${entity.field0024}"/>
+    <input id="field0025_yj" type="hidden" value="${entity.field0025}"/>
+    <input id="field0034_yj" type="hidden" value="${entity.field0034}"/>
+
     <input id="fjdatas"   type="hidden"/>
 </div>
 <script type="text/javascript">
@@ -779,6 +785,44 @@
         initOption("field0014",${entity.field0014});//交叉工作议题是否征求过部门意见
         initOption("field0016",${entity.field0016});//已组织分管部门充分论证调查研究
         initOption("field0018",${entity.field0018});//若是交叉性工作是否征求相关领导意见
+
+
+       var field0002text = document.getElementById("field0002");//需要决策事项
+        makeExpandingArea(field0002text);
+
+        var field0022str=$("#field0022_yj").val();
+        if(field0022str!=''){
+            var field0022text = document.getElementById("field0022");//需牵头部门意见
+            makeExpandingArea(field0022text);
+        }
+
+        var field0023str=$("#field0023_yj").val();
+        if(field0023str!=''){
+            var field0023text = document.getElementById("field0023");//牵头部门分管校领导意见
+            makeExpandingArea(field0023text);
+        }
+
+        var field0024str=$("#field0024_yj").val();
+        if(field0024str!=''){
+            var field0024text = document.getElementById("field0024");//协同部门意见
+            makeExpandingArea(field0024text);
+        }
+
+
+        var field0025str=$("#field0025_yj").val();
+        if(field0025str!=''){
+            var field0025text = document.getElementById("field0025");//协同部门分管校领导意见
+            makeExpandingArea(field0025text);
+        }
+
+
+        var field0034str=$("#field0034_yj").val();
+        if(field0034str!=''){
+            var field0034text = document.getElementById("field0034");//秘书组意见
+            makeExpandingArea(field0034text);
+        }
+
+
     });
 
 
