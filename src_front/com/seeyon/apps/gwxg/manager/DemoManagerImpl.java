@@ -2,10 +2,7 @@ package com.seeyon.apps.gwxg.manager;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.seeyon.ctp.common.AppContext;
 import com.seeyon.ctp.common.authenticate.domain.User;
@@ -662,10 +659,14 @@ public class DemoManagerImpl implements DemoManager {
 	@SuppressWarnings("toFwQuery")
 	public FlipInfo toFwQuery(FlipInfo flipInfo,Map<String,String> query) throws SQLException, BusinessException {
 		StringBuffer sql=new StringBuffer("select * from ( " +
-				" select f.field0005 as sex ,DATE_FORMAT(f.field0016 ,'%Y-%m-%d')  as age,f.field0026 as subject,f.start_date, t.id summaryId,t.FORM_RECORDID,t.start_time ,t.edoc_type,r.CURRENT_NODES_INFO as currentId,t.form_app_id summary_formid,t.form_id summary_operationId " +
+				" select f.field0005 as sex ,field0024,e.showvalue jgdz,DATE_FORMAT(f.field0016 ,'%Y-%m-%d')  as age,f.field0026 as subject,f.start_date, t.id summaryId,t.FORM_RECORDID,t.start_time ,t.edoc_type,r.name,t.form_app_id summary_formid,t.form_id summary_operationId " +
 				"  from formmain_0086 f " +
 				"  left join  (SELECT * FROM edoc_summary t WHERE t.EDOC_TYPE = '0') t on  t.FORM_RECORDId=f.id " +
-				"  left join (select object_id,group_concat(distinct member_id) as CURRENT_NODES_INFO from ctp_affair r where    state='3'  group by object_id) r on r.OBJECT_ID=t.id " +
+				"  left join (select object_id ,group_concat(distinct name) name from (" +
+				"     select object_id,(select name from org_member m where m.id=r.member_id) name from ctp_affair r where state='3' " +
+				"     ) r group by object_id " +
+				"   ) r on r.OBJECT_ID=t.id " +
+				"  left join (select id,showvalue from ctp_enum_item i where i.REF_ENUMID='-7394917914078590178'  and state='1') e on e.id=f.field0024  "+
 				" )t where 1=1 ");
 
 		if(null != query.get("subject")) {
@@ -689,7 +690,33 @@ public class DemoManagerImpl implements DemoManager {
 			jdbcAgent.execute(sql.toString());
 			swlist = jdbcAgent.resultSetToList();
 
-			for(int i=0;i<swlist.size();i++){
+
+			String userid=AppContext.getCurrentUser().getId().toString();
+
+			//-3873478983634171192	中矿大校字
+			//3227204207172275053	中矿组字
+
+
+			//使用迭代删除
+			Iterator<Map<String, Object>> dataIterator = swlist.iterator();
+			while (dataIterator.hasNext()) {
+				//删除特定元素
+				Map<String, Object> m = dataIterator.next();
+				String jgdz= (String) m.get("field0024");//机构代字
+				String summaryid=m.get("summaryid").toString();//summaryid
+				String affair_sql="select group_concat(distinct member_id) memberid from ctp_affair r where r.object_id='"+summaryid+"'";
+				Map<String, Object> affairdata = null;
+				jdbcAgent.execute(affair_sql);
+				affairdata=jdbcAgent.resultSetToMap();
+				String affairmemberid=(String)affairdata.get("memberid");//待办用户id
+				if(null!=jgdz && (jgdz.equals("-3873478983634171192") || jgdz.equals("3227204207172275053"))){
+					if(affairmemberid.indexOf(userid)==-1){
+						dataIterator.remove();
+					}
+				}
+			}
+
+			/*for(int i=0;i<swlist.size();i++){
 				Map<String, Object> m = swlist.get(i);
 				String currentNodeIds= (String) m.get("currentid");
 
@@ -706,7 +733,7 @@ public class DemoManagerImpl implements DemoManager {
 						m.put(entry.getKey(), entry.getValue());
 					}
 				}
-			}
+			}*/
 
 		} catch (BusinessException e) {
 			e.printStackTrace();
@@ -752,7 +779,7 @@ public class DemoManagerImpl implements DemoManager {
 	public FlipInfo toSwQuery(FlipInfo flipInfo, Map<String,String> query) throws SQLException, BusinessException {
 
 		StringBuffer sql=new StringBuffer("  select t.*,e.showvalue clxzmc from (" +
-				"     select t.id summaryid,f.id formid, f.field0006 wjbt,f.field0016 blqx ,f.field0011 as clxz,f.field0014 swrq,f.start_date,GROUP_CONCAT(u.name) current_node_name,t.form_app_id summary_formid,t.form_id summary_operationId from formmain_0081 f " +
+				"     select t.id summaryid,f.id formid, f.field0006 wjbt,f.field0016 blqx ,f.field0011 as clxz,f.field0002 lwbh,f.field0014 swrq,f.start_date,GROUP_CONCAT(u.name) current_node_name,t.form_app_id summary_formid,t.form_id summary_operationId from formmain_0081 f " +
 				"                 left join  (SELECT * FROM edoc_summary t WHERE t.EDOC_TYPE = '1') t on  t.FORM_RECORDId=f.id " +
 				"                 left join ctp_affair r on r.OBJECT_ID=t.id and r.state ='3'" +
 				"                 left join ORG_MEMBER u on u.id=r.MEMBER_ID " +
@@ -764,6 +791,12 @@ public class DemoManagerImpl implements DemoManager {
 
 		if(null != query.get("wjbt")) {
 			sql.append(" and wjbt like  '%"+query.get("wjbt") +"%'");
+		}
+		if(null != query.get("lwbh")) {
+			sql.append(" and lwbh like  '%"+query.get("lwbh") +"%'");
+		}
+		if(null != query.get("clxzmc")) {
+			sql.append(" and e.showvalue like  '%"+query.get("clxzmc") +"%'");
 		}
 
 		if(null != query.get("startime")) {

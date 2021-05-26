@@ -39,6 +39,118 @@ public class FormMainJchyEntity {
     private String field0027;
     private String field0028;
     private String field0030;
+    private String field0036;
+    private String field0038;
+    private String field0042;
+    private String field0044;
+    private String field0045;
+    private String field0046;
+
+    private String field0040;
+    private String field0050;
+    private String field0052;
+    private String field0053;
+    private String field0054;
+    private String field0048;
+    public String getField0040() {
+        return field0040;
+    }
+
+    public void setField0040(String field0040) {
+        this.field0040 = field0040;
+    }
+
+    public String getField0050() {
+        return field0050;
+    }
+
+    public void setField0050(String field0050) {
+        this.field0050 = field0050;
+    }
+
+    public String getField0052() {
+        return field0052;
+    }
+
+    public void setField0052(String field0052) {
+        this.field0052 = field0052;
+    }
+
+    public String getField0053() {
+        return field0053;
+    }
+
+    public void setField0053(String field0053) {
+        this.field0053 = field0053;
+    }
+
+    public String getField0054() {
+        return field0054;
+    }
+
+    public void setField0054(String field0054) {
+        this.field0054 = field0054;
+    }
+
+    public String getField0048() {
+        return field0048;
+    }
+
+    public void setField0048(String field0048) {
+        this.field0048 = field0048;
+    }
+
+
+
+    public String getField0036() {
+        return field0036;
+    }
+
+    public void setField0036(String field0036) {
+        this.field0036 = field0036;
+    }
+
+    public String getField0038() {
+        return field0038;
+    }
+
+    public void setField0038(String field0038) {
+        this.field0038 = field0038;
+    }
+
+    public String getField0042() {
+        return field0042;
+    }
+
+    public void setField0042(String field0042) {
+        this.field0042 = field0042;
+    }
+
+    public String getField0044() {
+        return field0044;
+    }
+
+    public void setField0044(String field0044) {
+        this.field0044 = field0044;
+    }
+
+    public String getField0045() {
+        return field0045;
+    }
+
+    public void setField0045(String field0045) {
+        this.field0045 = field0045;
+    }
+
+    public String getField0046() {
+        return field0046;
+    }
+
+    public void setField0046(String field0046) {
+        this.field0046 = field0046;
+    }
+
+
 
     public String getID() {
         return ID;

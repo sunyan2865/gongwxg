@@ -19,7 +19,12 @@ public class GwJkManagerImpl implements  GwJkManager {
     public FlipInfo toGwjk(FlipInfo flipInfo, Map<String,String> query) throws SQLException, BusinessException {
 
         StringBuffer sql=new StringBuffer(" select t.*,group_concat(CONCAT(s.name,';',s.memberid,';',s.state,';',s.affairid)) definestate from ( " +
-                " select t.id summaryid,f.id formid, f.field0006 wjbt,f.field0016 blqx ,f.field0014 swrq,GROUP_CONCAT(CONCAT(u.name,';',u.id,';',r.state,';',r.id)) name ,f.start_date from formmain_0081 f " +
+                " select t.id summaryid,f.id formid, f.field0006 wjbt,f.field0016 blqx ,f.field0014 swrq,GROUP_CONCAT(CONCAT(u.name,';',u.id,';',r.state,';',r.id)) name ,f.start_date," +
+                " (select showvalue from ctp_enum_item  t where ref_enumid='6534952330511468065' and state='1' and id=f.field0011) clxz,"+
+                " (case when f.field0012=426 then '紧急' "+
+                " when f.field0012=427 then '加急' "+
+                " when f.field0012=3586464229258313866 then '一般' end) jjcd "+
+                 " from formmain_0081 f " +
                 "  join  (SELECT * FROM edoc_summary t WHERE t.EDOC_TYPE = '1' and state=0) t on  t.FORM_RECORDId=f.id " +
                 " left join ctp_affair r on r.OBJECT_ID=t.id and r.state ='3' and r.node_policy not in ('秘书调度','党政办拟办') " +
                 " left join ORG_MEMBER u on u.id=r.MEMBER_ID " +
@@ -30,6 +35,13 @@ public class GwJkManagerImpl implements  GwJkManager {
 
         if(null != query.get("wjbt")) {
             sql.append(" and wjbt like  '%"+query.get("wjbt") +"%'");
+        }
+
+        if(null != query.get("clxz")) {
+            sql.append(" and clxz like  '%"+query.get("clxz") +"%'");
+        }
+        if(null != query.get("jjcd")) {
+            sql.append(" and jjcd like  '%"+query.get("jjcd") +"%'");
         }
 
         if(null != query.get("startime")) {

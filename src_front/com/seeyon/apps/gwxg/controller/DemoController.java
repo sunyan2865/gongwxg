@@ -16,6 +16,7 @@ import com.seeyon.apps.gwxg.po.FormMain0081Entity;
 import com.seeyon.apps.gwxg.po.*;
 import com.seeyon.apps.gwxg.util.CommonUtil;
 import com.seeyon.apps.meetingroom.util.MeetingReadConfigTools;
+import com.seeyon.apps.wsxtjk.TokenUtil;
 import com.seeyon.ctp.common.AppContext;
 import com.seeyon.ctp.common.authenticate.domain.User;
 import com.seeyon.ctp.services.ServiceResponse;
@@ -3376,7 +3377,7 @@ public class DemoController extends BaseController {
 	 * @throws Exception
 	 */
 	public ModelAndView toDwcwMod(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		ModelAndView modelAndView = new ModelAndView("other/jchy/dwcw/dwcw_modify");
+		ModelAndView modelAndView = new ModelAndView("other/jchy/dwcw/dwcw_modify_new");
 		String formid = request.getParameter("id");
 		String summaryid = request.getParameter("summaryid");
 		String sql=" select e3.showvalue yjsc,e4.showvalue yzzdcyj,u.name,u.org_department_id,t.*  from formmain_0264 t " +
@@ -3399,6 +3400,10 @@ public class DemoController extends BaseController {
 			//是否
 			String sfsql="select id,showvalue from ctp_enum_item t where t.REF_ENUMID='4530837824868468369' and state='1' order by t.sortnumber ";
 			modelAndView.addObject("sfoption",getOptionData(sfsql));
+
+			//是否充分听取学术委员会等学术组织意见
+			String xssql="select id,showvalue from ctp_enum_item t where t.REF_ENUMID='5223142857268349399' and state='1' order by t.sortnumber ";
+			modelAndView.addObject("xsoption",getOptionData(xssql));
 
 
 			//附件 field0019
@@ -3457,7 +3462,7 @@ public class DemoController extends BaseController {
 	 * @throws Exception
 	 */
 	public ModelAndView toXzbgsMod(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		ModelAndView modelAndView = new ModelAndView("other/jchy/xzbgs/xzbgs_modify");
+		ModelAndView modelAndView = new ModelAndView("other/jchy/xzbgs/xzbgs_modify_new");
 		String formid = request.getParameter("id");
 		String summaryid = request.getParameter("summaryid");
 		String sql=" select e3.showvalue yjsc,e4.showvalue yzzdcyj,u.name,u.org_department_id,t.*  from formmain_0285 t " +
@@ -3480,6 +3485,11 @@ public class DemoController extends BaseController {
 			//是否
 			String sfsql="select id,showvalue from ctp_enum_item t where t.REF_ENUMID='4530837824868468369' and state='1' order by t.sortnumber ";
 			modelAndView.addObject("sfoption",getOptionData(sfsql));
+
+			//是否充分听取学术委员会等学术组织意见
+			String xssql="select id,showvalue from ctp_enum_item t where t.REF_ENUMID='5223142857268349399' and state='1' order by t.sortnumber ";
+			modelAndView.addObject("xsoption",getOptionData(xssql));
+
 
 			//附件 field0005
 			String fjmainId=(String)swxxdata.get("field0005");
@@ -3517,71 +3527,127 @@ public class DemoController extends BaseController {
 		try {
 			String data =request.getParameter("params");
 			String tablename=request.getParameter("tablename");
+
+			String field0030=request.getParameter("field0030");//议题审批关联单据编号
+			String sptablename=request.getParameter("sptablename");//议题审批表
+
 			FormMainJchyEntity formmain = (FormMainJchyEntity) JSONArray.parseObject(data, FormMainJchyEntity.class);
 			String sql="update "+tablename+" set " ;
+			String spsql="update "+sptablename+" set " ;
 			if(null!=formmain.getField0001() && !"".equals(formmain.getField0001())){
 				sql+=" field0001='" + formmain.getField0001()+"',";
+				spsql+=" field0001='" + formmain.getField0001()+"',";
 			}
 			if(null!=formmain.getField0002() && !"".equals(formmain.getField0002())){
 				sql+=" field0002='" + formmain.getField0002()+"',";
+				spsql+=" field0002='" + formmain.getField0002()+"',";
 			}
 			if(null!=formmain.getField0003() && !"".equals(formmain.getField0003())){
 				sql+=" field0003='" + formmain.getField0003()+"',";
+				spsql+=" field0003='" + formmain.getField0003()+"',";
 			}
 			if(null!=formmain.getField0004() && !"".equals(formmain.getField0004())){
 				sql+=" field0004='" + formmain.getField0004()+"',";
+				spsql+=" field0004='" + formmain.getField0004()+"',";
 			}
 			if(null!=formmain.getField0005() && !"".equals(formmain.getField0005())){
 				sql+=" field0005='" + formmain.getField0005()+"',";
+				spsql+=" field0005='" + formmain.getField0005()+"',";
 			}
 			if(null!=formmain.getField0027() && !"".equals(formmain.getField0027())){
 				sql+=" field0027='" + formmain.getField0027()+"',";
+				spsql+=" field0027='" + formmain.getField0027()+"',";
 			}
 			if(null!=formmain.getField0028() && !"".equals(formmain.getField0028())){
 				sql+=" field0028='" + formmain.getField0028()+"',";
+				spsql+=" field0028='" + formmain.getField0028()+"',";
 			}
 			if(null!=formmain.getField0032() && !"".equals(formmain.getField0032())){
 				sql+=" field0032='" + formmain.getField0032()+"',";
+				spsql+=" field0038='" + formmain.getField0038()+"',";
 			}
 			if(null!=formmain.getField0006() && !"".equals(formmain.getField0006())){
 				sql+=" field0006='" + formmain.getField0006()+"',";
+				spsql+=" field0006='" + formmain.getField0006()+"',";
 			}
 			if(null!=formmain.getField0008() && !"".equals(formmain.getField0008())){
 				sql+=" field0008='" + formmain.getField0008()+"',";
+				spsql+=" field0008='" + formmain.getField0008()+"',";
 			}
 			if(null!=formmain.getField0010() && !"".equals(formmain.getField0010())){
 				sql+=" field0010='" + formmain.getField0010()+"',";
+				spsql+=" field0010='" + formmain.getField0010()+"',";
 			}
 			if(null!=formmain.getField0012() && !"".equals(formmain.getField0012())){
 				sql+=" field0012='" + formmain.getField0012()+"',";
+				spsql+=" field0012='" + formmain.getField0012()+"',";
 			}
 			if(null!=formmain.getField0014() && !"".equals(formmain.getField0014())){
 				sql+=" field0014='" + formmain.getField0014()+"',";
+				spsql+=" field0014='" + formmain.getField0014()+"',";
 			}
 			if(null!=formmain.getField0022() && !"".equals(formmain.getField0022())){
 				sql+=" field0022='" + formmain.getField0022()+"',";
+				spsql+=" field0022='" + formmain.getField0022()+"',";
 			}
 			if(null!=formmain.getField0016() && !"".equals(formmain.getField0016())){
 				sql+=" field0016='" + formmain.getField0016()+"',";
+				spsql+=" field0016='" + formmain.getField0016()+"',";
 			}
 			if(null!=formmain.getField0018() && !"".equals(formmain.getField0018())){
 				sql+=" field0018='" + formmain.getField0018()+"',";
+				spsql+=" field0018='" + formmain.getField0018()+"',";
 			}
 			if(null!=formmain.getField0023() && !"".equals(formmain.getField0023())){
 				sql+=" field0023='" + formmain.getField0023()+"',";
+				spsql+=" field0023='" + formmain.getField0023()+"',";
 			}
 			if(null!=formmain.getField0024() && !"".equals(formmain.getField0024())){
 				sql+=" field0024='" + formmain.getField0024()+"',";
+				spsql+=" field0024='" + formmain.getField0024()+"',";
 			}
 			if(null!=formmain.getField0025() && !"".equals(formmain.getField0025())){
 				sql+=" field0025='" + formmain.getField0025()+"',";
+				spsql+=" field0025='" + formmain.getField0025()+"',";
 			}
 			if(null!=formmain.getField0034() && !"".equals(formmain.getField0034())){
 				sql+=" field0034='" + formmain.getField0034()+"',";
+				spsql+=" field0044='" + formmain.getField0034()+"',";
 			}
-
+			if(null!=formmain.getField0036() && !"".equals(formmain.getField0036())){
+				sql+=" field0036='" + formmain.getField0036()+"',";
+				spsql+=" field0042='" + formmain.getField0036()+"',";
+			}
+			if(null!=formmain.getField0038() && !"".equals(formmain.getField0038())){
+				sql+=" field0038='" + formmain.getField0038()+"',";
+				spsql+=" field0046='" + formmain.getField0038()+"',";
+			}
+			if(null!=formmain.getField0042() && !"".equals(formmain.getField0042())){
+				sql+=" field0042='" + formmain.getField0042()+"',";
+				spsql+=" field0050='" + formmain.getField0042()+"',";
+			}
+			if(null!=formmain.getField0044() && !"".equals(formmain.getField0044())){
+				sql+=" field0044='" + formmain.getField0044()+"',";
+				spsql+=" field0052='" + formmain.getField0044()+"',";
+			}
+			if(null!=formmain.getField0045() && !"".equals(formmain.getField0045())){
+				sql+=" field0045='" + formmain.getField0045()+"',";
+				spsql+=" field0053='" + formmain.getField0045()+"',";
+			}
+			if(null!=formmain.getField0046() && !"".equals(formmain.getField0046())){
+				sql+=" field0046='" + formmain.getField0046()+"',";
+				spsql+=" field0054='" + formmain.getField0046()+"',";
+			}
+			if(null!=formmain.getField0040() && !"".equals(formmain.getField0040())){
+				sql+=" field0040='" + formmain.getField0040()+"',";
+				spsql+=" field0048='" + formmain.getField0040()+"',";
+			}
 			String executesql=sql.substring(0,sql.length()-1)+"  where id='"+formmain.getID()+"'";
 			jdbcAgent.execute(executesql);
+
+			String executespsql=spsql.substring(0,spsql.length()-1)+"  where field0030='"+field0030+"'";
+			jdbcAgent.execute(executespsql);
+
 
 			//附件保存
 			String fjdata =request.getParameter("fjparams");
@@ -3766,6 +3832,40 @@ public class DemoController extends BaseController {
 		return null;
 	}
 
+
+	/**
+	 * 对接外事系统待办事项
+	 *//*
+	@PostMapping("/getWsgzfw")
+	String getWsgzfw(HttpServletRequest request) {
+		try {
+			String userId = "201810030008";//getCurrentZjh(request);
+			String url = "http://47.100.28.23/COOP/Ajax/AJAXMethod.ashx?_type=GetUndoneMatterCount";
+			Map<String, String> map = new HashMap<String, String>();
+			map.put("Token", TokenUtil.generateToken(userId));
+			System.out.println("mes::::::::::::::::::" + TokenUtil.generateToken(userId));
+			map.put("Account", userId);
+			map.put("UserType", "1");
+			String mes = HttpUtil.doPost(url, map);
+			System.out.println("Token::::::::::::::::::" + mes);
+			Map mesMap = (Map) JSON.parse(mes);
+			if (!mes.isEmpty()) {
+				if (mesMap.get("status").equals("0")) {
+					Map dataMap = (Map) JSON.parse(mesMap.get("data").toString());
+					return dataMap.get("matterCount").toString();
+				} else {
+					return "0";
+				}
+			} else {
+				return "0";
+			}
+			//还要判断下报错的情况
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "0";
+		}
+	}
+*/
 }
 
 

@@ -31,6 +31,8 @@ $(document).ready(function () {
     var condition = new Array();
     //文件标题
     condition.push({id: 'wjbt',name: 'wjbt',type: 'input',text: '文件标题',value: 'wjbt',maxLength:100});
+    condition.push({id: 'clxz',name: 'clxz',type: 'input',text: '处理性质',value: 'clxz',maxLength:100});
+    condition.push({id: 'jjcd',name: 'jjcd',type: 'input',text: '紧急程度',value: 'jjcd',maxLength:100});
     //拟稿日期
     condition.push({
         id: 'swrq',
@@ -66,6 +68,18 @@ $(document).ready(function () {
         name: 'wjbt',
         sortable : true,
         width: 'big'
+    });
+    formModel.push({
+        display:'处理性质',
+        name: 'clxz',
+        sortable : true,
+        width: 'small'
+    });
+    formModel.push({
+        display:'缓急',
+        name: 'jjcd',
+        sortable : true,
+        width: 'small'
     });
     formModel.push({
         display:'截止日期',
@@ -133,6 +147,18 @@ function getSearchValueObj(){
         }
     }
 
+    if(choose === 'clxz'){
+        if($('#clxz').val()!=''){
+            o.clxz = $('#clxz').val();
+        }
+    }
+
+    if(choose === 'jjcd'){
+        if($('#jjcd').val()!=''){
+            o.jjcd = $('#jjcd').val();
+        }
+    }
+
     if(choose === 'swrq'){
         var fromDate = $('#from_swrq').val();
         var toDate = $('#to_swrq').val();
@@ -164,7 +190,14 @@ function rend(txt, data, r, c) {
            txt = "<a style='word-wrap: break-word;word-break: break-all;overflow: hidden;' class='scoreA color_blue' onClick='scanSwxx(&quot;"+data.formid+"&quot;,&quot;"+data.summaryid+"&quot;)'>" + txt + "</a>";
         }
     }
-    if(c==2 || c==3){//办理期限 或收文日期
+    if(c==2 || c==3 ){//处理性质/缓急
+        if(txt=="null" || txt==""){
+            txt="";
+        }
+
+    }
+
+    if(c==4 || c==5 ){//办理期限 或收文日期
         if(txt!="null" && txt!=""){
             txt = txt.substring(0,10);
         }else{
@@ -172,7 +205,7 @@ function rend(txt, data, r, c) {
         }
 
     }
-    if(c==4){
+    if(c==6){
         var rendertxt="";
         var definestrArr='';
         var definestate=data.definestate;//每个里面包括姓名，姓名id,个人事项中的state,个人事项id
