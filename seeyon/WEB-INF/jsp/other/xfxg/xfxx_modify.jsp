@@ -645,7 +645,8 @@
             field0005:$('#field0005').val(),//党政办拟办意见
             field0004:$('#field0004').val(),//校领导审批意见
             field0002:$('#field0002').val(),//部门办理意见
-            field0025:$('#fields0025').val() //field0025  关联attachment中的sub_reference
+            field0025:$('#fields0025').val(), //field0025  关联attachment中的sub_reference
+            field0001:$('#field0001').val()
         };
 
         $.ajax({

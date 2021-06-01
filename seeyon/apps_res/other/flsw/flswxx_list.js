@@ -23,7 +23,21 @@ $(document).ready(function () {
     //编辑
     toolbarArray.push({id: "ceshi",name:"法律事务修改",className: "ico16 editor_16",click:doMod});
     toolbarArray.push({id: "delete",name:"删除流程",className: "ico16 del_16",click:doDelete});
-    toolbarArray.push({id: "replace",name:"替换节点",className: "ico16 sign_16",click:doReplace});
+    toolbarArray.push({id: "deleteNode",name:"节点管理",className: "ico16 sign_16",click:doNodeManager});
+    //toolbarArray.push({id: "replace",name:"替换节点",className: "ico16 sign_16",click:doReplace});
+    var el = document.getElementById('toolbars');
+    var childs = el.childNodes;
+    for(var i = childs .length - 1; i >= 0; i--) {
+        el.removeChild(childs[i]);
+    }
+
+    var el_1 = document.getElementsByClassName('common_search common_search_condition clearfix');
+    for(i=0;i<el_1.length;i++){
+        //删除元素 元素.parentNode.removeChild(元素);
+        if (el_1[i] != null)
+            el_1[i].parentNode.removeChild(el_1[i]);
+    }
+
     //工具栏
     toolbar = $("#toolbars").toolbar({
         toolbar: toolbarArray
@@ -309,3 +323,33 @@ function doReplace(){
 }
 
 
+/***
+ * 节点管理：删除替换催办等功能
+ */
+function doNodeManager(){
+    var rows = grid.grid.getSelectRows();
+    var count = rows.length;
+    if (count == 0) {
+        // 请选择要编辑的事项
+        $.alert("请选择要管理节点的事项");
+        return;
+    }
+    if (count > 1) {
+        // 只能选择一项事项进行编辑
+        $.alert($.i18n('collaboration.grid.alert.selectOneEdit'));
+        return;
+    }
+    if (count == 1) {
+        var obj = rows[0];
+        /*if(obj.dqblr=="" || obj.dqblr=="null" || null==obj.dqblr){
+            $.alert("流程已结束！");
+            return;
+        }else{*/
+            //showSuperviseDigram(obj.case_id,obj.process_id,'true','collaboration','670869647114347','部门承办','部门承办','节点管理','','',obj.form_app_id,obj.formid);
+            showSuperviseDigram(obj.case_id,obj.process_id,'true','collaboration','670869647114347','部门办理','部门办理','节点管理','','',obj.form_app_id,obj.formid);
+       /* }*/
+
+    }
+
+
+}

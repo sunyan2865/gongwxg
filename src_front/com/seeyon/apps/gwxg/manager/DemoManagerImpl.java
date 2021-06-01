@@ -325,7 +325,7 @@ public class DemoManagerImpl implements DemoManager {
 	public FlipInfo toFlswList(FlipInfo flipInfo, Map<String,String> query) throws SQLException, BusinessException {
 
 		StringBuffer sql=new StringBuffer("  select * from ( " +
-				" select f.id formid,s.id summaryid,field0001 bt,(select name from org_member where id=f.field0002) djr,(select name from org_unit where id=f.field0003) djbm,field0004 sdr,field0005 sdfs,field0006 lwdw,field0008 lwbh, " +
+				" select f.id formid,s.id summaryid,s.case_id,s.process_id,s.form_appid form_app_id,field0001 bt,(select name from org_member where id=f.field0002) djr,(select name from org_unit where id=f.field0003) djbm,field0004 sdr,field0005 sdfs,field0006 lwdw,field0008 lwbh, " +
 				" field0009,DATE_FORMAT(f.field0009 ,'%Y-%m-%d') djsj,f.field0011,f.start_date from formmain_0084 f " +
 				" left join col_summary s on s.form_recordid=f.id" +
 				" )t where 1=1 " );
@@ -391,7 +391,7 @@ public class DemoManagerImpl implements DemoManager {
 	public FlipInfo toXfList(FlipInfo flipInfo, Map<String,String> query) throws SQLException, BusinessException {
 
 		StringBuffer sql=new StringBuffer("  select t.*,(select name from org_member where id=t.field0017) djr from ( " +
-				" select f.id formid,t.id summaryid,field0018 bt,field0017,f.start_date,group_concat(m.name) dqblr " +
+				" select f.id formid,t.id summaryid,t.case_id,t.process_id,t.form_appid form_app_id,field0018 bt,field0017,f.start_date,group_concat(m.name) dqblr " +
 				" from formmain_0085 f " +
 				" left join  col_summary t on  t.FORM_RECORDId=f.id " +
 				" left join ctp_affair r on r.OBJECT_ID=t.id and r.state='3' " +
@@ -453,7 +453,7 @@ public class DemoManagerImpl implements DemoManager {
 	public FlipInfo toZsbgList(FlipInfo flipInfo, Map<String,String> query) throws SQLException, BusinessException {
 
 		StringBuffer sql=new StringBuffer("  select * from (" +
-				" select f.id formid,t.id summaryid,f.field0005 bt,f.start_date,f.field0006 jbsj,f.field0007 jbdd,f.field0008 cjrs,(select name from org_unit t where t.id=f.field0001) sqdw from formmain_0091 f " +
+				" select f.id formid,t.id summaryid,t.case_id,t.process_id,t.form_appid form_app_id,f.field0005 bt,f.start_date,f.field0006 jbsj,f.field0007 jbdd,f.field0008 cjrs,(select name from org_unit t where t.id=f.field0001) sqdw from formmain_0091 f " +
 				" left join  col_summary t on  t.FORM_RECORDId=f.id " +
 				" )t  where 1=1 " );
 
@@ -709,8 +709,8 @@ public class DemoManagerImpl implements DemoManager {
 				jdbcAgent.execute(affair_sql);
 				affairdata=jdbcAgent.resultSetToMap();
 				String affairmemberid=(String)affairdata.get("memberid");//待办用户id
-				if(null!=jgdz && (jgdz.equals("-3873478983634171192") || jgdz.equals("3227204207172275053"))){
-					if(affairmemberid.indexOf(userid)==-1){
+				if(null!=jgdz && (jgdz.equals("-6949237170726026365") || jgdz.equals("3227204207172275053"))){
+					if(affairmemberid.indexOf(userid)==-1 && !(userid.equals("-4120520206381135530"))){
 						dataIterator.remove();
 					}
 				}
