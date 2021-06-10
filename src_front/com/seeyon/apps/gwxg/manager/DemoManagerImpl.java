@@ -511,9 +511,113 @@ public class DemoManagerImpl implements DemoManager {
 	}
 
 
+	/******************* 首页栏目-回告信息-限制******************************/
+	@Override
+	@AjaxAccess
+	@SuppressWarnings("toSwhgPortalList")
+	public FlipInfo toSwhgPortalList(FlipInfo flipInfo, Map<String,String> query,String datatype) throws SQLException, BusinessException {
+		flipInfo=getHgxxPoratlList("limit",flipInfo, query,datatype);
+		return flipInfo;
+	}
+
+	/******************* 首页栏目-回告信息-更多******************************/
+	@Override
+	@AjaxAccess
+	@SuppressWarnings("toSwhgPortalMoreList")
+	public FlipInfo toSwhgPortalMoreList(FlipInfo flipInfo, Map<String,String> query,String datatype) throws SQLException, BusinessException {
+		flipInfo=getHgxxPoratlList("more",flipInfo, query,datatype);
+		return flipInfo;
+	}
 
 
-   /******************* 首页栏目-学校文件-限制******************************/
+	private FlipInfo getHgxxPoratlList(String  type,FlipInfo flipInfo, Map<String,String> query,String datatype){
+		StringBuffer sql=null;
+		if(datatype.equals("0")){//全部未回告信息
+			sql=new StringBuffer(" select t.*,e.showvalue hgsfwc,a.id affairid ,a.member_id from ( " +
+					"     select t.id summaryid,f.id formid, f.field0006 wjbt,f.field0030 ,f.zrr,f.field0016 blqx ,date_format(now(),'%Y-%m-%d') sysdate,datediff(f.field0016,date_format(now(),'%Y-%m-%d')) tscz,f.field0002 lwbh,f.field0014 swrq,f.start_date,t.form_app_id summary_formid,t.form_id summary_operationId from " +
+					"      (select t.*,(select name  from org_member r where r.id=t.field0033) zrr from formmain_0081 t where field0030 is null and  field0011=8466505632522324369 and start_date>='2021-06-10' ) f " +
+					"         left join  (SELECT * FROM edoc_summary t WHERE t.EDOC_TYPE = '1') t on  t.FORM_RECORDId=f.id " +
+					"            group by t.id,f.id,f.field0006,f.field0016,f.field0014,f.start_date " +
+					"  )t " +
+					" left join (select id,showvalue from ctp_enum_item i where i.REF_ENUMID=4530837824868468369)  e on t.field0030=e.id "+
+					" left join (select id,member_id,r.object_id from ctp_affair r where r.node_policy='部门承办(回告)' and state=3  ) a on a.object_id=t.summaryid "+
+					" where 1=1 "
+			);
+		}else if(datatype.equals("1")){//个人未回告信息
+			Long currentId=AppContext.getCurrentUser().getId();
+			sql=new StringBuffer(" select t.id affairid,r.id summaryid,f.id formid, " +
+					" f.field0006 wjbt,f.field0030 ,f.field0016 blqx ,date_format(now(),'%Y-%m-%d') sysdate,datediff(f.field0016,date_format(now(),'%Y-%m-%d')) tscz,f.field0002 lwbh,f.field0014 swrq,f.start_date " +
+					" from ( " +
+					"   select id,subject,r.object_id from ctp_affair r where r.node_policy='部门承办(回告)' and state=3  and member_id='"+currentId.toString()+"'" +
+					"  )t " +
+					" left join edoc_summary r on r.id=t.object_id " +
+					" left join formmain_0081 f on f.id=r.form_recordid " +
+					" where 1=1 "
+			);
+		}
+
+
+
+		if(null != query.get("wjbt")) {
+			sql.append(" and wjbt like  '%"+query.get("wjbt") +"%'");
+		}
+		if(null != query.get("lwbh")) {
+			sql.append(" and lwbh like  '%"+query.get("lwbh") +"%'");
+		}
+
+		if(null != query.get("startime")) {
+			sql.append(" and blqx >= '"+query.get("startime")+"'");
+		}
+
+		if(null != query.get("endtime")) {
+			sql.append(" and blqx <= '"+query.get("endtime")+"'");
+		}
+
+		sql.append(" order by start_date desc  ");
+		List<Map<String, Object>> swxxlist = null;
+		List<Map<String, Object>> revoler = new ArrayList<>();
+		JDBCAgent jdbcAgent = new JDBCAgent(true, false);
+		try {
+			jdbcAgent.execute(sql.toString());
+			swxxlist = jdbcAgent.resultSetToList();
+
+			int cnt=swxxlist.size();
+			if(type.equals("limit")){
+				if(cnt>20){cnt=20;}
+			}
+			for (int i = 0; i < cnt; i++) {
+				Map<String, Object> m = new HashMap<>();
+				for (Map.Entry<String, Object> entry : swxxlist.get(i).entrySet()) {
+					m.put(entry.getKey(), String.valueOf(entry.getValue()) + "");
+				}
+				revoler.add(m);
+			}
+
+
+		} catch (BusinessException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			jdbcAgent.close();
+		}
+
+		/*flipInfo.setTotal(swxxlist.size());
+		flipInfo.setData(revoler);*/
+
+		int page = flipInfo.getPage();
+		int size = 200;
+		flipInfo.setTotal(revoler.size());
+		List newList = new ArrayList();
+		int currIdx = page > 1 ? (page - 1) * size : 0;
+		for (int i = 0; i < size && i < (revoler).size() - currIdx; ++i) {
+			newList.add((revoler).get(currIdx + i));
+		}
+		flipInfo.setData(newList);
+		return flipInfo;
+	}
+
+	/******************* 首页栏目-学校文件-限制******************************/
 	@Override
 	@AjaxAccess
 	@SuppressWarnings("toXxwjPortalList")
@@ -778,14 +882,15 @@ public class DemoManagerImpl implements DemoManager {
 	@SuppressWarnings("toSwQuery")
 	public FlipInfo toSwQuery(FlipInfo flipInfo, Map<String,String> query) throws SQLException, BusinessException {
 
-		StringBuffer sql=new StringBuffer("  select t.*,e.showvalue clxzmc from (" +
-				"     select t.id summaryid,f.id formid, f.field0006 wjbt,f.field0016 blqx ,f.field0011 as clxz,f.field0002 lwbh,f.field0014 swrq,f.start_date,GROUP_CONCAT(u.name) current_node_name,t.form_app_id summary_formid,t.form_id summary_operationId from formmain_0081 f " +
+		StringBuffer sql=new StringBuffer("  select t.*,e.showvalue clxzmc,i.showvalue sfwc from (" +
+				"     select t.id summaryid,f.id formid, f.field0006 wjbt,f.field0016 blqx ,f.field0011 as clxz,f.field0002 lwbh,f.field0014 swrq,f.start_date,GROUP_CONCAT(u.name) current_node_name,t.form_app_id summary_formid,t.form_id summary_operationId,f.field0030 from formmain_0081 f " +
 				"                 left join  (SELECT * FROM edoc_summary t WHERE t.EDOC_TYPE = '1') t on  t.FORM_RECORDId=f.id " +
 				"                 left join ctp_affair r on r.OBJECT_ID=t.id and r.state ='3'" +
 				"                 left join ORG_MEMBER u on u.id=r.MEMBER_ID " +
 				"                 group by t.id,f.id,f.field0006,f.field0016,f.field0014,f.field0011,f.start_date " +
 				" )t  " +
 				" left join (select id,showvalue from ctp_enum_item i where i.REF_ENUMID='6534952330511468065') e on e.id=t.clxz "+
+				" left join (select id,showvalue from ctp_enum_item i where i.REF_ENUMID=4530837824868468369	) i on i.id=t.field0030"+
 				" where 1=1  "
 		);
 
@@ -798,7 +903,9 @@ public class DemoManagerImpl implements DemoManager {
 		if(null != query.get("clxzmc")) {
 			sql.append(" and e.showvalue like  '%"+query.get("clxzmc") +"%'");
 		}
-
+		if(null != query.get("sfwc")) {//回告是否完成
+			sql.append(" and i.showvalue like  '%"+query.get("sfwc") +"%'");
+		}
 		if(null != query.get("startime")) {
 			sql.append(" and blqx >= '"+query.get("startime")+"'");
 		}
@@ -859,6 +966,7 @@ public class DemoManagerImpl implements DemoManager {
 				" select * from formmain_0217  f "+
 				" where f.field0023=( "+
 						" select field0022 from  formson_0216  where id='"+formson0216_id+"') "+
+				//" select field0022 from  formson_0216  where id='-8592826804850243209') "+
 				" )t "+
 				"  join col_summary s on s.form_recordid=t.id "+
 				"  join ctp_affair a on a.OBJECT_ID=s.id and a.state='3' "+

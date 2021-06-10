@@ -41,6 +41,7 @@ $(document).ready(function () {
     condition.push({id: 'wjbt',name: 'wjbt',type: 'input',text: '文件标题',value: 'wjbt',maxLength:100});
     condition.push({id: 'lwbh',name: 'lwbh',type: 'input',text: '来文编号',value: 'lwbh',maxLength:100});
     condition.push({id: 'clxzmc',name: 'clxzmc',type: 'input',text: '处理性质',value: 'clxzmc',maxLength:100});
+    condition.push({id: 'sfwc',name: 'sfwc',type: 'input',text: '回告是否完成',value: 'sfwc',maxLength:100});
     //办理期限
     condition.push({
         id: 'blqx',
@@ -102,6 +103,12 @@ $(document).ready(function () {
         width: 'small'
     });
     formModel.push({
+        display:'回告是否完成',
+        name: 'sfwc',
+        sortable : true,
+        width: 'small'
+    });
+    formModel.push({
         display:'当前办理人',
         name: 'current_node_name',
         sortable : true,
@@ -154,7 +161,7 @@ function rend(txt, data, r, c) {
         }
     }else{
         if(null==txt || txt=='null' || txt==""){
-            if(c==6){
+            if(c==7){
                 txt = "已结束";
             }else{
                 txt = "";
@@ -184,6 +191,11 @@ function getSearchValueObj(){
     if(choose === 'clxzmc'){
         if($('#clxzmc').val()!=''){
             o.clxzmc = $('#clxzmc').val();
+        }
+    }
+    if(choose === 'sfwc'){
+        if($('#sfwc').val()!=''){
+            o.sfwc = $('#sfwc').val();
         }
     }
 

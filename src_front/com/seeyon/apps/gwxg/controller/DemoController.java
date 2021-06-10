@@ -2068,6 +2068,7 @@ public class DemoController extends BaseController {
 	}
 
 
+
 	/**
 	 * 首页栏目-学校文件更多
 	 * @param request
@@ -2093,6 +2094,124 @@ public class DemoController extends BaseController {
 
 
 
+
+	/**
+	 * 首页栏目-回告信息（全部）
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ModelAndView toSwhgPortalList(HttpServletRequest request, HttpServletResponse response)throws Exception{
+		response.setContentType("text/html;charset=UTF-8");
+		ModelAndView view=new ModelAndView("portal20201028/hgxx/hgxx_list");
+
+		FlipInfo list =null;
+		Map<String, Object> xxwjlist= null;
+
+		Map<String,String> query = new HashMap<String,String>();
+		FlipInfo fi = new FlipInfo();
+		if(demoManager == null) {
+			demoManager = (DemoManager) AppContext.getBean("demoManager");
+		}
+		//type  1代表个人  0全部
+		String type="0";
+		list=demoManager.toSwhgPortalList(fi,query,type);
+		view.addObject("xxwjlist", list.getData());
+		request.setAttribute("fflistStudent",list);
+		return view;
+	}
+
+	/**
+	 * 首页栏目-回告信息更多
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ModelAndView toSwhgPortalMoreList(HttpServletRequest request, HttpServletResponse response)throws Exception{
+		response.setContentType("text/html;charset=UTF-8");
+		ModelAndView view=new ModelAndView("portal20201028/hgxx/hgxx_list_more");
+
+		FlipInfo swlist =null;
+
+		Map<String,String> query = new HashMap<String,String>();
+		FlipInfo fi = new FlipInfo();
+		if(demoManager == null) {
+			demoManager = (DemoManager) AppContext.getBean("demoManager");
+		}
+		//type  1代表个人  0全部
+		String type="0";
+		swlist=demoManager.toSwhgPortalMoreList(fi,query,type);
+		request.setAttribute("fflistStudent",swlist);
+
+		return view;
+	}
+
+
+
+	/**
+	 * 首页栏目-回告信息（个人）
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ModelAndView toSwhgPortalListGr(HttpServletRequest request, HttpServletResponse response)throws Exception{
+		response.setContentType("text/html;charset=UTF-8");
+		ModelAndView view=new ModelAndView("portal20201028/hgxx/gr_hgxx_list");
+
+		FlipInfo list =null;
+		Map<String, Object> xxwjlist= null;
+
+		Map<String,String> query = new HashMap<String,String>();
+		FlipInfo fi = new FlipInfo();
+		if(demoManager == null) {
+			demoManager = (DemoManager) AppContext.getBean("demoManager");
+		}
+		//type  1代表个人  0全部
+		String type="1";
+		list=demoManager.toSwhgPortalList(fi,query,type);
+		view.addObject("xxwjlist", list.getData());
+		request.setAttribute("fflistStudent",list);
+		return view;
+	}
+
+	/**
+	 * 首页栏目-回告信息个人更多
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ModelAndView toSwhgPortalMoreListGr(HttpServletRequest request, HttpServletResponse response)throws Exception{
+		response.setContentType("text/html;charset=UTF-8");
+		ModelAndView view=new ModelAndView("portal20201028/hgxx/gr_hgxx_list_more");
+
+		FlipInfo swlist =null;
+
+		Map<String,String> query = new HashMap<String,String>();
+		FlipInfo fi = new FlipInfo();
+		if(demoManager == null) {
+			demoManager = (DemoManager) AppContext.getBean("demoManager");
+		}
+		//type  1代表个人  0全部
+		String type="1";
+		swlist=demoManager.toSwhgPortalMoreList(fi,query,type);
+		request.setAttribute("fflistStudent",swlist);
+
+		return view;
+	}
+
+
+
+	/**
+	 * 首页栏目-学校文件下载
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
 	public ModelAndView toPortalDownloadFj(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		ModelAndView modelAndView = new ModelAndView("portal20201028/xxwj/fj_download");
 		String summaryid=request.getParameter("summaryid");
@@ -2226,7 +2345,9 @@ public class DemoController extends BaseController {
 			String tokenId = userToken.getId();
 
 			for(int i=0;i<loginNames.length;i++){
+				//http://127.0.0.1/seeyon/govdoc/govdoc.do?method=summary&affairId=38&openFrom=listPending
 				String[] url= {"/seeyon/collaboration/collaboration.do?method=summary&openFrom=listPending&affairId="+affairIds[i]+"&contentAnchor=&_isModalDialog=true"};
+				//String[] url= {"/seeyon/govdoc/govdoc.do?method=summary&affairId=38&openFrom=listPending"};
 				String[] loginName=loginNames[i].split(",");
 				ServiceResponse serviceResponse = messageService.sendMessageByLoginName(tokenId, loginName, content, url);
 				serviceResponse.getResult();
@@ -3834,6 +3955,44 @@ public class DemoController extends BaseController {
 
 
 	/**
+	 * 收文未回告-催办发送消息通知
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ModelAndView toSwSendMessage(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		try {
+			String loginnames=request.getParameter("memberid");
+			String affairids=request.getParameter("affairid");
+
+
+			MessageService messageService = new MessageServiceImpl();
+
+			//String[] urls = {"/collaboration/collaboration.do?method=summary&openFrom=listPending&affairId=4078006414541604008&contentAnchor=&_isModalDialog=true"};
+			//String[] loginNames=loginnames.split(",");
+			String[] loginNames=loginnames.split(",");
+			String[] affairIds=affairids.split(",");
+
+			String content="系统管理员催办：请尽快回告收文信息！";
+			AuthorityService authorityService = new AuthorityServiceImpl();
+			String pass = new MeetingReadConfigTools().getString("passwordOfWebservice");
+			UserToken userToken = authorityService.authenticate("service-admin", pass);
+			String tokenId = userToken.getId();
+
+			for(int i=0;i<loginNames.length;i++){
+				String[] url= {"/seeyon/govdoc/govdoc.do?method=summary&affairId="+affairIds[i]+"&openFrom=listPending"};
+				String[] loginName=loginNames[i].split(",");
+				ServiceResponse serviceResponse = messageService.sendMessageByLoginName(tokenId, loginName, content, url);
+				serviceResponse.getResult();
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	/**
 	 * 对接外事系统待办事项
 	 *//*
 	@PostMapping("/getWsgzfw")
@@ -3866,6 +4025,10 @@ public class DemoController extends BaseController {
 		}
 	}
 */
+
+
+
+
 }
 
 

@@ -29,5 +29,8 @@ public interface DemoManager {
 	FlipInfo toDwcwSbxx(FlipInfo fi, Map<String, String> query) throws BusinessException, SQLException;
 	FlipInfo toXzbgSbxx(FlipInfo fi, Map<String, String> query) throws BusinessException, SQLException;
 
+	FlipInfo toSwhgPortalList(FlipInfo fi, Map<String, String> query,String type) throws BusinessException, SQLException;
+	FlipInfo toSwhgPortalMoreList(FlipInfo fi, Map<String, String> query,String type) throws BusinessException, SQLException;
+
 
 }

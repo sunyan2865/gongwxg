@@ -48,7 +48,7 @@ public class DutyImportController extends BaseController {
             jdbcAgent.execute(sql);
             Map<String, Object> currentDepartment = jdbcAgent.resultSetToMap();
             String currentOrgName = String.valueOf(currentDepartment.get("name"));
-            String sql1 = "select t.id, t.field0001 title from formmain_0180 t order by start_date desc";
+            String sql1 = "select t.id, t.field0001 title from formmain_0180 t   where field0013=-898589291194397946  order by start_date desc";
             jdbcAgent.execute(sql1);
             dutyPlanList = jdbcAgent.resultSetToList();
             view.addObject("currentDepartment", currentOrg);

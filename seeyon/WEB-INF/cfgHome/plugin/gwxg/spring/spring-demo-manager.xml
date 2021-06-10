@@ -76,4 +76,157 @@
 		</property>
 	</bean>
 
+
+
+
+	<!-- 首页栏目-回告信息（全部）-->
+	<bean id="SectionPortal_hgxx" class="com.seeyon.apps.portal20201028.section.SectionPortal_hgxx" init-method="init">
+		<property name="sectionType" value="common"/>
+		<property name="sortId" value="99"/>
+		<property name="resourceBundle" value="com.seeyon.v3x.main.resources.i18n.MainResources" />
+		<property name="spaceTypes" value="personal,personal_custom,leader,outer,department,custom,corporation,public_custom,group,public_custom_group,cooperation_work,form_application,edoc_manage,objective_manage,meeting_manage,performance_analysis,m3mobile" />
+		<property name="properties">
+			<list>
+				<!-- 栏目名称 -->
+				<bean class="com.seeyon.ctp.portal.section.SectionPropertyImpl">
+					<property name="reference">
+						<list>
+							<bean class="com.seeyon.ctp.portal.section.SectionReferenceImpl">
+								<property name="name" value="columnsName" />
+								<property name="spaceType" value="defaultPC,m3mobile" />
+								<property name="subject" value="cannel.name.label" />
+								<property name="valueType" value="2" />
+								<property name="defaultValue" value="common.my.pending.title" />
+							</bean>
+						</list>
+					</property>
+				</bean>
+				<bean class="com.seeyon.ctp.portal.section.SectionPropertyImpl">
+					<property name="reference">
+						<list>
+							<bean class="com.seeyon.ctp.portal.section.SectionReferenceImpl">
+								<property name="name" value="showHeader" />
+								<property name="spaceType" value="vjoinmobile,m3mobile" />
+								<property name="subject" value="cannel.showName.label" />
+								<property name="valueType" value="0" />
+								<property name="defaultValue" value="yes" />
+								<property name="valueRanges">
+									<list>
+										<bean class="com.seeyon.ctp.portal.section.SectionReferenceValueRangeImpl">
+											<property name="spaceType" value="defaultPC,vjoinpc,vjoinmobile,m3mobile" />
+											<property name="subject" value="common.yes" />
+											<property name="value" value="yes" />
+										</bean>
+										<bean class="com.seeyon.ctp.portal.section.SectionReferenceValueRangeImpl">
+											<property name="spaceType" value="defaultPC,vjoinpc,vjoinmobile,m3mobile" />
+											<property name="subject" value="common.no" />
+											<property name="value" value="no" />
+										</bean>
+									</list>
+								</property>
+							</bean>
+						</list>
+					</property>
+				</bean>
+				<bean class="com.seeyon.ctp.portal.section.SectionPropertyImpl">
+					<property name="reference">
+						<list>
+							<bean class="com.seeyon.ctp.portal.section.SectionReferenceImpl">
+								<property name="name" value="count" /><!-- 显示条数 -->
+								<property name="subject" value="cannel.data.count" />
+								<property name="spaceType" value="m3mobile" />
+								<property name="valueType" value="2" />
+								<property name="validate" value="isInteger" />
+								<property name="validateValue" value="max=50 min=1" />
+								<property name="defaultValue" value="8" />
+								<property name="mValidateValue" value="max=10 min=1" />
+								<property name="mDefaultValue" value="3" />
+							</bean>
+						</list>
+					</property>
+				</bean>
+				<!-- 栏目高度 -->
+				<ref bean="sectionHeightWithHelpProperty" />
+
+			</list>
+		</property>
+	</bean>
+
+
+
+
+	<!-- 首页栏目-回告信息（个人）-->
+	<bean id="SectionPortal_hgxx_gr" class="com.seeyon.apps.portal20201028.section.SectionPortal_hgxx_gr" init-method="init">
+		<property name="sectionType" value="common"/>
+		<property name="sortId" value="99"/>
+		<property name="resourceBundle" value="com.seeyon.v3x.main.resources.i18n.MainResources" />
+		<property name="spaceTypes" value="personal,personal_custom,leader,outer,department,custom,corporation,public_custom,group,public_custom_group,cooperation_work,form_application,edoc_manage,objective_manage,meeting_manage,performance_analysis,m3mobile" />
+		<property name="properties">
+			<list>
+				<!-- 栏目名称 -->
+				<bean class="com.seeyon.ctp.portal.section.SectionPropertyImpl">
+					<property name="reference">
+						<list>
+							<bean class="com.seeyon.ctp.portal.section.SectionReferenceImpl">
+								<property name="name" value="columnsName" />
+								<property name="spaceType" value="defaultPC,m3mobile" />
+								<property name="subject" value="cannel.name.label" />
+								<property name="valueType" value="2" />
+								<property name="defaultValue" value="common.my.pending.title" />
+							</bean>
+						</list>
+					</property>
+				</bean>
+				<bean class="com.seeyon.ctp.portal.section.SectionPropertyImpl">
+					<property name="reference">
+						<list>
+							<bean class="com.seeyon.ctp.portal.section.SectionReferenceImpl">
+								<property name="name" value="showHeader" />
+								<property name="spaceType" value="vjoinmobile,m3mobile" />
+								<property name="subject" value="cannel.showName.label" />
+								<property name="valueType" value="0" />
+								<property name="defaultValue" value="yes" />
+								<property name="valueRanges">
+									<list>
+										<bean class="com.seeyon.ctp.portal.section.SectionReferenceValueRangeImpl">
+											<property name="spaceType" value="defaultPC,vjoinpc,vjoinmobile,m3mobile" />
+											<property name="subject" value="common.yes" />
+											<property name="value" value="yes" />
+										</bean>
+										<bean class="com.seeyon.ctp.portal.section.SectionReferenceValueRangeImpl">
+											<property name="spaceType" value="defaultPC,vjoinpc,vjoinmobile,m3mobile" />
+											<property name="subject" value="common.no" />
+											<property name="value" value="no" />
+										</bean>
+									</list>
+								</property>
+							</bean>
+						</list>
+					</property>
+				</bean>
+				<bean class="com.seeyon.ctp.portal.section.SectionPropertyImpl">
+					<property name="reference">
+						<list>
+							<bean class="com.seeyon.ctp.portal.section.SectionReferenceImpl">
+								<property name="name" value="count" /><!-- 显示条数 -->
+								<property name="subject" value="cannel.data.count" />
+								<property name="spaceType" value="m3mobile" />
+								<property name="valueType" value="2" />
+								<property name="validate" value="isInteger" />
+								<property name="validateValue" value="max=50 min=1" />
+								<property name="defaultValue" value="8" />
+								<property name="mValidateValue" value="max=10 min=1" />
+								<property name="mDefaultValue" value="3" />
+							</bean>
+						</list>
+					</property>
+				</bean>
+				<!-- 栏目高度 -->
+				<ref bean="sectionHeightWithHelpProperty" />
+
+			</list>
+		</property>
+	</bean>
+
+
 </beans>
