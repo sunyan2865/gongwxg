@@ -21,6 +21,30 @@ $(document).ready(function () {
         }
     });
 
+
+    var toolbarArray = new Array();
+    //编辑
+    toolbarArray.push({id: "cuiban",name:"催办",className: "ico16 editor_16",click:doCbMessage});
+
+    var el = document.getElementById('toolbars');
+    var childs = el.childNodes;
+    for(var i = childs .length - 1; i >= 0; i--) {
+        el.removeChild(childs[i]);
+    }
+
+    var el_1 = document.getElementsByClassName('common_search common_search_condition clearfix');
+    for(i=0;i<el_1.length;i++){
+        //删除元素 元素.parentNode.removeChild(元素);
+        if (el_1[i] != null)
+            el_1[i].parentNode.removeChild(el_1[i]);
+    }
+
+
+    //工具栏
+    toolbar = $("#toolbars").toolbar({
+        toolbar: toolbarArray
+    });
+
     //搜索框
     var topSearchSize = 7;
     if($.browser.msie && $.browser.version=='6.0'){
@@ -33,6 +57,7 @@ $(document).ready(function () {
     condition.push({id: 'wjbt',name: 'wjbt',type: 'input',text: '文件标题',value: 'wjbt',maxLength:100});
     condition.push({id: 'clxz',name: 'clxz',type: 'input',text: '处理性质',value: 'clxz',maxLength:100});
     condition.push({id: 'jjcd',name: 'jjcd',type: 'input',text: '紧急程度',value: 'jjcd',maxLength:100});
+    condition.push({id: 'sfhg',name: 'sfhg',type: 'input',text: '是否回告',value: 'sfhg',maxLength:100});
     //拟稿日期
     condition.push({
         id: 'swrq',
@@ -73,25 +98,37 @@ $(document).ready(function () {
         display:'处理性质',
         name: 'clxz',
         sortable : true,
-        width: 'small'
+        width: 'smallest'
     });
     formModel.push({
         display:'缓急',
         name: 'jjcd',
         sortable : true,
-        width: 'small'
+        width: 'smallest'
     });
     formModel.push({
         display:'截止日期',
         name: 'blqx',
         sortable : true,
-        width: 'small'
+        width: 'smallest'
     });
     formModel.push({
         display:'收文日期',
         name: 'swrq',
         sortable : true,
-        width: 'small'
+        width: 'smallest'
+    });
+    formModel.push({
+        display:'责任人',
+        name: 'zrr',
+        sortable : true,
+        width: 'smallest'
+    });
+    formModel.push({
+        display:'是否回告',
+        name: 'sfhg',
+        sortable : true,
+        width: 'smallest'
     });
     formModel.push({
         display:'分发计数器',
@@ -159,6 +196,18 @@ function getSearchValueObj(){
         }
     }
 
+    if(choose === 'sfhg'){
+        if($('#sfhg').val()!=''){
+            o.sfhg = $('#sfhg').val();
+        }
+    }
+
+    if(choose === 'zrr'){
+        if($('#zrr').val()!=''){
+            o.zrr = $('#zrr').val();
+        }
+    }
+
     if(choose === 'swrq'){
         var fromDate = $('#from_swrq').val();
         var toDate = $('#to_swrq').val();
@@ -187,10 +236,21 @@ function getSearchValueObj(){
 function rend(txt, data, r, c) {
     if(c==1){ //文件标题
         if(null!=txt){
-           txt = "<a style='word-wrap: break-word;word-break: break-all;overflow: hidden;' class='scoreA color_blue' onClick='scanSwxx(&quot;"+data.formid+"&quot;,&quot;"+data.summaryid+"&quot;)'>" + txt + "</a>";
+            var startdate=data.start_date;
+            if(startdate>='2021-06-10' && data.clxz=='办件'){//从6.10开始判断 办件
+                var tscz=data.tscz;//办理期限-当前系统时间相差天数
+                if(tscz<=3){//距离办理期限还有小于三天时间
+                    txt = "<a style='word-wrap: break-word;word-break: break-all;overflow: hidden;' class='scoreA color_red' onClick='doGwmodView(&quot;"+data.formid+"&quot;,&quot;"+data.summaryid+"&quot;,&quot;"+data.summary_operationid+"&quot;,&quot;"+data.summary_formid+"&quot;)'>" + txt + "</a>";
+                }else {
+                    txt = "<a style='word-wrap: break-word;word-break: break-all;overflow: hidden;' class='scoreA color_blue' onClick='doGwmodView(&quot;"+data.formid+"&quot;,&quot;"+data.summaryid+"&quot;,&quot;"+data.summary_operationid+"&quot;,&quot;"+data.summary_formid+"&quot;)'>" + txt + "</a>";
+                }
+            }else{
+                txt = "<a style='word-wrap: break-word;word-break: break-all;overflow: hidden;' class='scoreA color_blue' onClick='doGwmodView(&quot;"+data.formid+"&quot;,&quot;"+data.summaryid+"&quot;,&quot;"+data.summary_operationid+"&quot;,&quot;"+data.summary_formid+"&quot;)'>" + txt + "</a>";
+            }
+
         }
     }
-    if(c==2 || c==3 ){//处理性质/缓急
+    if(c==2 || c==3 || c==6 || c==7){//处理性质/缓急
         if(txt=="null" || txt==""){
             txt="";
         }
@@ -205,7 +265,7 @@ function rend(txt, data, r, c) {
         }
 
     }
-    if(c==6){
+    if(c==8){
         var rendertxt="";
         var definestrArr='';
         var definestate=data.definestate;//每个里面包括姓名，姓名id,个人事项中的state,个人事项id
@@ -302,3 +362,47 @@ function scanSwxx(formid,summaryid){
     window.open(url, window_name, options);
 }
 
+function doGwmodView(formid,summaryid,summary_operationId,summary_formId) {
+    //var operationId=summary_operationId+".-5869788831630209953";
+    var operationId="-5090690108441605781.-5869788831630209953";
+    var url= _ctxPath + '/govdoc/govdoc.do?method=summary&summaryId='+summaryid+'&openFrom=formQuery&operationId='+operationId+"&formId="+summary_formId;
+    var options = "status=no,resizable=no,menubar=no,top=0,left=0,width=1660,height=742,scrollbars=no,center:Yes;";
+    window.open(url, null, options);
+}
+
+function doCbMessage(){
+    var rows = grid.grid.getSelectRows();
+    var loginnames ="";
+    var summaryids="";
+    if(rows.length <= 0) {
+        //请选择要删除的公文
+        $.alert("请选择要催办的公文");
+        return true;
+    }
+    var confirm = $.confirm({
+        // 该操作不能恢复，是否进行删除操作
+        'msg': '确定发送催办？',
+        ok_fn: function () {
+            for(var count = 0 ; count < rows.length; count ++){
+                if(count == rows.length -1){
+                    loginnames += rows[count].loginname;
+                    summaryids+= rows[count].summaryid;
+                }else{
+                    loginnames += rows[count].loginname +",";
+                    summaryids+= rows[count].summaryid +",";
+                }
+            }
+            $.ajax({
+               url: _ctxPath + '/demo.do?method=toSwSendMessage',
+               type:'POST',
+               data:{loginnames:loginnames,summaryids:summaryids},
+               success:function (res) {
+                   $.alert("发送成功！");
+               }
+            });
+        },
+        error : function(request, settings, e){
+            $.alert(e);
+        }
+    });
+}

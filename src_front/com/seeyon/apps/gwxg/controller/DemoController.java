@@ -3954,6 +3954,8 @@ public class DemoController extends BaseController {
 	}
 
 
+
+
 	/**
 	 * 收文未回告-催办发送消息通知
 	 * @param request
@@ -3963,29 +3965,42 @@ public class DemoController extends BaseController {
 	 */
 	public ModelAndView toSwSendMessage(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		try {
-			String loginnames=request.getParameter("memberid");
-			String affairids=request.getParameter("affairid");
-
+			String loginnames=request.getParameter("loginnames");
+			String summaryids=request.getParameter("summaryids");
 
 			MessageService messageService = new MessageServiceImpl();
-
-			//String[] urls = {"/collaboration/collaboration.do?method=summary&openFrom=listPending&affairId=4078006414541604008&contentAnchor=&_isModalDialog=true"};
-			//String[] loginNames=loginnames.split(",");
-			String[] loginNames=loginnames.split(",");
-			String[] affairIds=affairids.split(",");
-
-			String content="系统管理员催办：请尽快回告收文信息！";
 			AuthorityService authorityService = new AuthorityServiceImpl();
 			String pass = new MeetingReadConfigTools().getString("passwordOfWebservice");
 			UserToken userToken = authorityService.authenticate("service-admin", pass);
 			String tokenId = userToken.getId();
 
-			for(int i=0;i<loginNames.length;i++){
-				String[] url= {"/seeyon/govdoc/govdoc.do?method=summary&affairId="+affairIds[i]+"&openFrom=listPending"};
-				String[] loginName=loginNames[i].split(",");
+			JDBCAgent jdbcAgent = new JDBCAgent(true, false);
+			Map<String, Object> data = null;
+
+			String[] loginNamesArr=loginnames.split(",");
+			String[] summaryIdsArr=summaryids.split(",");
+			String sql="";
+
+			for(int i=0;i<loginNamesArr.length;i++){
+				sql=" select r.login_name,a.id affairid,a.object_id summaryid,a.node_policy,a.subject wjbt from " +
+						" (select r.login_name,r.member_id from  org_principal r where r.login_name='"+loginNamesArr[i]+"') r " +
+						" left join ctp_affair a on a.member_id=r.member_id" +
+						" where a.node_policy='部门承办(回告)' and a.object_id='"+summaryIdsArr[i]+"'";
+				jdbcAgent.execute(sql);
+				data=jdbcAgent.resultSetToMap();
+				String loginname=data.get("login_name").toString();
+				String affairid=data.get("affairid").toString();
+				String content="系统管理员提醒：您单位负责的《"+data.get("wjbt").toString()+"》即将到期，请登录协同办公系统提交办结回告事项。感谢您的支持！";
+
+				String[] loginArr=loginname.split(",");
+				String[] affairArr=affairid.split(",");
+
+				String[] url= {"/seeyon/govdoc/govdoc.do?method=summary&affairId="+affairArr[0]+"&openFrom=listPending&contentAnchor=&_isModalDialog=true"};
+				String[] loginName=loginArr[0].split(",");
 				ServiceResponse serviceResponse = messageService.sendMessageByLoginName(tokenId, loginName, content, url);
 				serviceResponse.getResult();
 			}
+
 
 		} catch (Exception e) {
 			e.printStackTrace();

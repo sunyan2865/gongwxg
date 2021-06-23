@@ -534,8 +534,8 @@ public class DemoManagerImpl implements DemoManager {
 		StringBuffer sql=null;
 		if(datatype.equals("0")){//全部未回告信息
 			sql=new StringBuffer(" select t.*,e.showvalue hgsfwc,a.id affairid ,a.member_id from ( " +
-					"     select t.id summaryid,f.id formid, f.field0006 wjbt,f.field0030 ,f.zrr,f.field0016 blqx ,date_format(now(),'%Y-%m-%d') sysdate,datediff(f.field0016,date_format(now(),'%Y-%m-%d')) tscz,f.field0002 lwbh,f.field0014 swrq,f.start_date,t.form_app_id summary_formid,t.form_id summary_operationId from " +
-					"      (select t.*,(select name  from org_member r where r.id=t.field0033) zrr from formmain_0081 t where field0030 is null and  field0011=8466505632522324369 and start_date>='2021-06-10' ) f " +
+					"     select t.id summaryid,f.id formid, f.field0006 wjbt,f.field0030 ,f.zrr,f.loginname,f.field0016 blqx ,date_format(now(),'%Y-%m-%d') sysdate,datediff(f.field0016,date_format(now(),'%Y-%m-%d')) tscz,f.field0002 lwbh,f.field0014 swrq,f.start_date,t.form_app_id summary_formid,t.form_id summary_operationId from " +
+					"      (select t.*,(select name  from org_member r where r.id=t.field0033) zrr ,(select login_name  from org_principal r where r.member_id=t.field0033) loginname from formmain_0081 t where field0030 is null and  field0011=8466505632522324369 and start_date>='2021-06-10' ) f " +
 					"         left join  (SELECT * FROM edoc_summary t WHERE t.EDOC_TYPE = '1') t on  t.FORM_RECORDId=f.id " +
 					"            group by t.id,f.id,f.field0006,f.field0016,f.field0014,f.start_date " +
 					"  )t " +

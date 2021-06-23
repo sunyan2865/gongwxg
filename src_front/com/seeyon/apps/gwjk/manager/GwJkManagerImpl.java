@@ -18,20 +18,25 @@ public class GwJkManagerImpl implements  GwJkManager {
     @SuppressWarnings("unchecked")
     public FlipInfo toGwjk(FlipInfo flipInfo, Map<String,String> query) throws SQLException, BusinessException {
 
-        StringBuffer sql=new StringBuffer(" select t.*,group_concat(CONCAT(s.name,';',s.memberid,';',s.state,';',s.affairid)) definestate from ( " +
-                " select t.id summaryid,f.id formid, f.field0006 wjbt,f.field0016 blqx ,f.field0014 swrq,GROUP_CONCAT(CONCAT(u.name,';',u.id,';',r.state,';',r.id)) name ,f.start_date," +
+        StringBuffer sql=new StringBuffer(" select t.*,r.name zrr,r.login_name loginname,group_concat(CONCAT(s.name,';',s.memberid,';',s.state,';',s.affairid)) definestate from ( " +
+                " select t.id summaryid,f.id formid, f.field0006 wjbt,f.field0016 blqx ,f.field0014 swrq,GROUP_CONCAT(CONCAT(u.name,';',u.id,';',r.state,';',r.id)) name ,f.start_date,f.field0033," +
                 " (select showvalue from ctp_enum_item  t where ref_enumid='6534952330511468065' and state='1' and id=f.field0011) clxz,"+
                 " (case when f.field0012=426 then '紧急' "+
                 " when f.field0012=427 then '加急' "+
-                " when f.field0012=3586464229258313866 then '一般' end) jjcd "+
-                 " from formmain_0081 f " +
+                " when f.field0012=3586464229258313866 then '一般' end) jjcd, "+
+               " ( select showvalue from ctp_enum_item i where i.REF_ENUMID=4530837824868468369 and state=1 and id=f.field0030) sfhg,datediff(f.field0016,date_format(now(),'%Y-%m-%d')) tscz,t.form_app_id summary_formid,t.form_id summary_operationId "+
+        " from formmain_0081 f " +
                 "  join  (SELECT * FROM edoc_summary t WHERE t.EDOC_TYPE = '1' and state=0) t on  t.FORM_RECORDId=f.id " +
-                " left join ctp_affair r on r.OBJECT_ID=t.id and r.state ='3' and r.node_policy not in ('秘书调度','党政办拟办') " +
+                " left join ctp_affair r on r.OBJECT_ID=t.id and r.state ='3' and r.node_policy not in ('秘书调度','党政办拟办','部门承办(回告)') " +
                 " left join ORG_MEMBER u on u.id=r.MEMBER_ID " +
                 " group by t.id,f.id,f.field0006,f.field0016,f.field0014, f.start_date " +
                 " )t  " +
-                " left join ctp_affair_define_state s on s.summaryid=t.summaryid and s.node_policy not in ('秘书调度','党政办拟办') " +
-                " where 1=1  ");    
+                " left join ctp_affair_define_state s on s.summaryid=t.summaryid and s.node_policy not in ('秘书调度','党政办拟办','部门承办(回告)') " +
+                " left join (select r.id,r.name ,p.login_name  from ( "+
+                "   select id,name from org_member where is_enable=1) r "+
+                "   left join org_principal p on p.member_id=r.id "+
+                "   ) r on r.id=field0033 "+
+                " where 1=1  ");
 
         if(null != query.get("wjbt")) {
             sql.append(" and wjbt like  '%"+query.get("wjbt") +"%'");
@@ -43,6 +48,17 @@ public class GwJkManagerImpl implements  GwJkManager {
         if(null != query.get("jjcd")) {
             sql.append(" and jjcd like  '%"+query.get("jjcd") +"%'");
         }
+        if(null != query.get("sfhg")) {
+            String sfhg=query.get("sfhg").toString();
+            if(sfhg.equals("空")){
+                sql.append(" and sfhg is null " );
+            }else{
+                sql.append(" and sfhg like  '%"+query.get("sfhg") +"%'");
+            }
+        }
+        if(null == query.get("sfhg")) {
+           sql.append(" and sfhg is null " );
+        }
 
         if(null != query.get("startime")) {
             sql.append(" and swrq >= '"+query.get("startime")+"'");
@@ -51,7 +67,7 @@ public class GwJkManagerImpl implements  GwJkManager {
         if(null != query.get("endtime")) {
             sql.append(" and swrq <= '"+query.get("endtime")+"'");
         }
-        sql.append(" group by summaryid,formid,wjbt,blqx,swrq,name,start_date order by start_date desc");
+        sql.append(" group by summaryid,formid,wjbt,blqx,swrq,name,start_date,r.name,r.login_name order by start_date desc");
         List<Map<String, Object>> swlist = null;
         List<Map<String, Object>> revoler = new ArrayList<>();
         JDBCAgent jdbcAgent = new JDBCAgent(true, false);

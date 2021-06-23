@@ -132,14 +132,12 @@ formModel.push({
     sortable : true,
     width: 'medium'
 });
-/*
 formModel.push({
     display:'操作',
     name: 'affairid',
     sortable : true,
     width: 'medium'
 });
-*/
 
 
 function rend(txt, data, r, c) {
@@ -152,9 +150,9 @@ function rend(txt, data, r, c) {
                 txt = "<a style='word-wrap: break-word;word-break: break-all;overflow: hidden;' class='scoreA color_blue' onClick='doGwmodView(&quot;"+data.formid+"&quot;,&quot;"+data.summaryid+"&quot;,&quot;"+data.summary_operationid+"&quot;,&quot;"+data.summary_formid+"&quot;)'>" + txt + "</a>";
             }
         }
-    }/*else if(c==6){
-        txt="<button type='button' style='background-color: lightskyblue;font-weight:bold' class='common_button'  onclick='cbClick(&quot;"+data.affairid+"&quot;,&quot;"+data.member_id+"&quot;)' >催办</button>";
-    }*/else{
+    }else if(c==6){
+        txt="<button type='button' style='background-color: lightskyblue;font-weight:bold' class='common_button'  onclick='cbClick(&quot;"+data.affairid+"&quot;,&quot;"+data.loginname+"&quot;)' >催办</button>";
+    }else{
         if(null==txt || txt=='null'){
             txt = "";
         }
@@ -163,11 +161,11 @@ function rend(txt, data, r, c) {
 
 }
 
-function cbClick(affairid,memberid){
+function cbClick(affairid,loginname){
     $.ajax({
         url: _ctxPath + '/demo.do?method=toSwSendMessage',
         type:'POST',
-        data:{memberid:memberid,affairid:affairid},
+        data:{loginnames:loginname,affairids:affairid},
         success:function (res) {
             $.alert("发送成功！");
         }
