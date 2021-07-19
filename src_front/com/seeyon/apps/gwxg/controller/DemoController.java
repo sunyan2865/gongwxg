@@ -4042,7 +4042,23 @@ public class DemoController extends BaseController {
 */
 
 
+	/**
+	 * 跳转到任务汇总统计界面
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public ModelAndView taskData(HttpServletRequest request,HttpServletResponse response)throws Exception{
+		response.setContentType("text/html;charset=UTF-8");
+		ModelAndView view = new ModelAndView("task/task_list");
+		Map<String,String> query = new HashMap<String,String>();
+		FlipInfo fi = new FlipInfo();
+		FlipInfo swlist = demoManager.taskData(fi,query);
+		request.setAttribute("fflistStudent",swlist);
 
+		return view;
+	}
 
 }
 

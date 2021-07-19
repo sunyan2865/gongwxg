@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
-<beans default-autowire="byName">
+<beans default-autowire="byName"  default-lazy-init="false" default-dependency-check="none">
 	<bean id="demoManager" class="com.seeyon.apps.gwxg.manager.DemoManagerImpl" />
+
+	<bean id="myMeetingResource" class="com.seeyon.ctp.rest.resources.MyMeetingResource"/>
 
     <!-- 首页栏目-学校发文-->
 	<bean id="sectionPortal" class="com.seeyon.apps.portal20201028.section.SectionPortal" init-method="init">

@@ -92,25 +92,28 @@
                         <td style="padding-left: 50px;"><a class="custom-a" href="<c:url value="/apps_res/dutyimport/templet/importFile.xls" />">模板下载</a></td>
                     </tr>
                     <tr>
-                        <td style="padding-left: 50px;">开始时间 ( 日期型，2013-10-10 ) </td>
+                        <td style="padding-left: 50px;color:green">说明：模板中已设置好单元格格式，无需再修改，直接粘贴数据即可。 </td>
                     </tr>
                     <tr>
-                        <td style="padding-left: 50px;">结束时间 ( 日期型，2013-10-10 ) </td>
+                        <td style="padding-left: 50px;">开始时间 ( 日期型，2013/12/1 ) </td>
                     </tr>
                     <tr>
-                        <td style="padding-left: 50px;">值班地点 ( 字符型，长度1000 ) </td>
+                        <td style="padding-left: 50px;">结束时间 ( 日期型，2013/12/1 ) </td>
                     </tr>
                     <tr>
-                        <td style="padding-left: 50px;">带班领导 ( 字符型，长度1000 ) </td>
+                        <td style="padding-left: 50px;">值班地点 ( 常规或文本型，长度1000 ) </td>
                     </tr>
                     <tr>
-                        <td style="padding-left: 50px;">带班领导电话 ( 字符型，长度1000 ) </td>
+                        <td style="padding-left: 50px;">带班领导 ( 常规或文本型，长度1000 ) </td>
                     </tr>
                     <tr>
-                        <td style="padding-left: 50px;">值班人员 ( 字符型，长度1000 ) </td>
+                        <td style="padding-left: 50px;">带班领导电话 ( 常规或文本型，长度1000 ) </td>
                     </tr>
                     <tr>
-                        <td style="padding-left: 50px;">值班人员电话 ( 字符型，长度1000 ) </td>
+                        <td style="padding-left: 50px;">值班人员 ( 常规或文本型，长度1000 ) </td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left: 50px;">值班人员电话 ( 常规或文本型，长度1000 ) </td>
                     </tr>
                     </tbody></table>
             </div>

@@ -1,17 +1,14 @@
 package com.seeyon.apps.gwxg.manager;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
 
 import com.seeyon.ctp.common.AppContext;
-import com.seeyon.ctp.common.authenticate.domain.User;
 import com.seeyon.ctp.common.exceptions.BusinessException;
 import com.seeyon.ctp.organization.manager.OrgManager;
 import com.seeyon.ctp.util.*;
 import com.seeyon.ctp.util.annotation.AjaxAccess;
-import java.sql.SQLException;
-import com.seeyon.apps.gwxg.util.CommonUtil;
+
 public class DemoManagerImpl implements DemoManager {
 
 	private OrgManager orgManager;
@@ -26,6 +23,9 @@ public class DemoManagerImpl implements DemoManager {
 	}
 
 	//--------------------demo----------------------
+
+
+
 
 
 	@Override
@@ -771,7 +771,7 @@ public class DemoManagerImpl implements DemoManager {
 				"     ) r group by object_id " +
 				"   ) r on r.OBJECT_ID=t.id " +
 				"  left join (select id,showvalue from ctp_enum_item i where i.REF_ENUMID='-7394917914078590178'  and state='1') e on e.id=f.field0024  "+
-				" )t where 1=1 ");
+				" )t where summaryId is not null  ");
 
 		if(null != query.get("subject")) {
 			sql.append(" and subject like  '%"+query.get("subject") +"%'");
@@ -891,7 +891,7 @@ public class DemoManagerImpl implements DemoManager {
 				" )t  " +
 				" left join (select id,showvalue from ctp_enum_item i where i.REF_ENUMID='6534952330511468065') e on e.id=t.clxz "+
 				" left join (select id,showvalue from ctp_enum_item i where i.REF_ENUMID=4530837824868468369	) i on i.id=t.field0030"+
-				" where 1=1  "
+				" where summaryid is not null  "
 		);
 
 		if(null != query.get("wjbt")) {
@@ -1298,5 +1298,144 @@ public class DemoManagerImpl implements DemoManager {
 		return flipInfo;
 	}
 
+
+	@Override
+	@AjaxAccess
+	@SuppressWarnings("unchecked")
+	public FlipInfo getMyMeetingListData(FlipInfo flipInfo, String loginname)  throws SQLException, BusinessException {
+		StringBuffer sql = new StringBuffer();
+		sql.append("select p.login_name loginname ,t.* from ( "+
+				" select start_member_id hyjsr,field0001 hymc,field0002 hysj,field0003 hydd, field0009 hynr,field0028 hysfxyhz,now() xtrq from formmain_0205 t where now()<= field0002 order by start_date desc "+
+				" )t "+
+				" left join org_principal p on p.member_id=t.hyjsr "+
+				" where login_name='"+loginname+"'");
+		List<Map<String, Object>> list = null;
+		try (JDBCAgent jdbcAgent = new JDBCAgent(true, false)) {
+			jdbcAgent.execute(sql.toString());
+			list = jdbcAgent.resultSetToList();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (BusinessException b) {
+			b.printStackTrace();
+		}
+		List<Map<String, Object>> mapList = new ArrayList<>();
+		Map<String, Object> m = null;
+		for (int i = 0; i < list.size(); i++) {
+			m = new HashMap<>();
+			for (Map.Entry entry : list.get(i).entrySet()) {
+				m.put((String) entry.getKey(), entry.getValue() + "");
+			}
+			mapList.add(m);
+		}
+		int page = flipInfo.getPage();
+		int size = flipInfo.getSize();
+		flipInfo.setTotal((mapList).size());
+		List newList = new ArrayList();
+		int currIdx = page > 1 ? (page - 1) * size : 0;
+		for (int i = 0; i < size && i < (mapList).size() - currIdx; ++i) {
+			newList.add((mapList).get(currIdx + i));
+		}
+		flipInfo.setData(newList);
+		return flipInfo;
+	}
+
+
+	/**
+	 * 任务汇总统计
+	 * @param flipInfo
+	 * @param query
+	 * @return
+	 * @throws SQLException
+	 * @throws BusinessException
+	 */
+	@Override
+	@AjaxAccess
+	@SuppressWarnings("unchecked")
+	public FlipInfo taskData(FlipInfo flipInfo,Map<String,String> query) throws SQLException, BusinessException {
+
+		StringBuffer sql=new StringBuffer("select id formmain_id,field0052,field0063 from formmain_0321  t where t.field0063 like '2021%' order  by field0063");
+
+		/*if(null != query.get("sex")) {
+			sql.append(" and sex like '%"+query.get("sex")+"%'");
+		}*/
+		/*	sql.append(" order by t.start_time desc ");*/
+
+
+
+		List<Map<String, Object>> swlist = null;
+		List<Map<String, Object>> revoler = new ArrayList<>();
+		JDBCAgent jdbcAgent = new JDBCAgent(true, false);
+		try {
+			jdbcAgent.execute(sql.toString());
+			swlist = jdbcAgent.resultSetToList();
+
+			String formmain_id0=swlist.get(0).get("formmain_id")+"";
+			StringBuffer tasksql=new StringBuffer("select distinct  field0061,field0036,field0037  from formson_0322 where formmain_id='"+formmain_id0+"' order by field0061");//获得所有任务
+			Map<String, Object> data = null;
+			for(int i=0;i<swlist.size();i++){
+				Map<String, Object> m = swlist.get(i);
+				String formmain_id= (String) m.get("formmain_id");
+
+				//获得月份
+				StringBuffer monthsql=new StringBuffer("select field0063 month from formmain_0321 where id='"+formmain_id+"");//获得月份
+				jdbcAgent.execute(monthsql.toString());
+				data=jdbcAgent.resultSetToMap();
+				String month=data.get("month").toString();
+				switch(month){
+					case "":break;
+				}
+
+				StringBuffer joinsql=new StringBuffer("(select t.*,(select field0063  from formmain_0321 where id=formmain_id) month from formson_0322 t  where formmain_id='"+formmain_id+"') " +
+						" on field0063.field0061=t.field0061");
+
+
+
+				/*select t.*,six.field0055, six.field0056,six.field0057,six.month,seven.field0055, seven.field0056,seven.field0057,seven.month from (
+						select distinct  field0061,field0036,field0037  from formson_0322) t
+				left join
+				(select t.*,(select field0063 from formmain_0321 where id=formmain_id) month from formson_0322 t  where formmain_id=-8167645827791959223) six
+				on six.field0061=t.field0061
+				left join
+				(select t.*,(select field0063 from formmain_0321 where id=formmain_id) month from formson_0322 t  where formmain_id=-3381705597789910728) seven
+				on seven.field0061=t.field0061*/
+
+			/*	if(null!=currentNodeIds && !(currentNodeIds.equals(""))){
+					String[] currentNodeIdsArr=currentNodeIds.split(",");
+					String idstr="";
+					for(int j=0;j<currentNodeIdsArr.length;j++){
+						idstr+="'"+currentNodeIdsArr[j]+"',";
+					}
+					String str = "select group_concat(name) name from ORG_MEMBER where id in(" + idstr.substring(0,idstr.length()-1) + ")";
+					jdbcAgent.execute(str);
+					List<Map<String, Object>> l =jdbcAgent.resultSetToList();
+					//List<Map<String, Object>> l =JDBCUtil.doQuery(str);
+					for (Map.Entry<String, Object> entry : l.get(0).entrySet()) {
+						m.put(entry.getKey(), entry.getValue());
+					}
+				}*/
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			jdbcAgent.close();
+		}
+
+		int page = flipInfo.getPage();
+		int size = 200;
+		flipInfo.setTotal(swlist.size());
+		List newList = new ArrayList();
+		int currIdx = page > 1 ? (page - 1) * size : 0;
+		for (int i = 0; i < size && i < (swlist).size() - currIdx; ++i) {
+			newList.add((swlist).get(currIdx + i));
+		}
+
+		flipInfo.setData(newList);
+
+
+		/*DBAgent.find(hql.toString(), pMap, fi);
+		convertVO1(fi);*/
+		return flipInfo;
+	}
 
 }

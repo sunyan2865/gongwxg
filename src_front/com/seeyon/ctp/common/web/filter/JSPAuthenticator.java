@@ -41,6 +41,7 @@ public class JSPAuthenticator extends AbstractAuthenticator {
 				"openPendingsso.jsp",
 				"openDonesso.jsp",
 				"openSentsso.jsp",
+				"openMyMeeting.jsp",
 				"pc.jsp",
 				"pc2a8.jsp",
 				"ssoproxy/jsp/ssoproxy.jsp",

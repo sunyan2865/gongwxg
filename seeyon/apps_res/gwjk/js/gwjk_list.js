@@ -85,56 +85,56 @@ $(document).ready(function () {
     formModel.push({
         display: 'formid',
         name: 'formid',
-        width: 'smallest',
+        width: '50',
         type: 'checkbox'
     });
     formModel.push({
         display: '文件标题',
         name: 'wjbt',
         sortable : true,
-        width: 'big'
+        width: '450'
     });
     formModel.push({
         display:'处理性质',
         name: 'clxz',
         sortable : true,
-        width: 'smallest'
+        width: '60'
     });
     formModel.push({
         display:'缓急',
         name: 'jjcd',
         sortable : true,
-        width: 'smallest'
+        width: '50'
     });
     formModel.push({
         display:'截止日期',
         name: 'blqx',
         sortable : true,
-        width: 'smallest'
+        width: '85'
     });
     formModel.push({
         display:'收文日期',
         name: 'swrq',
         sortable : true,
-        width: 'smallest'
+        width: '85'
     });
     formModel.push({
         display:'责任人',
         name: 'zrr',
         sortable : true,
-        width: 'smallest'
+        width: '85'
     });
     formModel.push({
         display:'是否回告',
         name: 'sfhg',
         sortable : true,
-        width: 'smallest'
+        width: '85'
     });
     formModel.push({
         display:'分发计数器',
         name: 'name',
         sortable : true,
-        width: 'big'
+        width: '550'
     });
 
 
@@ -234,6 +234,9 @@ function getSearchValueObj(){
  * @returns {string}
  */
 function rend(txt, data, r, c) {
+    if(c==0){
+        txt = "<span style='text-align: center;>" + txt + "</span>";
+    }
     if(c==1){ //文件标题
         if(null!=txt){
             var startdate=data.start_date;

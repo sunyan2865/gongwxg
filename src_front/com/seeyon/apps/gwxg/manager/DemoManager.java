@@ -32,5 +32,8 @@ public interface DemoManager {
 	FlipInfo toSwhgPortalList(FlipInfo fi, Map<String, String> query,String type) throws BusinessException, SQLException;
 	FlipInfo toSwhgPortalMoreList(FlipInfo fi, Map<String, String> query,String type) throws BusinessException, SQLException;
 
+	FlipInfo getMyMeetingListData(FlipInfo fi, String loginname) throws BusinessException, SQLException;
+
+	FlipInfo taskData(FlipInfo fi, Map<String, String> query) throws BusinessException, SQLException;
 
 }

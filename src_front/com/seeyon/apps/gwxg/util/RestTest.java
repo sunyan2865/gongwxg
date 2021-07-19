@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -64,7 +65,54 @@ public class RestTest {
     public static void main(String[] args) {
         System.out.println(getToken());
         String token=getToken();
-        String url = "http://127.0.0.1/seeyon/rest/affairs/pending/code/2019999?ticket=2019999&token="+token;
+        //post请求“已办会议”数据
+      //  String url = "http://127.0.0.1/seeyon/rest/aweekly/getListData";
+        String url = "http://127.0.0.1/seeyon/rest/meetingInfo/getMyMeetingData";
+        CloseableHttpClient client = HttpClients.createDefault();
+        HttpPost httpPost = null;
+        HttpResponse response = null;
+
+        httpPost = new HttpPost(url);
+        httpPost.setHeader("Content-Type", "application/json;");
+        httpPost.setHeader("token", token);
+        String requestParams = "{\"loginname\":\"2019999\"}";
+        StringEntity postingString = new StringEntity(requestParams, "utf-8");
+        httpPost.setEntity(postingString);
+
+        try {
+            response = client.execute(httpPost);
+            response.setHeader("Cache-Control", "no-cache");
+
+            System.out.println(response.getStatusLine().getStatusCode());
+            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+                String resultString = EntityUtils.toString(response.getEntity());
+                System.out.println(resultString);
+                Map<String, Object> m = (Map<String, Object>) JSONObject.parse(resultString);
+
+                String data=m.get("datas").toString();
+                String count=m.get("count").toString();//会议条数
+                System.out.println("==会议个数=="+count);
+                JSONArray json = JSONArray.parseArray(data); // 首先把字符串转成 JSONArray  对象
+
+                if(json.size()>0){
+                    for(int i=0;i<json.size();i++) {
+                        JSONObject job = json.getJSONObject(i);  // 遍历 jsonarray 数组，把每一个对象转成 json 对象
+                        String loginname = job.get("loginname").toString();//登录code
+                        String hymc = job.get("hymc").toString();//会议名称
+                        String hysj = job.get("hysj").toString();//会议时间
+                        String hydd = job.get("hydd").toString();//会议地点
+                        System.out.println("count=="+count+"loginname=="+loginname+",hymc="+hymc+",hysj="+hysj+",hydd="+hydd);
+                    }
+                }
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        //get请求待办数据
+       /* String url = "http://127.0.0.1/seeyon/rest/affairs/pending/code/2019999?ticket=2019999&token="+token;
         CloseableHttpClient client = HttpClients.createDefault();
         HttpGet httpGet = null;
         HttpResponse response = null;
@@ -100,6 +148,6 @@ public class RestTest {
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
     }
 }

@@ -114,4 +114,25 @@ public class OpenPendingController {
     }
 
 
+
+    /**
+     * 已办会议
+     * @param request
+     * @param response
+     */
+    public static void myMeetingData(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            String ticket = request.getParameter("ticket");
+            SSOTicketManager.getInstance().newTicketInfo(ticket, ticket, "xkdxSso");
+            //真实
+            String url = "/seeyon/cap4/businessTemplateController.do?method=capUnflowList&srcFrom=bizconfig&businessId=-3670809159316847687&moduleId=2610274103067887667&formId=-584685312557562429&type=baseInfo&tag=1624002613936&portalId=1";
+             //本地
+           // String url = "/seeyon/cap4/businessTemplateController.do?method=capUnflowList&srcFrom=bizconfig&businessId=-3670809159316847687&moduleId=2610274103067887667&formId=-584685312557562429&type=baseInfo&tag=1618583844972&portalId=1";
+            String path = "/seeyon/main.do?method=login&ticket=" + ticket + "&login.destination=" + URLEncoder.encode(url.substring(url.indexOf("seeyon") - 1));
+            response.sendRedirect(path);
+        } catch (IOException e) {
+            log.error("中国矿业大学打开OA已办会议出错了，错误信息：" + e.getMessage());
+        }
+
+    }
 }
